@@ -11,8 +11,7 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        // uncomment, if you want to add an MVC-based UI
-        // services.AddControllersWithViews();
+        services.AddControllersWithViews();
 
         services.AddIdentityServer()
             .AddInMemoryIdentityResources(Config.IdentityResources)
@@ -29,17 +28,11 @@ public class Startup
             app.UseDeveloperExceptionPage();
         }
 
-        // uncomment if you want to add MVC
-        // app.UseStaticFiles();
-        // app.UseRouting();
+        app.UseRouting();
 
         app.UseIdentityServer();
+        app.UseAuthorization();
 
-        // uncomment, if you want to add MVC
-        // app.UseAuthorization();
-        // app.UseEndpoints(endpoints =>
-        // {
-        //     endpoints.MapDefaultControllerRoute();
-        // });
+        app.UseEndpoints(endpoints => endpoints.MapDefaultControllerRoute());
     }
 }

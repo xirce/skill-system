@@ -1,0 +1,19 @@
+﻿@model SkillSystem.IdentityServer4.Models.Account.LoginViewModel
+
+<form asp-controller="Account" asp-action="Login" method="post">
+    <input type="hidden" asp-for="ReturnUrl" />
+    <h4>Вход</h4>
+    <div>
+        <input placeholder="Адрес эл. почты" asp-for="Email" autofocus>
+    </div>
+    <div>
+        <input placeholder="Пароль" asp-for="Password" autocomplete="off" />
+        <span asp-validation-for="Password"></span>
+    </div>
+    <div>
+        <button type="submit">Войти</button>
+    </div>
+    <a asp-controller="Account" asp-action="Register" asp-route-returnUrl="@Model.ReturnUrl">
+        Регистрация
+    </a>
+</form>
