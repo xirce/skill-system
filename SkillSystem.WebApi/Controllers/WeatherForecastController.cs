@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SkillSystem.WebApi.Controllers;
@@ -6,9 +7,16 @@ namespace SkillSystem.WebApi.Controllers;
 [Route("[controller]")]
 public class WeatherForecastController : ControllerBase
 {
-    [HttpGet()]
-    public ActionResult<int> Get()
+    [HttpGet("public")]
+    public ActionResult<string> GetPublic()
     {
-        return Ok(42);
+        return Ok("Public");
+    }
+
+    [Authorize]
+    [HttpGet("secret")]
+    public ActionResult<int> GetSecret()
+    {
+        return Ok("Secret");
     }
 }
