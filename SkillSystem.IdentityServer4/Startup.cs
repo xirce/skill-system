@@ -40,6 +40,7 @@ public class Startup
         if (Environment.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
+            app.EnsureUsersSeeded();
         }
 
         app.UseRouting();
