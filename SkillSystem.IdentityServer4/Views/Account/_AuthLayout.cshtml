@@ -1,0 +1,15 @@
+﻿@{
+    Layout = "_Layout";
+}
+<div class="container">
+    <div class="title">
+        <a asp-controller="Account" asp-action="Register" asp-route-returnUrl="@Model.ReturnUrl" id="register">
+            Регистрация
+        </a>
+        /
+        <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Model.ReturnUrl" id="login">
+            Вход
+        </a>
+    </div>
+    @RenderBody()
+</div>

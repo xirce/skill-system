@@ -43,6 +43,7 @@ public class Startup
             app.EnsureUsersSeeded();
         }
 
+        app.UseStaticFiles();
         app.UseRouting();
 
         app.UseIdentityServer();

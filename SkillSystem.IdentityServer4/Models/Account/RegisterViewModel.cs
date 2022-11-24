@@ -20,7 +20,7 @@ public class RegisterViewModel
 
     [Required]
     [DataType(DataType.Password)]
-    [Compare(nameof(Password))]
+    [Compare(nameof(Password), ErrorMessage = "Пароли не совпадают")]
     public string ConfirmPassword { get; set; }
 
     public string ReturnUrl { get; set; }
