@@ -26,7 +26,7 @@ public class SkillsService : ISkillsService
         return skill.Id;
     }
 
-    public async Task<SkillResponse?> FindSkillByIdAsync(int skillId)
+    public async Task<SkillResponse?> GetSkillByIdAsync(int skillId)
     {
         var skill = await skillsRepository.FindSkillByIdAsync(skillId, true);
 

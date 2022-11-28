@@ -25,7 +25,7 @@ public class SkillsController : BaseController
     [HttpGet("{skillId}")]
     public async Task<ActionResult<SkillResponse>> GetSkillById(int skillId)
     {
-        var skill = await skillsService.FindSkillByIdAsync(skillId);
+        var skill = await skillsService.GetSkillByIdAsync(skillId);
         return Ok(skill);
     }
 

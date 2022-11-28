@@ -6,7 +6,7 @@ namespace SkillSystem.Application.Services.Skills;
 public interface ISkillsService
 {
     Task<int> CreateSkillAsync(CreateSkillRequest request);
-    Task<SkillResponse?> FindSkillByIdAsync(int skillId);
+    Task<SkillResponse?> GetSkillByIdAsync(int skillId);
     Task<PaginatedResponse<SkillShortInfo>> FindSkillsAsync(SearchSkillsRequest request);
     Task<IEnumerable<SkillShortInfo>> GetSubSkillsAsync(int skillId);
     Task UpdateSkillAsync(int skillId, UpdateSkillRequest request);
