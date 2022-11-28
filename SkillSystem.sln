@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkillSystem.WebApi", "SkillSystem.WebApi\SkillSystem.WebApi.csproj", "{639AE6E4-2CDF-4B5C-93A7-2877FE186A56}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkillSystem.IdentityServer4", "SkillSystem.IdentityServer4\SkillSystem.IdentityServer4.csproj", "{BA55759D-775A-43C1-BAF6-520439B3C0B9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{639AE6E4-2CDF-4B5C-93A7-2877FE186A56}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{639AE6E4-2CDF-4B5C-93A7-2877FE186A56}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{639AE6E4-2CDF-4B5C-93A7-2877FE186A56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA55759D-775A-43C1-BAF6-520439B3C0B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA55759D-775A-43C1-BAF6-520439B3C0B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA55759D-775A-43C1-BAF6-520439B3C0B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA55759D-775A-43C1-BAF6-520439B3C0B9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
