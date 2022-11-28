@@ -1,0 +1,66 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using SkillSystem.Application.Common.Models;
+using SkillSystem.Application.Services.Skills;
+using SkillSystem.Application.Services.Skills.Models;
+
+namespace SkillSystem.WebApi.Controllers;
+
+[Route("api/skills")]
+public class SkillsController : BaseController
+{
+    private readonly ISkillsService skillsService;
+
+    public SkillsController(ISkillsService skillsService)
+    {
+        this.skillsService = skillsService;
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<int>> CreateSkill(CreateSkillRequest request)
+    {
+        var skillId = await skillsService.CreateSkillAsync(request);
+        return Ok(skillId);
+    }
+
+    [HttpGet("{skillId}")]
+    public async Task<ActionResult<SkillResponse>> GetSkillById(int skillId)
+    {
+        var skill = await skillsService.FindSkillByIdAsync(skillId);
+        return Ok(skill);
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<PaginatedList<SkillShortInfo>>> FindSkills([FromQuery] SearchSkillsRequest request)
+    {
+        var skills = await skillsService.FindSkillsAsync(request);
+        return Ok(skills);
+    }
+
+    [HttpGet("{skillId}/sub-skills")]
+    public async Task<ActionResult<SkillShortInfo>> GetSubSkills(int skillId)
+    {
+        var subSkills = await skillsService.GetSubSkillsAsync(skillId);
+        return Ok(subSkills);
+    }
+
+    [HttpPut("{skillId}")]
+    public async Task<IActionResult> UpdateSkill(int skillId, UpdateSkillRequest request)
+    {
+        await skillsService.UpdateSkillAsync(skillId, request);
+        return NoContent();
+    }
+
+    [HttpPut("{skillId}/attach-to/{skillGroupId}")]
+    public async Task<IActionResult> AttachSkillToGroup(int skillId, int skillGroupId)
+    {
+        await skillsService.AttachSkillToGroupAsync(skillId, skillGroupId);
+        return NoContent();
+    }
+
+    [HttpDelete("{skillId}")]
+    public async Task<IActionResult> DeleteSkill(int skillId)
+    {
+        await skillsService.DeleteSkillAsync(skillId);
+        return NoContent();
+    }
+}
