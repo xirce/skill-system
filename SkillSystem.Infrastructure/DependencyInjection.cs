@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using SkillSystem.Application.Repositories.Roles;
 using SkillSystem.Application.Repositories.Skills;
 using SkillSystem.Infrastructure.Persistence;
 using SkillSystem.Infrastructure.Persistence.Repositories;
@@ -13,6 +14,7 @@ public static class DependencyInjection
         services.AddDbContext<SkillSystemDbContext>(options => options.UseInMemoryDatabase("SkillSystem"));
 
         services.AddScoped<ISkillsRepository, SkillsRepository>();
+        services.AddScoped<IRolesRepository, RolesRepository>();
 
         return services;
     }
