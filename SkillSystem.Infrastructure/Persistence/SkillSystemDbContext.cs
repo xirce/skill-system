@@ -6,6 +6,7 @@ namespace SkillSystem.Infrastructure.Persistence;
 public class SkillSystemDbContext : DbContext
 {
     public DbSet<Skill> Skills { get; set; }
+    public DbSet<Role> Roles { get; set; }
 
     public SkillSystemDbContext(DbContextOptions<SkillSystemDbContext> options) : base(options)
     {
