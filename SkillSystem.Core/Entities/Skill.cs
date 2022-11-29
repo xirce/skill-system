@@ -28,4 +28,11 @@ public class Skill : BaseEntity
     /// Набор знаний, объединенных темой этого знания.
     /// </summary>
     public ICollection<Skill> SubSkills { get; set; }
+
+    /// <summary>
+    /// Набор грейдов, в которых есть этот скилл.
+    /// </summary>
+    public ICollection<Grade> Grades { get; set; }
+
+    public ICollection<GradeSkill> GradeSkills { get; set; }
 }
