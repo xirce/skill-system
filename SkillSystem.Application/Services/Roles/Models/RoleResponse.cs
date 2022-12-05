@@ -1,3 +1,8 @@
-﻿namespace SkillSystem.Application.Services.Roles.Models;
+﻿using SkillSystem.Application.Services.Grades.Models;
 
-public record RoleResponse(int Id, string Title);
+namespace SkillSystem.Application.Services.Roles.Models;
+
+public record RoleResponse : RoleShortInfo
+{
+    public ICollection<GradeShortInfo> Grades { get; set; }
+}

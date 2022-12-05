@@ -20,6 +20,7 @@ public class GradesRepository : IGradesRepository
             .Include(grade => grade.PrevGrade)
             .Include(grade => grade.NextGrade)
             .Include(grade => grade.Skills.OrderBy(skill => skill.Id))
+            .ThenInclude(grade => grade.SubSkills.OrderBy(skill => skill.Id))
             .FirstOrDefaultAsync(grade => grade.Id == gradeId);
     }
 
