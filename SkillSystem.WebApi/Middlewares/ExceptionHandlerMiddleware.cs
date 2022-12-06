@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using SkillSystem.Application.Common.Exceptions;
-using ApplicationException = SkillSystem.Application.Common.Exceptions.ApplicationException;
 
 namespace SkillSystem.WebApi.Middlewares;
 
@@ -35,9 +34,9 @@ public class ExceptionHandlerMiddleware
                 response.StatusCode = (int)HttpStatusCode.NotFound;
                 await response.WriteAsJsonAsync(notFoundException.Message);
                 break;
-            case ApplicationException applicationException:
+            default:
                 response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                await response.WriteAsJsonAsync(applicationException.Message);
+                await response.WriteAsJsonAsync(exception.Message);
                 break;
         }
     }
