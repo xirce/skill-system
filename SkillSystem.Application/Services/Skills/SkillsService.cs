@@ -1,5 +1,4 @@
 ﻿using Mapster;
-using SkillSystem.Application.Common.Exceptions;
 using SkillSystem.Application.Common.Extensions;
 using SkillSystem.Application.Common.Models.Responses;
 using SkillSystem.Application.Repositories.Skills;
@@ -21,18 +20,12 @@ public class SkillsService : ISkillsService
     {
         var skill = request.Adapt<Skill>();
 
-        await skillsRepository.CreateSkillAsync(skill);
-
-        return skill.Id;
+        return await skillsRepository.CreateSkillAsync(skill);
     }
 
     public async Task<SkillResponse?> GetSkillByIdAsync(int skillId)
     {
-        var skill = await skillsRepository.FindSkillByIdAsync(skillId, true);
-
-        if (skill is null)
-            throw new EntityNotFoundException(nameof(Skill), skillId);
-
+        var skill = await skillsRepository.GetSkillByIdAsync(skillId, true);
         return skill.Adapt<SkillResponse>();
     }
 
@@ -50,20 +43,13 @@ public class SkillsService : ISkillsService
 
     public async Task<IEnumerable<SkillShortInfo>> GetSubSkillsAsync(int skillId)
     {
-        var skill = await skillsRepository.FindSkillByIdAsync(skillId, true);
-
-        if (skill is null)
-            throw new EntityNotFoundException(nameof(Skill), skillId);
-
-        return skill.SubSkills.Adapt<IEnumerable<SkillShortInfo>>();
+        var subSkills = await skillsRepository.GetSubSkillsAsync(skillId);
+        return subSkills.Adapt<IEnumerable<SkillShortInfo>>();
     }
 
     public async Task UpdateSkillAsync(int skillId, UpdateSkillRequest request)
     {
-        var skill = await skillsRepository.FindSkillByIdAsync(skillId);
-
-        if (skill is null)
-            throw new EntityNotFoundException(nameof(Skill), skillId);
+        var skill = await skillsRepository.GetSkillByIdAsync(skillId);
 
         request.Adapt(skill);
 
@@ -72,17 +58,10 @@ public class SkillsService : ISkillsService
 
     public async Task AttachSkillToGroupAsync(int skillId, int skillGroupId)
     {
-        var skill = await skillsRepository.FindSkillByIdAsync(skillId);
+        var skill = await skillsRepository.GetSkillByIdAsync(skillId);
+        var skillGroup = await skillsRepository.GetSkillByIdAsync(skillGroupId);
 
-        if (skill is null)
-            throw new EntityNotFoundException(nameof(Skill), skillId);
-
-        var skillGroup = await skillsRepository.FindSkillByIdAsync(skillGroupId);
-
-        if (skillGroup is null)
-            throw new EntityNotFoundException(nameof(Skill), skillGroupId);
-
-        skill.GroupId = skillGroupId;
+        skill.GroupId = skillGroup.Id;
         await skillsRepository.UpdateSkillAsync(skill);
     }
 
