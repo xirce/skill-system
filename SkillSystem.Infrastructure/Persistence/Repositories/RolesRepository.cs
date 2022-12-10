@@ -72,9 +72,11 @@ public class RolesRepository : IRolesRepository
 
         grade.RoleId = roleId;
         await dbContext.Grades.AddAsync(grade);
-        await InsertGradeAfterAsync(roleId, grade, prevGradeId);
-
         await dbContext.SaveChangesAsync();
+
+        await InsertGradeAfterAsync(roleId, grade, prevGradeId);
+        await dbContext.SaveChangesAsync();
+
         return grade.Id;
     }
 
