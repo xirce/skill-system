@@ -7,11 +7,11 @@ namespace SkillSystem.IdentityServer4;
 
 public class Startup
 {
-    private IWebHostEnvironment Environment { get; }
+    private readonly IWebHostEnvironment environment;
 
     public Startup(IWebHostEnvironment environment)
     {
-        Environment = environment;
+        this.environment = environment;
     }
 
     public void ConfigureServices(IServiceCollection services)
@@ -37,7 +37,7 @@ public class Startup
 
     public void Configure(IApplicationBuilder app)
     {
-        if (Environment.IsDevelopment())
+        if (environment.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
             app.EnsureUsersSeeded();
