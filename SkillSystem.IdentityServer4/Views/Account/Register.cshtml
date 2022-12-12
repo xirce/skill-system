@@ -3,10 +3,13 @@
 <form class="form" asp-controller="Account" asp-action="Register" method="post">
     <input type="hidden" asp-for="ReturnUrl" />
     <div class="input-wrapper">
+        <input class="input" placeholder="Фамилия" asp-for="LastName" autocomplete="off" required />
+    </div>
+    <div class="input-wrapper">
         <input class="input" placeholder="Имя" asp-for="FirstName" autofocus autocomplete="off" required />
     </div>
     <div class="input-wrapper">
-        <input class="input" placeholder="Фамилия" asp-for="LastName" autocomplete="off" required />
+        <input class="input" placeholder="Отчество" asp-for="Patronymic" autocomplete="off" required />
     </div>
     <div class="input-wrapper">
         <input class="input" placeholder="Адрес эл. почты" asp-for="Email" autocomplete="off" required />

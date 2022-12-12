@@ -23,6 +23,7 @@ internal static class SeedDataExtensions
         {
             FirstName = "Юзер",
             LastName = "Юзеров",
+            Patronymic = "Юзерович",
             Email = "user@mail.ru",
             UserName = "user@mail.ru"
         };
@@ -30,6 +31,7 @@ internal static class SeedDataExtensions
         {
             FirstName = "Админ",
             LastName = "Админов",
+            Patronymic = "Админович",
             Email = "admin@mail.ru",
             UserName = "admin@mail.ru"
         };

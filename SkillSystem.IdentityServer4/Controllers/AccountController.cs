@@ -64,6 +64,7 @@ public class AccountController : Controller
         {
             FirstName = model.FirstName,
             LastName = model.LastName,
+            Patronymic = model.Patronymic,
             Email = model.Email,
             UserName = model.Email
         };
