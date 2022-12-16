@@ -8,10 +8,12 @@ namespace SkillSystem.IdentityServer4;
 public class Startup
 {
     private readonly IWebHostEnvironment environment;
+    private readonly IConfiguration configuration;
 
-    public Startup(IWebHostEnvironment environment)
+    public Startup(IWebHostEnvironment environment, IConfiguration configuration)
     {
         this.environment = environment;
+        this.configuration = configuration;
     }
 
     public void ConfigureServices(IServiceCollection services)
@@ -19,8 +21,9 @@ public class Startup
         services.AddControllersWithViews();
 
         services.AddDbContext<SkillSystemIdentityDbContext>(
-            options => options.UseInMemoryDatabase("SkillSystemIdentity")
+            options => options.UseNpgsql(configuration.GetConnectionString("SkillSystemIdentity"))
         );
+        services.AddScoped<SkillSystemIdentityDbInitializer>();
 
         services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<SkillSystemIdentityDbContext>()

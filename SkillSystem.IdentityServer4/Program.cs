@@ -1,12 +1,13 @@
 ﻿using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
+using SkillSystem.IdentityServer4.Data;
 
 namespace SkillSystem.IdentityServer4;
 
 public class Program
 {
-    public static int Main(string[] args)
+    public static async Task<int> Main(string[] args)
     {
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()
@@ -25,7 +26,14 @@ public class Program
         try
         {
             Log.Information("Starting host...");
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+            using (var scope = host.Services.CreateScope())
+            {
+                var dbInitializer = scope.ServiceProvider.GetRequiredService<SkillSystemIdentityDbInitializer>();
+                await dbInitializer.InitializeAsync();
+            }
+
+            await host.RunAsync();
             return 0;
         }
         catch (Exception ex)
