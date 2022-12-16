@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Npgsql;
 using SkillSystem.Application.Repositories.Grades;
 using SkillSystem.Application.Repositories.Roles;
 using SkillSystem.Application.Repositories.Skills;
