@@ -29,7 +29,7 @@ public class RolesController : BaseController
     }
 
     [HttpGet]
-    public async Task<ActionResult<PaginatedResponse<RoleResponse>>> FindRoles([FromQuery] SearchRolesRequest request)
+    public async Task<ActionResult<PaginatedResponse<RoleShortInfo>>> FindRoles([FromQuery] SearchRolesRequest request)
     {
         var roles = await rolesService.FindRolesAsync(request);
         return Ok(roles);

@@ -9,4 +9,9 @@ public class Role : BaseEntity
     /// Название роли.
     /// </summary>
     public string Title { get; set; }
+
+    /// <summary>
+    /// Грейды, которые есть в этой роли.
+    /// </summary>
+    public ICollection<Grade> Grades { get; set; }
 }
