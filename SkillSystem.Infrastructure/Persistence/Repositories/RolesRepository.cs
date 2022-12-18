@@ -139,7 +139,7 @@ public class RolesRepository : IRolesRepository
         {
             insertGrade.PrevGradeId = null;
             var firstGrade = await FindRoleGradeAsync(roleId, grade => grade.PrevGradeId == null);
-            if (firstGrade is not null)
+            if (firstGrade is not null && firstGrade.Id != insertGrade.Id)
                 firstGrade.PrevGradeId = insertGrade.Id;
             return;
         }
