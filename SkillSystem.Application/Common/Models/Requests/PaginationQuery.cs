@@ -2,6 +2,11 @@
 
 namespace SkillSystem.Application.Common.Models.Requests;
 
+public record PaginationQuery<T> : PaginationQuery
+{
+    public T? Filter { get; init; }
+}
+
 public record PaginationQuery
 {
     [Range(0, int.MaxValue)]
