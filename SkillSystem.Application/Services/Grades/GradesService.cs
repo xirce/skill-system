@@ -2,8 +2,10 @@
 using SkillSystem.Application.Common.Extensions;
 using SkillSystem.Application.Common.Models.Responses;
 using SkillSystem.Application.Repositories.Grades;
+using SkillSystem.Application.Repositories.Positions;
 using SkillSystem.Application.Repositories.Skills;
 using SkillSystem.Application.Services.Grades.Models;
+using SkillSystem.Application.Services.Positions.Models;
 using SkillSystem.Application.Services.Skills.Models;
 
 namespace SkillSystem.Application.Services.Grades;
@@ -12,14 +14,17 @@ public class GradesService : IGradesService
 {
     private readonly IGradesRepository gradesRepository;
     private readonly ISkillsRepository skillsRepository;
+    private readonly IPositionsRepository positionsRepository;
 
     public GradesService(
         IGradesRepository gradesRepository,
-        ISkillsRepository skillsRepository
+        ISkillsRepository skillsRepository,
+        IPositionsRepository positionsRepository
     )
     {
         this.gradesRepository = gradesRepository;
         this.skillsRepository = skillsRepository;
+        this.positionsRepository = positionsRepository;
     }
 
     public async Task<GradeResponse> GetGradeByIdAsync(int gradeId)
@@ -46,6 +51,12 @@ public class GradesService : IGradesService
         return skills.Adapt<IEnumerable<SkillResponse>>();
     }
 
+    public async Task<ICollection<PositionResponse>> GetGradePositionsAsync(int gradeId)
+    {
+        var positions = await gradesRepository.GetGradePositionsAsync(gradeId);
+        return positions.Adapt<ICollection<PositionResponse>>();
+    }
+
     public async Task UpdateGradeAsync(int gradeId, GradeRequest request)
     {
         var grade = await gradesRepository.GetGradeByIdAsync(gradeId);
@@ -64,5 +75,16 @@ public class GradesService : IGradesService
     public async Task DeleteGradeSkillAsync(int gradeId, int skillId)
     {
         await gradesRepository.DeleteGradeSkillAsync(gradeId, skillId);
+    }
+
+    public async Task AddGradePositionAsync(int gradeId, int positionId)
+    {
+        var position = await positionsRepository.GetPositionByIdAsync(positionId);
+        await gradesRepository.AddGradePositionAsync(gradeId, position);
+    }
+
+    public async Task DeleteGradePositionAsync(int gradeId, int positionId)
+    {
+        await gradesRepository.DeleteGradePositionAsync(gradeId, positionId);
     }
 }

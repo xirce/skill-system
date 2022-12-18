@@ -8,7 +8,9 @@ public class SkillSystemDbContext : DbContext
     public DbSet<Skill> Skills { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<Grade> Grades { get; set; }
+    public DbSet<Position> Positions { get; set; }
     public DbSet<GradeSkill> GradeSkills { get; set; }
+    public DbSet<PositionGrade> PositionGrades { get; set; }
 
     public SkillSystemDbContext()
     {
@@ -64,5 +66,27 @@ public class SkillSystemDbContext : DbContext
                     .OnDelete(DeleteBehavior.SetNull);
             }
         );
+
+        modelBuilder.Entity<Position>()
+            .HasMany(position => position.MinGrades)
+            .WithMany(grade => grade.Positions)
+            .UsingEntity<PositionGrade>(
+                joinEntity =>
+                {
+                    joinEntity
+                        .HasKey(positionGrade => new { positionGrade.PositionId, positionGrade.GradeId });
+
+                    joinEntity
+                        .HasOne(positionGrade => positionGrade.Position)
+                        .WithMany(position => position.PositionGrades)
+                        .HasForeignKey(positionGrade => positionGrade.PositionId);
+
+                    joinEntity
+                        .HasOne(positionGrade => positionGrade.Grade)
+                        .WithMany(grade => grade.PositionGrades)
+                        .HasForeignKey(positionGrade => positionGrade.GradeId)
+                        .OnDelete(DeleteBehavior.Restrict);
+                }
+            );
     }
 }

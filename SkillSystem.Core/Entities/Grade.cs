@@ -37,4 +37,11 @@ public class Grade : BaseEntity
     public ICollection<Skill> Skills { get; set; }
 
     public ICollection<GradeSkill> GradeSkills { get; set; }
+
+    /// <summary>
+    /// Набор должностей, которые можно занять, получив данный грейд.
+    /// </summary>
+    public ICollection<Position> Positions { get; set; }
+
+    public ICollection<PositionGrade> PositionGrades { get; set; }
 }
