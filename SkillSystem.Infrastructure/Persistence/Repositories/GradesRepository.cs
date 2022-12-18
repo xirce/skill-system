@@ -55,6 +55,21 @@ public class GradesRepository : IGradesRepository
         return gradeSkills;
     }
 
+    public async Task<ICollection<Position>> GetGradePositionsAsync(int gradeId)
+    {
+        var gradePositions = await dbContext.Grades
+            .AsNoTracking()
+            .Include(grade => grade.Positions.OrderBy(position => position.Id))
+            .Where(grade => grade.Id == gradeId)
+            .Select(grade => grade.Positions)
+            .FirstOrDefaultAsync();
+
+        if (gradePositions is null)
+            throw new EntityNotFoundException(nameof(Grade), gradeId);
+
+        return gradePositions;
+    }
+
     public async Task UpdateGradeAsync(Grade grade)
     {
         dbContext.Grades.Update(grade);
@@ -80,5 +95,38 @@ public class GradesRepository : IGradesRepository
         var grade = await GetGradeByIdAsync(gradeId);
         dbContext.GradeSkills.Remove(new GradeSkill { GradeId = grade.Id, SkillId = skillId });
         await dbContext.SaveChangesAsync();
+    }
+
+    public async Task AddGradePositionAsync(int gradeId, Position position)
+    {
+        var grade = await GetGradeByIdAsync(gradeId);
+        var currentPositionGrade = await FindCurrentPositionGrade(grade.RoleId, position.Id);
+
+        if (currentPositionGrade is not null)
+        {
+            dbContext.PositionGrades.Remove(currentPositionGrade);
+        }
+
+        var newPositionGrade = new PositionGrade
+        {
+            GradeId = grade.Id,
+            PositionId = position.Id
+        };
+        await dbContext.PositionGrades.AddAsync(newPositionGrade);
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task DeleteGradePositionAsync(int gradeId, int positionId)
+    {
+        dbContext.PositionGrades.Remove(new PositionGrade { PositionId = positionId, GradeId = gradeId });
+        await dbContext.SaveChangesAsync();
+    }
+
+    private async Task<PositionGrade?> FindCurrentPositionGrade(int roleId, int positionId)
+    {
+        return await dbContext.PositionGrades
+            .FirstOrDefaultAsync(
+                positionGrade => positionGrade.Grade.RoleId == roleId && positionGrade.PositionId == positionId
+            );
     }
 }
