@@ -121,6 +121,7 @@ public class RolesRepository : IRolesRepository
         var grade = await dbContext.Grades
             .Include(grade => grade.PrevGrade)
             .Include(grade => grade.NextGrade)
+            .Where(grade => grade.RoleId == roleId)
             .FirstOrDefaultAsync(predicate);
 
         return grade;
