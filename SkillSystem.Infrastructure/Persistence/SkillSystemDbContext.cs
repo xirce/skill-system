@@ -9,8 +9,10 @@ public class SkillSystemDbContext : DbContext
     public DbSet<Role> Roles { get; set; }
     public DbSet<Grade> Grades { get; set; }
     public DbSet<Position> Positions { get; set; }
+    public DbSet<Duty> Duties { get; set; }
     public DbSet<GradeSkill> GradeSkills { get; set; }
     public DbSet<PositionGrade> PositionGrades { get; set; }
+    public DbSet<PositionDuty> PositionDuties { get; set; }
 
     public SkillSystemDbContext()
     {
@@ -85,6 +87,28 @@ public class SkillSystemDbContext : DbContext
                         .HasOne(positionGrade => positionGrade.Grade)
                         .WithMany(grade => grade.PositionGrades)
                         .HasForeignKey(positionGrade => positionGrade.GradeId)
+                        .OnDelete(DeleteBehavior.Restrict);
+                }
+            );
+
+        modelBuilder.Entity<Position>()
+            .HasMany(position => position.Duties)
+            .WithMany(duty => duty.Positions)
+            .UsingEntity<PositionDuty>(
+                joinEntity =>
+                {
+                    joinEntity
+                        .HasKey(positionDuty => new { positionDuty.PositionId, positionDuty.DutyId });
+
+                    joinEntity
+                        .HasOne(positionDuty => positionDuty.Position)
+                        .WithMany(position => position.PositionDuties)
+                        .HasForeignKey(positionDuty => positionDuty.PositionId);
+
+                    joinEntity
+                        .HasOne(positionDuty => positionDuty.Duty)
+                        .WithMany(duty => duty.PositionDuties)
+                        .HasForeignKey(positionDuty => positionDuty.DutyId)
                         .OnDelete(DeleteBehavior.Restrict);
                 }
             );
