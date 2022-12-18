@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SkillSystem.Application.Common.Models;
+using SkillSystem.Application.Common.Models.Responses;
 using SkillSystem.Application.Services.Skills;
 using SkillSystem.Application.Services.Skills.Models;
 
@@ -30,7 +30,7 @@ public class SkillsController : BaseController
     }
 
     [HttpGet]
-    public async Task<ActionResult<PaginatedList<SkillShortInfo>>> FindSkills([FromQuery] SearchSkillsRequest request)
+    public async Task<ActionResult<PaginatedResponse<SkillShortInfo>>> FindSkills([FromQuery] SearchSkillsRequest request)
     {
         var skills = await skillsService.FindSkillsAsync(request);
         return Ok(skills);
