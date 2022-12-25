@@ -43,9 +43,45 @@ public class PositionsRepository : IPositionsRepository
         return positions.OrderBy(role => role.Id);
     }
 
+    public async Task<ICollection<Duty>> GetPositionDutiesAsync(int positionId)
+    {
+        var positionDuties = await dbContext.Positions
+            .AsNoTracking()
+            .Include(position => position.Duties.OrderBy(duty => duty.Id))
+            .Where(position => position.Id == positionId)
+            .Select(position => position.Duties)
+            .FirstOrDefaultAsync();
+
+        if (positionDuties is null)
+            throw new EntityNotFoundException(nameof(Position), positionId);
+
+        return positionDuties;
+    }
+
     public async Task UpdatePositionAsync(Position position)
     {
         dbContext.Positions.Update(position);
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task AddPositionDutyAsync(int positionId, Duty duty)
+    {
+        var position = await GetPositionByIdAsync(positionId);
+
+        var positionDuty = new PositionDuty
+        {
+            PositionId = position.Id,
+            DutyId = duty.Id
+        };
+
+        await dbContext.PositionDuties.AddAsync(positionDuty);
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task DeletePositionDutyAsync(int positionId, int dutyId)
+    {
+        var position = GetPositionByIdAsync(positionId);
+        dbContext.PositionDuties.Remove(new PositionDuty { PositionId = position.Id, DutyId = dutyId });
         await dbContext.SaveChangesAsync();
     }
 
