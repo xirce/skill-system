@@ -32,9 +32,9 @@ public class PositionsService : IPositionsService
 
     public Task<PaginatedResponse<PositionResponse>> FindPositionsAsync(PaginationQuery<PositionFilter> query)
     {
-        var grades = positionsRepository.FindPositionsAsync(query.Filter);
+        var positions = positionsRepository.FindPositionsAsync(query.Filter);
 
-        var paginatedPositions = grades
+        var paginatedPositions = positions
             .ProjectToType<PositionResponse>()
             .ToPaginatedList(query)
             .ToResponse();
