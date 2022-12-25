@@ -26,6 +26,7 @@ public class Startup
         services.AddScoped<SkillSystemIdentityDbInitializer>();
 
         services.AddIdentity<ApplicationUser, IdentityRole>()
+            .AddClaimsPrincipalFactory<UserClaimsPrincipalFactory>()
             .AddEntityFrameworkStores<SkillSystemIdentityDbContext>()
             .AddDefaultTokenProviders();
 
