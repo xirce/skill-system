@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SkillSystem.Application.Repositories.Duties;
 using SkillSystem.Application.Repositories.Grades;
 using SkillSystem.Application.Repositories.Positions;
 using SkillSystem.Application.Repositories.Roles;
@@ -23,6 +24,7 @@ public static class DependencyInjection
         services.AddScoped<IRolesRepository, RolesRepository>();
         services.AddScoped<IGradesRepository, GradesRepository>();
         services.AddScoped<IPositionsRepository, PositionsRepository>();
+        services.AddScoped<IDutiesRepository, DutiesRepository>();
 
         return services;
     }
