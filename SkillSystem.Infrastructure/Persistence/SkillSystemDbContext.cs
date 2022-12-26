@@ -13,6 +13,7 @@ public class SkillSystemDbContext : DbContext
     public DbSet<GradeSkill> GradeSkills { get; set; }
     public DbSet<PositionGrade> PositionGrades { get; set; }
     public DbSet<PositionDuty> PositionDuties { get; set; }
+    public DbSet<EmployeeSkill> EmployeeSkills { get; set; }
 
     public SkillSystemDbContext()
     {
@@ -112,5 +113,13 @@ public class SkillSystemDbContext : DbContext
                         .OnDelete(DeleteBehavior.Restrict);
                 }
             );
+
+        modelBuilder.Entity<EmployeeSkill>()
+            .HasKey(skill => new { skill.EmployeeId, skill.SkillId });
+
+        modelBuilder.Entity<EmployeeSkill>()
+            .HasOne(skill => skill.Skill)
+            .WithMany()
+            .HasForeignKey(skill => skill.SkillId);
     }
 }
