@@ -21,6 +21,14 @@ public class RoleGradesController : BaseController
         return Ok(grades);
     }
 
+    [HttpGet]
+    [Route("~/api/roles/{roleId}/grades-with-skills")]
+    public async Task<ActionResult<ICollection<GradeWithSkills>>> GetRoleSkills(int roleId)
+    {
+        var gradesWithSkills = await rolesService.GetRoleGradesWithSkillsAsync(roleId);
+        return Ok(gradesWithSkills);
+    }
+
     [HttpPost("add-after")]
     public async Task<ActionResult<int>> AddGrade(int roleId, GradeRequest request, [FromQuery] int? prevGradeId = null)
     {
