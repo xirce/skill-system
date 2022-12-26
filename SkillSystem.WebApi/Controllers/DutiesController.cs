@@ -41,14 +41,14 @@ public class DutiesController : BaseController
     }
 
     [HttpPut("{dutyId}")]
-    public async Task<ActionResult<PaginatedResponse<DutyShortInfo>>> UpdateDuty(int dutyId, DutyRequest request)
+    public async Task<IActionResult> UpdateDuty(int dutyId, DutyRequest request)
     {
         await dutiesService.UpdateDutyAsync(dutyId, request);
         return NoContent();
     }
 
     [HttpDelete("{dutyId}")]
-    public async Task<ActionResult<PaginatedResponse<DutyShortInfo>>> DeleteDuty(int dutyId)
+    public async Task<IActionResult> DeleteDuty(int dutyId)
     {
         await dutiesService.DeleteDutyAsync(dutyId);
         return NoContent();

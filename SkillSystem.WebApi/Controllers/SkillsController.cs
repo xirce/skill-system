@@ -39,7 +39,7 @@ public class SkillsController : BaseController
     }
 
     [HttpGet("{skillId}/sub-skills")]
-    public async Task<ActionResult<SkillShortInfo>> GetSubSkills(int skillId)
+    public async Task<ActionResult<IEnumerable<SkillShortInfo>>> GetSubSkills(int skillId)
     {
         var subSkills = await skillsService.GetSubSkillsAsync(skillId);
         return Ok(subSkills);

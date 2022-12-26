@@ -41,14 +41,14 @@ public class PositionsController : BaseController
     }
 
     [HttpPut("{positionId}")]
-    public async Task<ActionResult<PositionResponse>> UpdatePosition(int positionId, PositionRequest request)
+    public async Task<IActionResult> UpdatePosition(int positionId, PositionRequest request)
     {
         await positionsService.UpdatePositionAsync(positionId, request);
         return NoContent();
     }
 
     [HttpDelete("{positionId}")]
-    public async Task<ActionResult<PositionResponse>> DeletePosition(int positionId)
+    public async Task<IActionResult> DeletePosition(int positionId)
     {
         await positionsService.DeletePositionAsync(positionId);
         return NoContent();

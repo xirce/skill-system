@@ -22,14 +22,14 @@ public class PositionDutiesController : BaseController
     }
 
     [HttpPut("add/{dutyId}")]
-    public async Task<ActionResult<IEnumerable<DutyShortInfo>>> AddPositionDuty(int positionId, int dutyId)
+    public async Task<IActionResult> AddPositionDuty(int positionId, int dutyId)
     {
         await positionsService.AddPositionDutyAsync(positionId, dutyId);
         return NoContent();
     }
 
     [HttpDelete("{dutyId}")]
-    public async Task<ActionResult<IEnumerable<DutyShortInfo>>> DeletePositionDuty(int positionId, int dutyId)
+    public async Task<IActionResult> DeletePositionDuty(int positionId, int dutyId)
     {
         await positionsService.DeletePositionDutyAsync(positionId, dutyId);
         return NoContent();

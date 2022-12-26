@@ -15,7 +15,7 @@ public class GradeSkillsController : BaseController
     }
 
     [HttpGet]
-    public async Task<ActionResult<SkillResponse>> GetGradeSkills(int gradeId)
+    public async Task<ActionResult<IEnumerable<SkillResponse>>> GetGradeSkills(int gradeId)
     {
         var skills = await gradesService.GetGradeSkillsAsync(gradeId);
         return Ok(skills);
