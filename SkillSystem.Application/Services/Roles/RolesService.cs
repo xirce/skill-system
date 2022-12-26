@@ -53,6 +53,13 @@ public class RolesService : IRolesService
         return sortedGrades.Adapt<ICollection<GradeShortInfo>>();
     }
 
+    public async Task<ICollection<GradeWithSkills>> GetRoleGradesWithSkillsAsync(int roleId)
+    {
+        var grades = await rolesRepository.GetRoleGradesAsync(roleId, true);
+        var sortedGrades = SortGrades(grades);
+        return sortedGrades.Adapt<ICollection<GradeWithSkills>>();
+    }
+
     public async Task<int> AddGradeAsync(int roleId, GradeRequest request, int? prevGradeId)
     {
         var grade = request.Adapt<Grade>();
