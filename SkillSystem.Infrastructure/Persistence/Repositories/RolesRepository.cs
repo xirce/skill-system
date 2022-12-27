@@ -45,19 +45,20 @@ public class RolesRepository : IRolesRepository
         return roles.OrderBy(role => role.Id);
     }
 
-    public async Task<ICollection<Grade>> GetRoleGradesAsync(int roleId)
+    public async Task<ICollection<Grade>> GetRoleGradesAsync(int roleId, bool includeSkills = false)
     {
-        var roleGrades = await dbContext.Roles
+        await EnsureRoleExists(roleId);
+
+        var roleGrades = dbContext.Roles
             .Include(role => role.Grades.OrderBy(grade => grade.Id))
             .ThenInclude(grade => grade.PrevGrade)
             .Where(role => role.Id == roleId)
-            .Select(role => role.Grades)
-            .FirstOrDefaultAsync();
+            .SelectMany(role => role.Grades);
 
-        if (roleGrades is null)
-            throw new EntityNotFoundException(nameof(Role), roleId);
+        if (includeSkills)
+            roleGrades = roleGrades.Include(grade => grade.Skills.OrderBy(skill => skill.Id));
 
-        return roleGrades;
+        return await roleGrades.ToListAsync();
     }
 
     public async Task UpdateRoleAsync(Role role)
