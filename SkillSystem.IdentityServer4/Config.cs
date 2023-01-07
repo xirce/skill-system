@@ -45,6 +45,26 @@ public static class Config
                     "SkillSystem.WebApi"
                 },
                 AllowedCorsOrigins = { "http://localhost:4200" },
+            },
+            new()
+            {
+                ClientId = "skill-system-swagger",
+                ClientName = "Skill System Swagger",
+                RequireClientSecret = false,
+                RequirePkce = true,
+                AllowedGrantTypes = GrantTypes.Code,
+                RedirectUris =
+                {
+                    "https://localhost:8000/swagger/oauth2-redirect.html",
+                    "http://localhost:8001/swagger/oauth2-redirect.html"
+                },
+                AllowedScopes =
+                {
+                    IdentityServerConstants.StandardScopes.OpenId,
+                    IdentityServerConstants.StandardScopes.Profile,
+                    "SkillSystem.WebApi",
+                },
+                AllowedCorsOrigins = { "https://localhost:8000", "http://localhost:8001" },
             }
         };
 }
