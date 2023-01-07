@@ -19,7 +19,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(
         options =>
         {
-            options.Audience = nameof(SkillSystem.WebApi);
+            options.Audience = "SkillSystem.WebApi";
             options.Authority = "https://localhost:5001";
             options.RequireHttpsMetadata = false;
         }
