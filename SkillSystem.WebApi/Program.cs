@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using SkillSystem.Application;
 using SkillSystem.Infrastructure;
 using SkillSystem.Infrastructure.Persistence;
+using SkillSystem.WebApi.Configuration;
 using SkillSystem.WebApi.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,6 +29,7 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.ConfigureOptions<SwaggerGenSetup>();
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -38,7 +40,14 @@ if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(
+        options =>
+        {
+            options.OAuthClientId("skill-system-swagger");
+            options.OAuthScopes("SkillSystem.WebApi");
+            options.OAuthUsePkce();
+        }
+    );
 }
 
 using (var scope = app.Services.CreateScope())
