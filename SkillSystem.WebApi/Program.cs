@@ -1,14 +1,19 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using SkillSystem.Application;
+using SkillSystem.Application.Common.Services;
 using SkillSystem.Infrastructure;
 using SkillSystem.Infrastructure.Persistence;
 using SkillSystem.WebApi.Configuration;
 using SkillSystem.WebApi.Middlewares;
+using SkillSystem.WebApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.WebHost.ConfigureKestrel(options => options.AddServerHeader = false);
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton<ICurrentUserProvider, CurrentUserProvider>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(
