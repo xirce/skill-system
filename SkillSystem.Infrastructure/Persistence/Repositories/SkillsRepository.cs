@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SkillSystem.Application.Common.Exceptions;
+using SkillSystem.Application.Common.Extensions;
 using SkillSystem.Application.Repositories.Skills;
 using SkillSystem.Core.Entities;
 
@@ -53,6 +54,24 @@ public class SkillsRepository : ISkillsRepository
             throw new EntityNotFoundException(nameof(Skill), groupId);
 
         return subSkills;
+    }
+
+    public async Task<IEnumerable<Skill>> TraverseSkillAsync(int groupId)
+    {
+        var skill = await GetSkillByIdAsync(groupId);
+        return skill.Traverse(subSkill => GetSubSkillsAsync(subSkill.Id).GetAwaiter().GetResult());
+    }
+
+    public async IAsyncEnumerable<Skill> GetGroups(int skillId)
+    {
+        var skill = await GetSkillByIdAsync(skillId);
+        var currentGroupId = skill.GroupId;
+        while (currentGroupId.HasValue)
+        {
+            var currentGroup = await GetSkillByIdAsync(currentGroupId.Value);
+            yield return currentGroup;
+            currentGroupId = currentGroup.GroupId;
+        }
     }
 
     public IQueryable<Skill> FindSkills(string? title = default)

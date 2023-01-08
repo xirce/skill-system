@@ -12,6 +12,8 @@ public interface ISkillsRepository
     Task<Skill?> FindSkillByIdAsync(int skillId, bool includeSubSkills = false);
     Task<Skill> GetSkillByIdAsync(int skillId, bool includeSubSkills = false);
     Task<IEnumerable<Skill>> GetSubSkillsAsync(int groupId);
+    Task<IEnumerable<Skill>> TraverseSkillAsync(int groupId);
+    IAsyncEnumerable<Skill> GetGroups(int skillId);
     Task UpdateSkillAsync(Skill skill);
     Task DeleteSkillAsync(int skillId);
 }
