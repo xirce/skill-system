@@ -92,8 +92,7 @@ public class GradesRepository : IGradesRepository
 
     public async Task DeleteGradeSkillAsync(int gradeId, int skillId)
     {
-        var grade = await GetGradeByIdAsync(gradeId);
-        dbContext.GradeSkills.Remove(new GradeSkill { GradeId = grade.Id, SkillId = skillId });
+        dbContext.GradeSkills.Remove(new GradeSkill { GradeId = gradeId, SkillId = skillId });
         await dbContext.SaveChangesAsync();
     }
 
