@@ -16,4 +16,8 @@
     <ProjectReference Include="..\SkillSystem.Core\SkillSystem.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\EmployeeGrades\Models" />
+  </ItemGroup>
+
 </Project>
