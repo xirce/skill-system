@@ -69,14 +69,14 @@ public class RolesRepository : IRolesRepository
 
     public async Task<int> AddGradeAfterAsync(int roleId, Grade grade, int? prevGradeId)
     {
-        await EnsureRoleExists(roleId);
+        var prevGrade = prevGradeId.HasValue ? await GetRoleGradeAsync(roleId, prevGradeId.Value) : null;
 
         grade.RoleId = roleId;
         grade.PrevGradeId = null;
         await dbContext.Grades.AddAsync(grade);
         await dbContext.SaveChangesAsync();
 
-        await InsertGradeAfterAsync(roleId, grade, prevGradeId);
+        await InsertGradeAfterAsync(grade, prevGrade);
         await dbContext.SaveChangesAsync();
 
         return grade.Id;
@@ -85,9 +85,10 @@ public class RolesRepository : IRolesRepository
     public async Task InsertGradeAfterAsync(int roleId, int gradeId, int? prevGradeId)
     {
         var grade = await GetRoleGradeAsync(roleId, gradeId);
+        var prevGrade = prevGradeId.HasValue ? await GetRoleGradeAsync(roleId, prevGradeId.Value) : null;
 
-        DetachGrade(grade);
-        await InsertGradeAfterAsync(roleId, grade, prevGradeId);
+        await DetachGradeAsync(grade);
+        await InsertGradeAfterAsync(grade, prevGrade);
 
         await dbContext.SaveChangesAsync();
     }
@@ -96,10 +97,7 @@ public class RolesRepository : IRolesRepository
     {
         var grade = await GetRoleGradeAsync(roleId, gradeId);
 
-        DetachGrade(grade);
-        dbContext.Grades.Remove(grade);
-
-        await dbContext.SaveChangesAsync();
+        await DetachGradeAsync(grade, toDelete: true);
     }
 
     public async Task DeleteRoleAsync(int roleId)
@@ -111,9 +109,39 @@ public class RolesRepository : IRolesRepository
     private async Task<Grade> GetRoleGradeAsync(int roleId, int gradeId)
     {
         var grade = await FindRoleGradeAsync(roleId, grade => grade.Id == gradeId);
-        if (grade is null || grade.RoleId != roleId)
+        if (grade is null)
             throw new EntityNotFoundException("RoleGrade", new { roleId, gradeId });
         return grade;
+    }
+
+    private async Task EnsureRoleExists(int roleId)
+    {
+        var roleExists = await dbContext.Roles.AnyAsync(role => role.Id == roleId);
+        if (!roleExists)
+            throw new EntityNotFoundException(nameof(Role), roleId);
+    }
+
+    private async Task InsertGradeAfterAsync(Grade insertGrade, Grade? prevGrade)
+    {
+        insertGrade.PrevGradeId = null;
+        if (prevGrade is null)
+        {
+            var firstGrade = await FindRoleFirstGradeAsync(insertGrade.RoleId);
+            if (firstGrade is not null && firstGrade.Id != insertGrade.Id)
+                firstGrade.PrevGradeId = insertGrade.Id;
+            return;
+        }
+
+        insertGrade.PrevGradeId = prevGrade.Id;
+
+        var nextGrade = prevGrade.NextGrade;
+        if (nextGrade is not null)
+            nextGrade.PrevGradeId = insertGrade.Id;
+    }
+
+    private async Task<Grade?> FindRoleFirstGradeAsync(int roleId)
+    {
+        return await FindRoleGradeAsync(roleId, grade => grade.PrevGradeId == null);
     }
 
     private async Task<Grade?> FindRoleGradeAsync(int roleId, Expression<Func<Grade, bool>> predicate)
@@ -129,43 +157,26 @@ public class RolesRepository : IRolesRepository
         return grade;
     }
 
-    private async Task EnsureRoleExists(int roleId)
+    private async Task DetachGradeAsync(Grade grade, bool toDelete = false)
     {
-        var roleExists = await dbContext.Roles.AnyAsync(role => role.Id == roleId);
-        if (!roleExists)
-            throw new EntityNotFoundException(nameof(Role), roleId);
-    }
-
-    private async Task InsertGradeAfterAsync(int roleId, Grade insertGrade, int? prevGradeId)
-    {
-        if (!prevGradeId.HasValue)
-        {
-            insertGrade.PrevGradeId = null;
-            var firstGrade = await FindRoleGradeAsync(roleId, grade => grade.PrevGradeId == null);
-            if (firstGrade is not null && firstGrade.Id != insertGrade.Id)
-                firstGrade.PrevGradeId = insertGrade.Id;
-            return;
-        }
-
-        var prevGrade = await GetRoleGradeAsync(roleId, prevGradeId.Value);
-        insertGrade.PrevGradeId = prevGrade.Id;
-
-        var nextGrade = prevGrade.NextGrade;
-        if (nextGrade is not null)
-            nextGrade.PrevGradeId = insertGrade.Id;
-    }
-
-    private static void DetachGrade(Grade grade)
-    {
-        var nextGrade = grade.NextGrade;
-        if (nextGrade is not null)
-        {
-            nextGrade.PrevGradeId = grade.PrevGradeId;
-            nextGrade.PrevGrade = grade.PrevGrade;
-        }
-
         var prevGrade = grade.PrevGrade;
-        if (prevGrade is not null)
-            prevGrade.NextGrade = nextGrade;
+        var nextGrade = grade.NextGrade;
+
+        if (toDelete)
+        {
+            dbContext.Grades.Remove(grade);
+            await dbContext.SaveChangesAsync();
+        }
+
+        if (nextGrade is not null && prevGrade is not null)
+        {
+            nextGrade.PrevGradeId = prevGrade.Id;
+            nextGrade.PrevGrade = prevGrade;
+        }
+
+        grade.PrevGradeId = null;
+        grade.PrevGrade = null;
+        grade.NextGrade = null;
+        await dbContext.SaveChangesAsync();
     }
 }
