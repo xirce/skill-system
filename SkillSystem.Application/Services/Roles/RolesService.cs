@@ -28,7 +28,7 @@ public class RolesService : IRolesService
         var role = await rolesRepository.GetRoleByIdAsync(roleId);
 
         var roleResponse = role.Adapt<RoleResponse>();
-        var sortedGrades = SortGrades(role.Grades);
+        var sortedGrades = role.Grades.Order();
         roleResponse.Grades = sortedGrades.Adapt<ICollection<GradeShortInfo>>();
 
         return roleResponse;
@@ -49,14 +49,14 @@ public class RolesService : IRolesService
     public async Task<ICollection<GradeShortInfo>> GetRoleGradesAsync(int roleId)
     {
         var grades = await rolesRepository.GetRoleGradesAsync(roleId);
-        var sortedGrades = SortGrades(grades);
+        var sortedGrades = grades.Order();
         return sortedGrades.Adapt<ICollection<GradeShortInfo>>();
     }
 
     public async Task<ICollection<GradeWithSkills>> GetRoleGradesWithSkillsAsync(int roleId)
     {
         var grades = await rolesRepository.GetRoleGradesAsync(roleId, true);
-        var sortedGrades = SortGrades(grades);
+        var sortedGrades = grades.Order();
         return sortedGrades.Adapt<ICollection<GradeWithSkills>>();
     }
 
@@ -86,19 +86,5 @@ public class RolesService : IRolesService
     public async Task DeleteRoleAsync(int roleId)
     {
         await rolesRepository.DeleteRoleAsync(roleId);
-    }
-
-    private static ICollection<Grade> SortGrades(ICollection<Grade> grades)
-    {
-        var nextGrades = grades.ToDictionary(grade => grade.Id, grade => grade.NextGrade);
-        var sortedGrades = new List<Grade>();
-        var currentGrade = grades.FirstOrDefault(grade => grade.PrevGradeId == null);
-        while (currentGrade is not null)
-        {
-            sortedGrades.Add(currentGrade);
-            currentGrade = nextGrades[currentGrade.Id];
-        }
-
-        return sortedGrades;
     }
 }
