@@ -64,20 +64,34 @@ public class EmployeeSkillsService : IEmployeeSkillsService
         return skill.Adapt<EmployeeSkillResponse>() with { SubSkills = mappedSubSkills };
     }
 
-    public async Task<ICollection<EmployeeSkillShortInfo>> FindEmployeeSkillsAsync(string employeeId, int roleId)
+    public async Task<ICollection<EmployeeSkillShortInfo>> FindEmployeeSkillsAsync(
+        string employeeId,
+        int? roleId = null
+    )
     {
         ThrowIfCurrentUserHasNotAccessTo(employeeId);
 
-        var skills = await FindEmployeeRoleSkillsAsync(employeeId, roleId);
+        var skills = await FindEmployeeSkillsInternalAsync(employeeId, roleId);
         return skills.Adapt<ICollection<EmployeeSkillShortInfo>>();
     }
 
-    public async Task<ICollection<EmployeeSkillStatus>> FindEmployeeSkillsStatusesAsync(string employeeId, int roleId)
+    public async Task<ICollection<EmployeeSkillStatus>> FindEmployeeSkillsStatusesAsync(
+        string employeeId,
+        int? roleId = null
+    )
     {
         ThrowIfCurrentUserHasNotAccessTo(employeeId);
 
-        var skills = await FindEmployeeRoleSkillsAsync(employeeId, roleId);
+        var skills = await FindEmployeeSkillsInternalAsync(employeeId, roleId);
         return skills.Adapt<ICollection<EmployeeSkillStatus>>();
+    }
+
+    private async Task<ICollection<EmployeeSkill>> FindEmployeeSkillsInternalAsync(string employeeId, int? roleId)
+    {
+        var skills = roleId.HasValue
+            ? await FindEmployeeRoleSkillsAsync(employeeId, roleId.Value)
+            : employeeSkillsRepository.FindEmployeeSkills(employeeId).ToList();
+        return skills;
     }
 
     public async Task SetSkillApprovedAsync(string employeeId, int skillId, bool isApproved)

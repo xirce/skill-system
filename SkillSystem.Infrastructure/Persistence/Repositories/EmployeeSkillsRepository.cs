@@ -41,16 +41,21 @@ public class EmployeeSkillsRepository : IEmployeeSkillsRepository
                ?? throw new EntityNotFoundException(nameof(EmployeeSkill), new { employeeId, skillId });
     }
 
+    public IQueryable<EmployeeSkill> FindEmployeeSkills(string employeeId)
+    {
+        return dbContext.EmployeeSkills
+            .AsNoTracking()
+            .Include(employeeSkill => employeeSkill.Skill)
+            .Where(employeeSkill => employeeSkill.EmployeeId == employeeId);
+    }
+
     public async Task<ICollection<EmployeeSkill>> FindEmployeeSkillsAsync(
         string employeeId,
         IEnumerable<int> skillsIds
     )
     {
-        return await dbContext.EmployeeSkills
-            .AsNoTracking()
-            .Where(employeeSkill => employeeSkill.EmployeeId == employeeId)
+        return await FindEmployeeSkills(employeeId)
             .Where(employeeSkill => skillsIds.Contains(employeeSkill.SkillId))
-            .Include(employeeSkill => employeeSkill.Skill)
             .ToListAsync();
     }
 

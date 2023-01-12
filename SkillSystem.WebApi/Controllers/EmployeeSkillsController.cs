@@ -33,7 +33,7 @@ public class EmployeeSkillsController : BaseController
     [HttpGet]
     public async Task<ActionResult<IEnumerable<EmployeeSkillShortInfo>>> FindEmployeeRoleSkills(
         string employeeId,
-        [FromQuery] int roleId
+        [FromQuery] int? roleId = null
     )
     {
         var employeeSkills = await employeeSkillsService.FindEmployeeSkillsAsync(employeeId, roleId);

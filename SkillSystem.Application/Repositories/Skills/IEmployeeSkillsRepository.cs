@@ -7,6 +7,7 @@ public interface IEmployeeSkillsRepository
     Task AddEmployeeSkillsAsync(params EmployeeSkill[] employeeSkills);
     Task<EmployeeSkill?> FindEmployeeSkillAsync(string employeeId, int skillId);
     Task<EmployeeSkill> GetEmployeeSkillAsync(string employeeId, int skillId);
+    IQueryable<EmployeeSkill> FindEmployeeSkills(string employeeId);
     Task<ICollection<EmployeeSkill>> FindEmployeeSkillsAsync(string employeeId, IEnumerable<int> skillsIds);
     Task UpdateSkillsAsync(params EmployeeSkill[] employeeSkills);
     Task DeleteEmployeeSkillsAsync(params EmployeeSkill[] skills);
