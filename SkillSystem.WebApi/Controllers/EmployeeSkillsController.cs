@@ -19,7 +19,7 @@ public class EmployeeSkillsController : BaseController
     [HttpPut("add/{skillId}")]
     public async Task<IActionResult> AddEmployeeSkill(string employeeId, int skillId)
     {
-        await employeeSkillsService.AddEmployeeSkillAsync(employeeId, skillId);
+        await employeeSkillsService.AddEmployeeSkillsAsync(employeeId, new[] { skillId });
         return NoContent();
     }
 
@@ -54,14 +54,14 @@ public class EmployeeSkillsController : BaseController
     [HttpPut("{skillId}")]
     public async Task<IActionResult> SetSkillApproved(string employeeId, int skillId, bool isApproved)
     {
-        await employeeSkillsService.SetSkillApprovedAsync(employeeId, skillId, isApproved);
+        await employeeSkillsService.SetApprovedToSkillsAsync(employeeId, isApproved, new[] { skillId });
         return NoContent();
     }
 
     [HttpDelete("{skillId}")]
     public async Task<IActionResult> DeleteEmployeeSkill(string employeeId, int skillId)
     {
-        await employeeSkillsService.DeleteEmployeeSkillAsync(employeeId, skillId);
+        await employeeSkillsService.DeleteEmployeeSkillsAsync(employeeId, new[] { skillId });
         return NoContent();
     }
 }

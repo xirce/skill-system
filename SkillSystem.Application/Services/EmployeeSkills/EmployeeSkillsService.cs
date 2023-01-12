@@ -29,23 +29,13 @@ public class EmployeeSkillsService : IEmployeeSkillsService
         this.currentUserProvider = currentUserProvider;
     }
 
-    public async Task AddEmployeeSkillAsync(string employeeId, int skillId)
+    public async Task AddEmployeeSkillsAsync(string employeeId, IEnumerable<int> skillsIds)
     {
         ThrowIfCurrentUserHasNotAccessTo(employeeId);
 
-        var skillWithSubSkills = (await skillsRepository.TraverseSkillAsync(skillId)).ToArray()
-            .Select(subSkill => new EmployeeSkill { EmployeeId = employeeId, SkillId = subSkill.Id })
-            .ToList();
-
-        var addedSkillId = skillWithSubSkills.First().SkillId;
-        var groupsToAdd = await skillsRepository.GetGroups(addedSkillId)
-            .TakeWhile(group => CountSkillsToAddGroupAsync(employeeId, group.Id).GetAwaiter().GetResult() < 2)
-            .Select(skill => new EmployeeSkill { EmployeeId = employeeId, SkillId = skill.Id })
-            .ToListAsync();
-
         var skillsToAdd = new List<EmployeeSkill>();
-        skillsToAdd.AddRange(skillWithSubSkills);
-        skillsToAdd.AddRange(groupsToAdd);
+        foreach (var skillId in skillsIds)
+            skillsToAdd.AddRange(await GetSkillsToAddAsync(employeeId, skillId));
 
         await employeeSkillsRepository.AddEmployeeSkillsAsync(skillsToAdd.ToArray());
     }
@@ -86,6 +76,31 @@ public class EmployeeSkillsService : IEmployeeSkillsService
         return skills.Adapt<ICollection<EmployeeSkillStatus>>();
     }
 
+    public async Task SetApprovedToSkillsAsync(string employeeId, bool isApproved, IEnumerable<int> skillsIds)
+    {
+        ThrowIfCurrentUserHasNotAccessTo(employeeId);
+
+        var skillsToUpdate = new List<EmployeeSkill>();
+        foreach (var skillId in skillsIds)
+            skillsToUpdate.AddRange(await GetSkillsToSetApprovedAsync(employeeId, skillId, isApproved));
+
+        foreach (var skill in skillsToUpdate)
+            skill.IsApproved = isApproved;
+
+        await employeeSkillsRepository.UpdateSkillsAsync(skillsToUpdate.ToArray());
+    }
+
+    public async Task DeleteEmployeeSkillsAsync(string employeeId, IEnumerable<int> skillsIds)
+    {
+        ThrowIfCurrentUserHasNotAccessTo(employeeId);
+
+        var skillsToDelete = new List<EmployeeSkill>();
+        foreach (var skillId in skillsIds)
+            skillsToDelete.AddRange(await GetSkillsToDeleteAsync(employeeId, skillId));
+
+        await employeeSkillsRepository.DeleteEmployeeSkillsAsync(skillsToDelete.ToArray());
+    }
+
     private async Task<ICollection<EmployeeSkill>> FindEmployeeSkillsInternalAsync(string employeeId, int? roleId)
     {
         var skills = roleId.HasValue
@@ -94,36 +109,50 @@ public class EmployeeSkillsService : IEmployeeSkillsService
         return skills;
     }
 
-    public async Task SetSkillApprovedAsync(string employeeId, int skillId, bool isApproved)
+    private async Task<ICollection<EmployeeSkill>> GetSkillsToAddAsync(string employeeId, int skillId)
     {
-        ThrowIfCurrentUserHasNotAccessTo(employeeId);
+        var skillWithSubSkills = (await skillsRepository.TraverseSkillAsync(skillId)).ToArray()
+            .Select(subSkill => new EmployeeSkill { EmployeeId = employeeId, SkillId = subSkill.Id })
+            .ToList();
 
-        var employeeSkill = await employeeSkillsRepository.GetEmployeeSkillAsync(employeeId, skillId);
+        var addedSkillId = skillWithSubSkills.First().SkillId;
+        var groupsToAdd = await skillsRepository.GetGroups(addedSkillId)
+            .TakeWhile(group => CountSkillsToAddGroupAsync(employeeId, group.Id).GetAwaiter().GetResult() < 2)
+            .Select(skill => new EmployeeSkill { EmployeeId = employeeId, SkillId = skill.Id })
+            .ToListAsync();
 
-        if (employeeSkill.IsApproved == isApproved)
-            return;
+        var skillsToAdd = new List<EmployeeSkill>();
+        skillsToAdd.AddRange(skillWithSubSkills);
+        skillsToAdd.AddRange(groupsToAdd);
 
-        var subSkills = await GetSubSkillsToSetApprovedAsync(employeeSkill);
-        var groups = await GetGroupsToSetApprovedAsync(employeeSkill, isApproved);
-
-        var skillsToUpdate = new List<EmployeeSkill>();
-        skillsToUpdate.AddRange(subSkills);
-        skillsToUpdate.Add(employeeSkill);
-        skillsToUpdate.AddRange(groups);
-
-        foreach (var skill in skillsToUpdate)
-            skill.IsApproved = isApproved;
-
-        await employeeSkillsRepository.UpdateSkillsAsync(skillsToUpdate.ToArray());
+        return skillsToAdd;
     }
 
-    public async Task DeleteEmployeeSkillAsync(string employeeId, int skillId)
+    private async Task<ICollection<EmployeeSkill>> GetSkillsToSetApprovedAsync(
+        string employeeId,
+        int skillId,
+        bool isApproved
+    )
     {
-        ThrowIfCurrentUserHasNotAccessTo(employeeId);
+        var employeeSkill = await employeeSkillsRepository.GetEmployeeSkillAsync(employeeId, skillId);
 
-        var employeeSkill = await employeeSkillsRepository.FindEmployeeSkillAsync(employeeId, skillId);
-        if (employeeSkill is null)
-            return;
+        var subSkills = await GetSubSkillsToSetApprovedAsync(employeeSkill);
+
+        var groups = employeeSkill.IsApproved && employeeSkill.IsApproved == isApproved
+            ? await GetGroupsToSetApprovedAsync(employeeSkill, isApproved)
+            : Array.Empty<EmployeeSkill>();
+
+        var skillsToSetApproved = new List<EmployeeSkill>();
+        skillsToSetApproved.AddRange(subSkills);
+        skillsToSetApproved.Add(employeeSkill);
+        skillsToSetApproved.AddRange(groups);
+
+        return skillsToSetApproved;
+    }
+
+    private async Task<List<EmployeeSkill>> GetSkillsToDeleteAsync(string employeeId, int skillId)
+    {
+        var employeeSkill = await employeeSkillsRepository.GetEmployeeSkillAsync(employeeId, skillId);
 
         var subSkills = await GetSubSkillsToDeleteAsync(employeeSkill);
         var groupsToDelete = await GetGroupsToDeleteAsync(employeeSkill);
@@ -132,8 +161,7 @@ public class EmployeeSkillsService : IEmployeeSkillsService
         skillsToDelete.AddRange(subSkills);
         skillsToDelete.Add(employeeSkill);
         skillsToDelete.AddRange(groupsToDelete);
-
-        await employeeSkillsRepository.DeleteEmployeeSkillsAsync(skillsToDelete.ToArray());
+        return skillsToDelete;
     }
 
     private void ThrowIfCurrentUserHasNotAccessTo(string employeeId)
