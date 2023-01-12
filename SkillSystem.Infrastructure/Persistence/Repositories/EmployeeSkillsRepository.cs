@@ -48,6 +48,7 @@ public class EmployeeSkillsRepository : IEmployeeSkillsRepository
     {
         return await dbContext.EmployeeSkills
             .AsNoTracking()
+            .Where(employeeSkill => employeeSkill.EmployeeId == employeeId)
             .Where(employeeSkill => skillsIds.Contains(employeeSkill.SkillId))
             .Include(employeeSkill => employeeSkill.Skill)
             .ToListAsync();
