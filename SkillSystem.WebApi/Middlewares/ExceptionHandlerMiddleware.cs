@@ -28,16 +28,13 @@ public class ExceptionHandlerMiddleware
     {
         var response = context.Response;
 
-        switch (exception)
+        response.StatusCode = exception switch
         {
-            case EntityNotFoundException notFoundException:
-                response.StatusCode = (int)HttpStatusCode.NotFound;
-                await response.WriteAsJsonAsync(notFoundException.Message);
-                break;
-            default:
-                response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                await response.WriteAsJsonAsync(exception.Message);
-                break;
-        }
+            EntityNotFoundException => (int)HttpStatusCode.NotFound,
+            ForbiddenException => (int)HttpStatusCode.Forbidden,
+            _ => (int)HttpStatusCode.InternalServerError
+        };
+
+        await response.WriteAsJsonAsync(exception.Message);
     }
 }
