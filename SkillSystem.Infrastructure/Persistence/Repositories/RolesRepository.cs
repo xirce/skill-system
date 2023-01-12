@@ -72,6 +72,7 @@ public class RolesRepository : IRolesRepository
         await EnsureRoleExists(roleId);
 
         grade.RoleId = roleId;
+        grade.PrevGradeId = null;
         await dbContext.Grades.AddAsync(grade);
         await dbContext.SaveChangesAsync();
 

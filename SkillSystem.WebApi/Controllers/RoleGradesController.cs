@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SkillSystem.Application.Services.Grades.Models;
 using SkillSystem.Application.Services.Roles;
+using SkillSystem.Application.Services.Roles.Models;
 
 namespace SkillSystem.WebApi.Controllers;
 
@@ -12,6 +13,13 @@ public class RoleGradesController : BaseController
     public RoleGradesController(IRolesService rolesService)
     {
         this.rolesService = rolesService;
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<int>> AddGrade(int roleId, AddGradeRequest request)
+    {
+        var gradeId = await rolesService.AddGradeAsync(roleId, request);
+        return Ok(gradeId);
     }
 
     [HttpGet]
@@ -27,13 +35,6 @@ public class RoleGradesController : BaseController
     {
         var gradesWithSkills = await rolesService.GetRoleGradesWithSkillsAsync(roleId);
         return Ok(gradesWithSkills);
-    }
-
-    [HttpPost("add-after")]
-    public async Task<ActionResult<int>> AddGrade(int roleId, GradeRequest request, [FromQuery] int? prevGradeId = null)
-    {
-        var gradeId = await rolesService.AddGradeAsync(roleId, request, prevGradeId);
-        return Ok(gradeId);
     }
 
     [HttpPut("{gradeId}/insert-after")]

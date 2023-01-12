@@ -60,10 +60,10 @@ public class RolesService : IRolesService
         return sortedGrades.Adapt<ICollection<GradeWithSkills>>();
     }
 
-    public async Task<int> AddGradeAsync(int roleId, GradeRequest request, int? prevGradeId)
+    public async Task<int> AddGradeAsync(int roleId, AddGradeRequest request)
     {
         var grade = request.Adapt<Grade>();
-        return await rolesRepository.AddGradeAfterAsync(roleId, grade, prevGradeId);
+        return await rolesRepository.AddGradeAfterAsync(roleId, grade, request.PrevGradeId);
     }
 
     public async Task InsertGradeAfterAsync(int roleId, int gradeId, int? prevGradeId)

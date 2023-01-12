@@ -11,7 +11,7 @@ public interface IRolesService
     Task<PaginatedResponse<RoleShortInfo>> FindRolesAsync(SearchRolesRequest request);
     Task<ICollection<GradeShortInfo>> GetRoleGradesAsync(int roleId);
     Task<ICollection<GradeWithSkills>> GetRoleGradesWithSkillsAsync(int roleId);
-    Task<int> AddGradeAsync(int roleId, GradeRequest request, int? prevGradeId);
+    Task<int> AddGradeAsync(int roleId, AddGradeRequest request);
     Task InsertGradeAfterAsync(int roleId, int gradeId, int? prevGradeId);
     Task UpdateRoleAsync(int roleId, RoleRequest request);
     Task DeleteGradeAsync(int roleId, int gradeId);
