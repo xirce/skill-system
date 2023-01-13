@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SkillSystem.Application.Authorization;
 using SkillSystem.Application.Services.EmployeeSkills;
 using SkillSystem.Application.Services.EmployeeSkills.Models;
 
@@ -52,6 +53,7 @@ public class EmployeeSkillsController : BaseController
     }
 
     [HttpPut("{skillId}")]
+    [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> SetSkillApproved(string employeeId, int skillId, bool isApproved)
     {
         await employeeSkillsService.SetApprovedToSkillsAsync(employeeId, isApproved, new[] { skillId });

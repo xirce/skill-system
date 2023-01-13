@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SkillSystem.Application.Authorization;
 using SkillSystem.Application.Common.Models.Responses;
 using SkillSystem.Application.Services.Skills;
 using SkillSystem.Application.Services.Skills.Models;
@@ -16,6 +18,7 @@ public class SkillsController : BaseController
     }
 
     [HttpPost]
+    [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<ActionResult<int>> CreateSkill(CreateSkillRequest request)
     {
         var skillId = await skillsService.CreateSkillAsync(request);
@@ -46,6 +49,7 @@ public class SkillsController : BaseController
     }
 
     [HttpPut("{skillId}")]
+    [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> UpdateSkill(int skillId, UpdateSkillRequest request)
     {
         await skillsService.UpdateSkillAsync(skillId, request);
@@ -53,6 +57,7 @@ public class SkillsController : BaseController
     }
 
     [HttpPut("{skillId}/attach-to/{skillGroupId}")]
+    [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> AttachSkillToGroup(int skillId, int skillGroupId)
     {
         await skillsService.AttachSkillToGroupAsync(skillId, skillGroupId);
@@ -60,6 +65,7 @@ public class SkillsController : BaseController
     }
 
     [HttpDelete("{skillId}")]
+    [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> DeleteSkill(int skillId)
     {
         await skillsService.DeleteSkillAsync(skillId);

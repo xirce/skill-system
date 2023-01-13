@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SkillSystem.Application.Authorization;
 using SkillSystem.Application.Services.Duties.Models;
 using SkillSystem.Application.Services.Positions;
 
@@ -22,6 +24,7 @@ public class PositionDutiesController : BaseController
     }
 
     [HttpPut("add/{dutyId}")]
+    [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> AddPositionDuty(int positionId, int dutyId)
     {
         await positionsService.AddPositionDutyAsync(positionId, dutyId);
@@ -29,6 +32,7 @@ public class PositionDutiesController : BaseController
     }
 
     [HttpDelete("{dutyId}")]
+    [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> DeletePositionDuty(int positionId, int dutyId)
     {
         await positionsService.DeletePositionDutyAsync(positionId, dutyId);

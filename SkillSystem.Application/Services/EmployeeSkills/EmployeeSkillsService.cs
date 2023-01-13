@@ -1,4 +1,5 @@
 ﻿using Mapster;
+using SkillSystem.Application.Authorization;
 using SkillSystem.Application.Common.Exceptions;
 using SkillSystem.Application.Common.Extensions;
 using SkillSystem.Application.Common.Services;
@@ -42,8 +43,6 @@ public class EmployeeSkillsService : IEmployeeSkillsService
 
     public async Task<EmployeeSkillResponse> GetEmployeeSkillAsync(string employeeId, int skillId)
     {
-        ThrowIfCurrentUserHasNotAccessTo(employeeId);
-
         var skill = await employeeSkillsRepository.GetEmployeeSkillAsync(employeeId, skillId);
         var subSkillsIds = (await skillsRepository.GetSubSkillsAsync(skillId))
             .Select(subSkill => subSkill.Id)
@@ -59,8 +58,6 @@ public class EmployeeSkillsService : IEmployeeSkillsService
         int? roleId = null
     )
     {
-        ThrowIfCurrentUserHasNotAccessTo(employeeId);
-
         var skills = await FindEmployeeSkillsInternalAsync(employeeId, roleId);
         return skills.Adapt<ICollection<EmployeeSkillShortInfo>>();
     }
@@ -70,8 +67,6 @@ public class EmployeeSkillsService : IEmployeeSkillsService
         int? roleId = null
     )
     {
-        ThrowIfCurrentUserHasNotAccessTo(employeeId);
-
         var skills = await FindEmployeeSkillsInternalAsync(employeeId, roleId);
         return skills.Adapt<ICollection<EmployeeSkillStatus>>();
     }
@@ -166,8 +161,9 @@ public class EmployeeSkillsService : IEmployeeSkillsService
 
     private void ThrowIfCurrentUserHasNotAccessTo(string employeeId)
     {
-        var currentUserId = currentUserProvider.User?.GetUserId();
-        if (currentUserId != employeeId)
+        var currentUser = currentUserProvider.User;
+        var currentUserId = currentUser?.GetUserId();
+        if (currentUser is null || currentUserId != employeeId && !currentUser.IsInRole(AuthRoleNames.Admin))
             throw new ForbiddenException($"Access denied for user with id {currentUserId}");
     }
 

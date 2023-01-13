@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SkillSystem.Application.Authorization;
 using SkillSystem.Application.Common.Models.Responses;
 using SkillSystem.Application.Services.Grades;
 using SkillSystem.Application.Services.Grades.Models;
@@ -32,6 +34,7 @@ public class GradesController : BaseController
     }
 
     [HttpPut("{gradeId}")]
+    [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> UpdateGrade(int gradeId, GradeRequest request)
     {
         await gradesService.UpdateGradeAsync(gradeId, request);
