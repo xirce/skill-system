@@ -1,4 +1,5 @@
-﻿using IdentityServer4;
+﻿using IdentityModel;
+using IdentityServer4;
 using IdentityServer4.Models;
 
 namespace SkillSystem.IdentityServer4;
@@ -9,7 +10,8 @@ public static class Config
         new IdentityResource[]
         {
             new IdentityResources.OpenId(),
-            new IdentityResources.Profile()
+            new IdentityResources.Profile(),
+            new("roles", "Roles", new[] { JwtClaimTypes.Role })
         };
 
     public static IEnumerable<ApiScope> ApiScopes =>
@@ -21,7 +23,7 @@ public static class Config
     public static IEnumerable<ApiResource> ApiResources =>
         new ApiResource[]
         {
-            new("SkillSystem.WebApi")
+            new("SkillSystem.WebApi", "Skill System Web Api", new[] { JwtClaimTypes.Role })
             {
                 Scopes = { "SkillSystem.WebApi" }
             }
@@ -42,7 +44,8 @@ public static class Config
                 {
                     IdentityServerConstants.StandardScopes.OpenId,
                     IdentityServerConstants.StandardScopes.Profile,
-                    "SkillSystem.WebApi"
+                    "SkillSystem.WebApi",
+                    "roles"
                 },
                 AllowedCorsOrigins = { "http://localhost:4200" },
             },
@@ -63,6 +66,7 @@ public static class Config
                     IdentityServerConstants.StandardScopes.OpenId,
                     IdentityServerConstants.StandardScopes.Profile,
                     "SkillSystem.WebApi",
+                    "roles"
                 },
                 AllowedCorsOrigins = { "https://localhost:8000", "http://localhost:8001" },
             }

@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using SkillSystem.Application;
 using SkillSystem.Application.Common.Services;
 using SkillSystem.Infrastructure;
@@ -49,7 +50,12 @@ if (app.Environment.IsDevelopment())
         options =>
         {
             options.OAuthClientId("skill-system-swagger");
-            options.OAuthScopes("SkillSystem.WebApi");
+            options.OAuthScopes(
+                OpenIdConnectScope.OpenId,
+                OpenIdConnectScope.OpenIdProfile,
+                "SkillSystem.WebApi",
+                "roles"
+            );
             options.OAuthUsePkce();
         }
     );
