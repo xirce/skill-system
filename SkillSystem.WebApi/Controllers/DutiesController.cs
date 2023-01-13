@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SkillSystem.Application.Authorization;
 using SkillSystem.Application.Common.Models.Requests;
 using SkillSystem.Application.Common.Models.Responses;
 using SkillSystem.Application.Repositories.Duties.Filters;
@@ -18,6 +20,7 @@ public class DutiesController : BaseController
     }
 
     [HttpPost]
+    [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<ActionResult<int>> CreateDuty(DutyRequest request)
     {
         var dutyId = await dutiesService.CreateDutyAsync(request);
@@ -41,6 +44,7 @@ public class DutiesController : BaseController
     }
 
     [HttpPut("{dutyId}")]
+    [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> UpdateDuty(int dutyId, DutyRequest request)
     {
         await dutiesService.UpdateDutyAsync(dutyId, request);
@@ -48,6 +52,7 @@ public class DutiesController : BaseController
     }
 
     [HttpDelete("{dutyId}")]
+    [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> DeleteDuty(int dutyId)
     {
         await dutiesService.DeleteDutyAsync(dutyId);

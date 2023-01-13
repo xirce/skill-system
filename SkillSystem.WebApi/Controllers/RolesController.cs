@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SkillSystem.Application.Authorization;
 using SkillSystem.Application.Common.Models.Responses;
 using SkillSystem.Application.Services.Roles;
 using SkillSystem.Application.Services.Roles.Models;
@@ -16,6 +18,7 @@ public class RolesController : BaseController
     }
 
     [HttpPost]
+    [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<int> CreateRole(RoleRequest request)
     {
         return await rolesService.CreateRoleAsync(request);
@@ -36,6 +39,7 @@ public class RolesController : BaseController
     }
 
     [HttpPut("{roleId}")]
+    [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> UpdateRole(int roleId, RoleRequest request)
     {
         await rolesService.UpdateRoleAsync(roleId, request);
@@ -43,6 +47,7 @@ public class RolesController : BaseController
     }
 
     [HttpDelete("{roleId}")]
+    [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> DeleteRole(int roleId)
     {
         await rolesService.DeleteRoleAsync(roleId);

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SkillSystem.Application.Authorization;
 using SkillSystem.Application.Common.Models.Requests;
 using SkillSystem.Application.Common.Models.Responses;
 using SkillSystem.Application.Repositories.Positions.Filters;
@@ -18,6 +20,7 @@ public class PositionsController : BaseController
     }
 
     [HttpPost]
+    [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<ActionResult<int>> CreatePosition(PositionRequest request)
     {
         var positionId = await positionsService.CreatePositionAsync(request);
@@ -41,6 +44,7 @@ public class PositionsController : BaseController
     }
 
     [HttpPut("{positionId}")]
+    [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> UpdatePosition(int positionId, PositionRequest request)
     {
         await positionsService.UpdatePositionAsync(positionId, request);
@@ -48,6 +52,7 @@ public class PositionsController : BaseController
     }
 
     [HttpDelete("{positionId}")]
+    [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> DeletePosition(int positionId)
     {
         await positionsService.DeletePositionAsync(positionId);

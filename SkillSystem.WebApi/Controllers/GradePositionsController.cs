@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SkillSystem.Application.Authorization;
 using SkillSystem.Application.Services.Grades;
 using SkillSystem.Application.Services.Positions.Models;
 
@@ -22,6 +24,7 @@ public class GradePositionsController : BaseController
     }
 
     [HttpPut("add/{positionId}")]
+    [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> AddGradePosition(int gradeId, int positionId)
     {
         await gradesService.AddGradePositionAsync(gradeId, positionId);
@@ -29,6 +32,7 @@ public class GradePositionsController : BaseController
     }
 
     [HttpDelete("{positionId}")]
+    [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> DeleteGradePosition(int gradeId, int positionId)
     {
         await gradesService.DeleteGradePositionAsync(gradeId, positionId);
