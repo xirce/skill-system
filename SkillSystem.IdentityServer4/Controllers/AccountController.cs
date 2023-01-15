@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using SkillSystem.IdentityServer4.Models;
+using SkillSystem.IdentityServer4.Data.Entities;
 using SkillSystem.IdentityServer4.Models.Account;
 
 namespace SkillSystem.IdentityServer4.Controllers;
