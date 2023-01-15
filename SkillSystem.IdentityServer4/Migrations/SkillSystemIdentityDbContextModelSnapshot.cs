@@ -154,7 +154,7 @@ namespace SkillSystem.IdentityServer4.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("SkillSystem.IdentityServer4.Models.ApplicationUser", b =>
+            modelBuilder.Entity("SkillSystem.IdentityServer4.Data.Entities.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -241,7 +241,7 @@ namespace SkillSystem.IdentityServer4.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("SkillSystem.IdentityServer4.Models.ApplicationUser", null)
+                    b.HasOne("SkillSystem.IdentityServer4.Data.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -250,7 +250,7 @@ namespace SkillSystem.IdentityServer4.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("SkillSystem.IdentityServer4.Models.ApplicationUser", null)
+                    b.HasOne("SkillSystem.IdentityServer4.Data.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -265,7 +265,7 @@ namespace SkillSystem.IdentityServer4.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SkillSystem.IdentityServer4.Models.ApplicationUser", null)
+                    b.HasOne("SkillSystem.IdentityServer4.Data.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -274,7 +274,7 @@ namespace SkillSystem.IdentityServer4.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("SkillSystem.IdentityServer4.Models.ApplicationUser", null)
+                    b.HasOne("SkillSystem.IdentityServer4.Data.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
