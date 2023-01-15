@@ -40,6 +40,7 @@ public static class Config
                 RequirePkce = true,
                 AllowedGrantTypes = GrantTypes.Code,
                 RedirectUris = { "http://localhost:4200/signin-oidc", "http://localhost:4200/refresh-token" },
+                PostLogoutRedirectUris = { "http://localhost:4200" },
                 AllowedScopes =
                 {
                     IdentityServerConstants.StandardScopes.OpenId,
