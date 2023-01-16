@@ -1,3 +1,4 @@
+using IdentityServer4.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SkillSystem.IdentityServer4.Data.Entities;
@@ -9,14 +10,17 @@ public class AccountController : Controller
 {
     private readonly UserManager<ApplicationUser> userManager;
     private readonly SignInManager<ApplicationUser> signInManager;
+    private readonly IIdentityServerInteractionService interactionService;
 
     public AccountController(
         UserManager<ApplicationUser> userManager,
-        SignInManager<ApplicationUser> signInManager
+        SignInManager<ApplicationUser> signInManager,
+        IIdentityServerInteractionService interactionService
     )
     {
         this.userManager = userManager;
         this.signInManager = signInManager;
+        this.interactionService = interactionService;
     }
 
     [HttpGet]
@@ -76,5 +80,16 @@ public class AccountController : Controller
         }
 
         return Redirect(model.ReturnUrl);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Logout(string logoutId)
+    {
+        var context = await interactionService.GetLogoutContextAsync(logoutId);
+        if (context?.PostLogoutRedirectUri is null)
+            return Redirect("/Account/Login");
+        await signInManager.SignOutAsync();
+
+        return Redirect(context.PostLogoutRedirectUri);
     }
 }
