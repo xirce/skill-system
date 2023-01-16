@@ -56,9 +56,9 @@ public class SkillsController : BaseController
         return NoContent();
     }
 
-    [HttpPut("{skillId}/attach-to/{skillGroupId}")]
+    [HttpPut("{skillId}/attach-to")]
     [Authorize(Roles = AuthRoleNames.Admin)]
-    public async Task<IActionResult> AttachSkillToGroup(int skillId, int skillGroupId)
+    public async Task<IActionResult> AttachSkillToGroup(int skillId, [FromQuery] int skillGroupId)
     {
         await skillsService.AttachSkillToGroupAsync(skillId, skillGroupId);
         return NoContent();
