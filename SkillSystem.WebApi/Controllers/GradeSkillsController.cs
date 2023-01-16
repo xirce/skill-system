@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SkillSystem.Application.Authorization;
 using SkillSystem.Application.Services.Grades;
 using SkillSystem.Application.Services.Skills.Models;
+using SkillSystem.WebApi.Models;
 
 namespace SkillSystem.WebApi.Controllers;
 
@@ -23,12 +24,12 @@ public class GradeSkillsController : BaseController
         return Ok(skills);
     }
 
-    [HttpPut("add/{skillId}")]
+    [HttpPost]
     [Authorize(Roles = AuthRoleNames.Admin)]
-    public async Task<IActionResult> AddGradeSkill(int gradeId, int skillId)
+    public async Task<IActionResult> AddGradeSkill(int gradeId, GradeSkillRequest skillRequest)
     {
-        await gradesService.AddGradeSkillAsync(gradeId, skillId);
-        return NoContent();
+        await gradesService.AddGradeSkillAsync(gradeId, skillRequest.SkillId);
+        return Ok(skillRequest.SkillId);
     }
 
     [HttpDelete("{skillId}")]

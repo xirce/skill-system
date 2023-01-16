@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SkillSystem.Application.Authorization;
 using SkillSystem.Application.Services.EmployeeSkills;
 using SkillSystem.Application.Services.EmployeeSkills.Models;
+using SkillSystem.WebApi.Models;
 
 namespace SkillSystem.WebApi.Controllers;
 
@@ -17,11 +18,11 @@ public class EmployeeSkillsController : BaseController
         this.employeeSkillsService = employeeSkillsService;
     }
 
-    [HttpPut("add/{skillId}")]
-    public async Task<IActionResult> AddEmployeeSkill(string employeeId, int skillId)
+    [HttpPost]
+    public async Task<IActionResult> AddEmployeeSkill(string employeeId, EmployeeSkillRequest skillRequest)
     {
-        await employeeSkillsService.AddEmployeeSkillsAsync(employeeId, new[] { skillId });
-        return NoContent();
+        await employeeSkillsService.AddEmployeeSkillsAsync(employeeId, new[] { skillRequest.SkillId });
+        return Ok(skillRequest.SkillId);
     }
 
     [HttpGet("{skillId}")]
