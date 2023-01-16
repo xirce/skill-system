@@ -50,13 +50,12 @@ public class Startup
         app.UseStaticFiles();
         app.UseRouting();
 
+        app.UseIdentityServer();
         app.UseCors(
             options => options.WithOrigins("http://localhost:4200")
                 .AllowAnyHeader()
                 .AllowAnyMethod()
         );
-
-        app.UseIdentityServer();
         app.UseAuthorization();
 
         app.UseEndpoints(endpoints => endpoints.MapDefaultControllerRoute());
