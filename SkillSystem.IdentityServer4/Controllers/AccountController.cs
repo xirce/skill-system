@@ -79,6 +79,8 @@ public class AccountController : Controller
             return View(model);
         }
 
+        await signInManager.PasswordSignInAsync(user, model.Password, false, false);
+
         return Redirect(model.ReturnUrl);
     }
 
