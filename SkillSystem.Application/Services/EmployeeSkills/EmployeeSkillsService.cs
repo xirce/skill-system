@@ -100,7 +100,7 @@ public class EmployeeSkillsService : IEmployeeSkillsService
     {
         var skills = roleId.HasValue
             ? await FindEmployeeRoleSkillsAsync(employeeId, roleId.Value)
-            : employeeSkillsRepository.FindEmployeeSkills(employeeId).ToList();
+            : await employeeSkillsRepository.FindEmployeeSkillsAsync(employeeId);
         return skills;
     }
 

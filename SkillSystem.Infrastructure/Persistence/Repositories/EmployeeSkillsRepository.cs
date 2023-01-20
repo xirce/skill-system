@@ -41,12 +41,9 @@ public class EmployeeSkillsRepository : IEmployeeSkillsRepository
                ?? throw new EntityNotFoundException(nameof(EmployeeSkill), new { employeeId, skillId });
     }
 
-    public IQueryable<EmployeeSkill> FindEmployeeSkills(string employeeId)
+    public async Task<ICollection<EmployeeSkill>> FindEmployeeSkillsAsync(string employeeId)
     {
-        return dbContext.EmployeeSkills
-            .AsNoTracking()
-            .Include(employeeSkill => employeeSkill.Skill)
-            .Where(employeeSkill => employeeSkill.EmployeeId == employeeId);
+        return await QueryEmployeeSkills(employeeId).ToListAsync();
     }
 
     public async Task<ICollection<EmployeeSkill>> FindEmployeeSkillsAsync(
@@ -54,7 +51,7 @@ public class EmployeeSkillsRepository : IEmployeeSkillsRepository
         IEnumerable<int> skillsIds
     )
     {
-        return await FindEmployeeSkills(employeeId)
+        return await QueryEmployeeSkills(employeeId)
             .Where(employeeSkill => skillsIds.Contains(employeeSkill.SkillId))
             .ToListAsync();
     }
@@ -69,5 +66,13 @@ public class EmployeeSkillsRepository : IEmployeeSkillsRepository
     {
         dbContext.EmployeeSkills.RemoveRange(skills);
         await dbContext.SaveChangesAsync();
+    }
+
+    private IQueryable<EmployeeSkill> QueryEmployeeSkills(string employeeId)
+    {
+        return dbContext.EmployeeSkills
+            .AsNoTracking()
+            .Include(employeeSkill => employeeSkill.Skill)
+            .Where(employeeSkill => employeeSkill.EmployeeId == employeeId);
     }
 }
