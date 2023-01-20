@@ -33,7 +33,7 @@ public class EmployeeSkillsController : BaseController
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<EmployeeSkillShortInfo>>> FindEmployeeRoleSkills(
+    public async Task<ActionResult<IEnumerable<EmployeeSkillShortInfo>>> FindEmployeeSkills(
         string employeeId,
         [FromQuery] int? roleId = null
     )
@@ -44,9 +44,9 @@ public class EmployeeSkillsController : BaseController
 
     [HttpGet]
     [Route("~/api/employees/{employeeId}/skills-statuses")]
-    public async Task<ActionResult<IEnumerable<EmployeeSkillStatus>>> FindEmployeeRoleSkillsStatuses(
+    public async Task<ActionResult<IEnumerable<EmployeeSkillStatus>>> FindEmployeeSkillsStatuses(
         string employeeId,
-        [FromQuery] int roleId
+        [FromQuery] int? roleId = null
     )
     {
         var employeeSkills = await employeeSkillsService.FindEmployeeSkillsStatusesAsync(employeeId, roleId);
