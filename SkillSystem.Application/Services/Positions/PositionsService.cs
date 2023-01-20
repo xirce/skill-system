@@ -74,6 +74,7 @@ public class PositionsService : IPositionsService
 
     public async Task DeletePositionAsync(int positionId)
     {
-        await positionsRepository.DeletePositionAsync(positionId);
+        var position = await positionsRepository.GetPositionByIdAsync(positionId);
+        await positionsRepository.DeletePositionAsync(position);
     }
 }

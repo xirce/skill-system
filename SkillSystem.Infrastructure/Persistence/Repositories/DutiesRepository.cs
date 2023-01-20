@@ -48,9 +48,9 @@ public class DutiesRepository : IDutiesRepository
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task DeleteDutyAsync(int dutyId)
+    public async Task DeleteDutyAsync(Duty duty)
     {
-        dbContext.Duties.Remove(new Duty { Id = dutyId });
+        dbContext.Duties.Remove(duty);
         await dbContext.SaveChangesAsync();
     }
 }

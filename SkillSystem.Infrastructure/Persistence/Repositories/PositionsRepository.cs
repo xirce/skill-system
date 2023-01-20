@@ -80,14 +80,28 @@ public class PositionsRepository : IPositionsRepository
 
     public async Task DeletePositionDutyAsync(int positionId, int dutyId)
     {
-        var position = GetPositionByIdAsync(positionId);
-        dbContext.PositionDuties.Remove(new PositionDuty { PositionId = position.Id, DutyId = dutyId });
+        var positionDuty = await GetPositionDutyAsync(positionId, dutyId);
+        dbContext.PositionDuties.Remove(positionDuty);
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task DeletePositionAsync(int positionId)
+    public async Task DeletePositionAsync(Position position)
     {
-        dbContext.Positions.Remove(new Position { Id = positionId });
+        dbContext.Positions.Remove(position);
         await dbContext.SaveChangesAsync();
+    }
+
+    private async Task<PositionDuty> GetPositionDutyAsync(int positionId, int dutyId)
+    {
+        var positionDuty = await dbContext.PositionDuties
+            .AsNoTracking()
+            .FirstOrDefaultAsync(
+                positionGrade => positionGrade.PositionId == positionId && positionGrade.DutyId == dutyId
+            );
+
+        if (positionDuty is null)
+            throw new EntityNotFoundException(nameof(PositionDuty), new { positionId, dutyId });
+
+        return positionDuty;
     }
 }

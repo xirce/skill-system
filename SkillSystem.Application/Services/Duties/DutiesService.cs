@@ -53,6 +53,7 @@ public class DutiesService : IDutiesService
 
     public async Task DeleteDutyAsync(int dutyId)
     {
-        await dutiesRepository.DeleteDutyAsync(dutyId);
+        var duty = await dutiesRepository.GetDutyByIdAsync(dutyId);
+        await dutiesRepository.DeleteDutyAsync(duty);
     }
 }

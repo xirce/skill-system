@@ -67,6 +67,7 @@ public class SkillsService : ISkillsService
 
     public async Task DeleteSkillAsync(int skillId)
     {
-        await skillsRepository.DeleteSkillAsync(skillId);
+        var skill = await skillsRepository.GetSkillByIdAsync(skillId);
+        await skillsRepository.DeleteSkillAsync(skill);
     }
 }

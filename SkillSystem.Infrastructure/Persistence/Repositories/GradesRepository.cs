@@ -92,7 +92,8 @@ public class GradesRepository : IGradesRepository
 
     public async Task DeleteGradeSkillAsync(int gradeId, int skillId)
     {
-        dbContext.GradeSkills.Remove(new GradeSkill { GradeId = gradeId, SkillId = skillId });
+        var gradeSkill = await GetGradeSkillAsync(gradeId, skillId);
+        dbContext.GradeSkills.Remove(gradeSkill);
         await dbContext.SaveChangesAsync();
     }
 
@@ -117,8 +118,21 @@ public class GradesRepository : IGradesRepository
 
     public async Task DeleteGradePositionAsync(int gradeId, int positionId)
     {
-        dbContext.PositionGrades.Remove(new PositionGrade { PositionId = positionId, GradeId = gradeId });
+        var positionGrade = await GetGradePositionAsync(gradeId, positionId);
+        dbContext.PositionGrades.Remove(positionGrade);
         await dbContext.SaveChangesAsync();
+    }
+
+    private async Task<GradeSkill> GetGradeSkillAsync(int gradeId, int skillId)
+    {
+        var positionGrade = await dbContext.GradeSkills
+            .AsNoTracking()
+            .FirstOrDefaultAsync(positionGrade => positionGrade.GradeId == gradeId && positionGrade.SkillId == skillId);
+
+        if (positionGrade is null)
+            throw new EntityNotFoundException(nameof(GradeSkill), new { gradeId, skillId });
+
+        return positionGrade;
     }
 
     private async Task<PositionGrade?> FindCurrentPositionGrade(int roleId, int positionId)
@@ -127,5 +141,19 @@ public class GradesRepository : IGradesRepository
             .FirstOrDefaultAsync(
                 positionGrade => positionGrade.Grade.RoleId == roleId && positionGrade.PositionId == positionId
             );
+    }
+
+    private async Task<PositionGrade> GetGradePositionAsync(int gradeId, int positionId)
+    {
+        var positionGrade = await dbContext.PositionGrades
+            .AsNoTracking()
+            .FirstOrDefaultAsync(
+                positionGrade => positionGrade.GradeId == gradeId && positionGrade.PositionId == positionId
+            );
+
+        if (positionGrade is null)
+            throw new EntityNotFoundException(nameof(PositionGrade), new { positionId, gradeId });
+
+        return positionGrade;
     }
 }

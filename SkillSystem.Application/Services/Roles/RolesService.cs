@@ -85,6 +85,7 @@ public class RolesService : IRolesService
 
     public async Task DeleteRoleAsync(int roleId)
     {
-        await rolesRepository.DeleteRoleAsync(roleId);
+        var role = await rolesRepository.GetRoleByIdAsync(roleId);
+        await rolesRepository.DeleteRoleAsync(role);
     }
 }

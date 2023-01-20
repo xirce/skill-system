@@ -13,5 +13,5 @@ public interface IPositionsRepository
     Task UpdatePositionAsync(Position position);
     Task AddPositionDutyAsync(int positionId, Duty duty);
     Task DeletePositionDutyAsync(int positionId, int dutyId);
-    Task DeletePositionAsync(int positionId);
+    Task DeletePositionAsync(Position position);
 }

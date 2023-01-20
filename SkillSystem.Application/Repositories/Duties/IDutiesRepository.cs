@@ -10,5 +10,5 @@ public interface IDutiesRepository
     Task<Duty> GetDutyByIdAsync(int dutyId);
     IQueryable<Duty> FindDuties(DutyFilter? filter = default);
     Task UpdateDutyAsync(Duty duty);
-    Task DeleteDutyAsync(int dutyId);
+    Task DeleteDutyAsync(Duty duty);
 }

@@ -13,5 +13,5 @@ public interface IRolesRepository
     Task<int> AddGradeAfterAsync(int roleId, Grade grade, int? prevGradeId);
     Task InsertGradeAfterAsync(int roleId, int gradeId, int? prevGradeId);
     Task DeleteGradeAsync(int roleId, int gradeId);
-    Task DeleteRoleAsync(int roleId);
+    Task DeleteRoleAsync(Role role);
 }

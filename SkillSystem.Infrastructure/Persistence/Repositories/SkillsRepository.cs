@@ -93,9 +93,9 @@ public class SkillsRepository : ISkillsRepository
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task DeleteSkillAsync(int skillId)
+    public async Task DeleteSkillAsync(Skill skill)
     {
-        dbContext.Skills.Remove(new Skill { Id = skillId });
+        dbContext.Skills.Remove(skill);
         await dbContext.SaveChangesAsync();
     }
 

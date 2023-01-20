@@ -100,9 +100,9 @@ public class RolesRepository : IRolesRepository
         await DetachGradeAsync(grade, toDelete: true);
     }
 
-    public async Task DeleteRoleAsync(int roleId)
+    public async Task DeleteRoleAsync(Role role)
     {
-        dbContext.Roles.Remove(new Role { Id = roleId });
+        dbContext.Roles.Remove(role);
         await dbContext.SaveChangesAsync();
     }
 
