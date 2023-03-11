@@ -1,6 +1,6 @@
 ﻿namespace SkillSystem.Application.Common.Models.Responses;
 
-public class PaginationResponse
+public class PaginationInfo
 {
     public int Offset { get; set; }
     public int Count { get; set; }

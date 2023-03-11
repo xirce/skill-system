@@ -10,7 +10,7 @@ public static class PaginatedListExtensions
         return new PaginatedResponse<T>
         {
             Items = source,
-            Pagination = new PaginationResponse
+            Pagination = new PaginationInfo
             {
                 Offset = source.Offset,
                 Count = source.Count,

@@ -3,5 +3,5 @@
 public class PaginatedResponse<T>
 {
     public IEnumerable<T> Items { get; set; }
-    public PaginationResponse Pagination { get; set; }
+    public PaginationInfo Pagination { get; set; }
 }
