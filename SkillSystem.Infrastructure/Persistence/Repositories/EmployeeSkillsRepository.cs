@@ -31,8 +31,7 @@ public class EmployeeSkillsRepository : IEmployeeSkillsRepository
         return await dbContext.EmployeeSkills
             .Include(employeeSkill => employeeSkill.Skill)
             .FirstOrDefaultAsync(
-                employeeSkill => employeeSkill.EmployeeId == employeeId && employeeSkill.SkillId == skillId
-            );
+                employeeSkill => employeeSkill.EmployeeId == employeeId && employeeSkill.SkillId == skillId);
     }
 
     public async Task<EmployeeSkill> GetEmployeeSkillAsync(string employeeId, int skillId)
@@ -48,8 +47,7 @@ public class EmployeeSkillsRepository : IEmployeeSkillsRepository
 
     public async Task<ICollection<EmployeeSkill>> FindEmployeeSkillsAsync(
         string employeeId,
-        IEnumerable<int> skillsIds
-    )
+        IEnumerable<int> skillsIds)
     {
         return await QueryEmployeeSkills(employeeId)
             .Where(employeeSkill => skillsIds.Contains(employeeSkill.SkillId))

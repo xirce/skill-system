@@ -59,16 +59,14 @@ public class SkillSystemDbContext : DbContext
                                 .WithMany(skill => skill.GradeSkills)
                                 .HasForeignKey(gradeSkill => gradeSkill.SkillId)
                                 .OnDelete(DeleteBehavior.Restrict);
-                        }
-                    );
+                        });
 
                 entity
                     .HasOne(grade => grade.PrevGrade)
                     .WithOne(prevGrade => prevGrade.NextGrade)
                     .HasForeignKey<Grade>(grade => grade.PrevGradeId)
                     .OnDelete(DeleteBehavior.SetNull);
-            }
-        );
+            });
 
         modelBuilder.Entity<Position>()
             .HasMany(position => position.MinGrades)
@@ -89,8 +87,7 @@ public class SkillSystemDbContext : DbContext
                         .WithMany(grade => grade.PositionGrades)
                         .HasForeignKey(positionGrade => positionGrade.GradeId)
                         .OnDelete(DeleteBehavior.Restrict);
-                }
-            );
+                });
 
         modelBuilder.Entity<Position>()
             .HasMany(position => position.Duties)
@@ -111,8 +108,7 @@ public class SkillSystemDbContext : DbContext
                         .WithMany(duty => duty.PositionDuties)
                         .HasForeignKey(positionDuty => positionDuty.DutyId)
                         .OnDelete(DeleteBehavior.Restrict);
-                }
-            );
+                });
 
         modelBuilder.Entity<EmployeeSkill>()
             .HasKey(skill => new { skill.EmployeeId, skill.SkillId });

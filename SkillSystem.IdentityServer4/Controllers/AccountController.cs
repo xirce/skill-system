@@ -15,8 +15,7 @@ public class AccountController : Controller
     public AccountController(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
-        IIdentityServerInteractionService interactionService
-    )
+        IIdentityServerInteractionService interactionService)
     {
         this.userManager = userManager;
         this.signInManager = signInManager;

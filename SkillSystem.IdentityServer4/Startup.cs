@@ -21,8 +21,7 @@ public class Startup
         services.AddControllersWithViews();
 
         services.AddDbContext<SkillSystemIdentityDbContext>(
-            options => options.UseNpgsql(configuration.GetConnectionString("SkillSystemIdentity"))
-        );
+            options => options.UseNpgsql(configuration.GetConnectionString("SkillSystemIdentity")));
         services.AddScoped<SkillSystemIdentityDbInitializer>();
 
         services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -54,8 +53,7 @@ public class Startup
         app.UseCors(
             options => options.WithOrigins("http://localhost:4200")
                 .AllowAnyHeader()
-                .AllowAnyMethod()
-        );
+                .AllowAnyMethod());
         app.UseAuthorization();
 
         app.UseEndpoints(endpoints => endpoints.MapDefaultControllerRoute());

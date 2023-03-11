@@ -34,8 +34,7 @@ public class UsersController : ControllerBase
     public async Task<ActionResult<ApplicationUser>> FindUsersByQuery(
         [FromQuery] string? query = null,
         [FromQuery] int offset = 0,
-        [FromQuery] int count = 100
-    )
+        [FromQuery] int count = 100)
     {
         var usersQuery = QueryUsers(query, offset, count);
 

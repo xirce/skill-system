@@ -16,8 +16,7 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<SkillSystemDbContext>(
-            options => options.UseNpgsql(configuration.GetConnectionString(nameof(SkillSystem)))
-        );
+            options => options.UseNpgsql(configuration.GetConnectionString(nameof(SkillSystem))));
         services.AddScoped<SkillSystemDbInitializer>();
 
         services.AddScoped<ISkillsRepository, SkillsRepository>();

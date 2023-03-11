@@ -19,8 +19,7 @@ public class GradesService : IGradesService
     public GradesService(
         IGradesRepository gradesRepository,
         ISkillsRepository skillsRepository,
-        IPositionsRepository positionsRepository
-    )
+        IPositionsRepository positionsRepository)
     {
         this.gradesRepository = gradesRepository;
         this.skillsRepository = skillsRepository;

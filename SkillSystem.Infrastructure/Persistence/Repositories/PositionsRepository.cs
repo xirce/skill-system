@@ -96,8 +96,7 @@ public class PositionsRepository : IPositionsRepository
         var positionDuty = await dbContext.PositionDuties
             .AsNoTracking()
             .FirstOrDefaultAsync(
-                positionGrade => positionGrade.PositionId == positionId && positionGrade.DutyId == dutyId
-            );
+                positionGrade => positionGrade.PositionId == positionId && positionGrade.DutyId == dutyId);
 
         if (positionDuty is null)
             throw new EntityNotFoundException(nameof(PositionDuty), new { positionId, dutyId });

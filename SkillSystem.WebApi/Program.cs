@@ -19,8 +19,7 @@ builder.Services.AddSingleton<ICurrentUserProvider, CurrentUserProvider>();
 builder.Services.AddControllers()
     .AddJsonOptions(
         options =>
-            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())
-    );
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(
@@ -29,8 +28,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             options.Audience = "SkillSystem.WebApi";
             options.Authority = "https://localhost:5001";
             options.RequireHttpsMetadata = false;
-        }
-    );
+        });
 builder.Services.AddAuthorization();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -54,11 +52,9 @@ if (app.Environment.IsDevelopment())
                 OpenIdConnectScope.OpenId,
                 OpenIdConnectScope.OpenIdProfile,
                 "SkillSystem.WebApi",
-                "roles"
-            );
+                "roles");
             options.OAuthUsePkce();
-        }
-    );
+        });
 }
 
 using (var scope = app.Services.CreateScope())
@@ -74,8 +70,7 @@ app.UseHttpsRedirection();
 app.UseCors(
     options => options.WithOrigins("http://localhost:4200")
         .AllowAnyHeader()
-        .AllowAnyMethod()
-);
+        .AllowAnyMethod());
 
 app.UseAuthentication();
 app.UseAuthorization();

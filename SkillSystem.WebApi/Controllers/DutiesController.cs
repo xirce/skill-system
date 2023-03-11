@@ -36,8 +36,7 @@ public class DutiesController : BaseController
 
     [HttpGet]
     public async Task<ActionResult<PaginatedResponse<DutyShortInfo>>> FindDuties(
-        [FromQuery] PaginationQuery<DutyFilter> query
-    )
+        [FromQuery] PaginationQuery<DutyFilter> query)
     {
         var duties = await dutiesService.FindDutiesAsync(query);
         return Ok(duties);

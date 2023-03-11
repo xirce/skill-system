@@ -21,8 +21,7 @@ public class EmployeeSkillsService : IEmployeeSkillsService
         IEmployeeSkillsRepository employeeSkillsRepository,
         ISkillsRepository skillsRepository,
         IRolesRepository rolesRepository,
-        ICurrentUserProvider currentUserProvider
-    )
+        ICurrentUserProvider currentUserProvider)
     {
         this.employeeSkillsRepository = employeeSkillsRepository;
         this.skillsRepository = skillsRepository;
@@ -55,8 +54,7 @@ public class EmployeeSkillsService : IEmployeeSkillsService
 
     public async Task<ICollection<EmployeeSkillShortInfo>> FindEmployeeSkillsAsync(
         string employeeId,
-        int? roleId = null
-    )
+        int? roleId = null)
     {
         var skills = await FindEmployeeSkillsInternalAsync(employeeId, roleId);
         return skills.Adapt<ICollection<EmployeeSkillShortInfo>>();
@@ -64,8 +62,7 @@ public class EmployeeSkillsService : IEmployeeSkillsService
 
     public async Task<ICollection<EmployeeSkillStatus>> FindEmployeeSkillsStatusesAsync(
         string employeeId,
-        int? roleId = null
-    )
+        int? roleId = null)
     {
         var skills = await FindEmployeeSkillsInternalAsync(employeeId, roleId);
         return skills.Adapt<ICollection<EmployeeSkillStatus>>();
@@ -126,8 +123,7 @@ public class EmployeeSkillsService : IEmployeeSkillsService
     private async Task<ICollection<EmployeeSkill>> GetSkillsToSetApprovedAsync(
         string employeeId,
         int skillId,
-        bool isApproved
-    )
+        bool isApproved)
     {
         var employeeSkill = await employeeSkillsRepository.GetEmployeeSkillAsync(employeeId, skillId);
 
@@ -177,15 +173,14 @@ public class EmployeeSkillsService : IEmployeeSkillsService
 
     private async Task<ICollection<EmployeeSkill>> GetGroupsToSetApprovedAsync(
         EmployeeSkill employeeSkill,
-        bool toApprove
-    )
+        bool toApprove)
     {
         var groups = skillsRepository.GetGroups(employeeSkill.SkillId);
 
         if (toApprove)
             groups = groups.TakeWhile(
-                group => CountSkillsToApproveGroupAsync(employeeSkill.EmployeeId, group.Id).GetAwaiter().GetResult() < 2
-            );
+                group => CountSkillsToApproveGroupAsync(employeeSkill.EmployeeId, group.Id).GetAwaiter().GetResult()
+                         < 2);
 
         var groupsIds = await groups
             .Select(group => group.Id)

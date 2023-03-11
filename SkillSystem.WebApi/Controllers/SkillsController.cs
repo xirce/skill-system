@@ -34,8 +34,7 @@ public class SkillsController : BaseController
 
     [HttpGet]
     public async Task<ActionResult<PaginatedResponse<SkillShortInfo>>> FindSkills(
-        [FromQuery] SearchSkillsRequest request
-    )
+        [FromQuery] SearchSkillsRequest request)
     {
         var skills = await skillsService.FindSkillsAsync(request);
         return Ok(skills);

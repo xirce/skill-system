@@ -4,8 +4,7 @@ public static class TraverseExtensions
 {
     public static IEnumerable<TNode> Traverse<TNode>(
         this TNode rootNode,
-        Func<TNode, IEnumerable<TNode>> childrenSelector
-    )
+        Func<TNode, IEnumerable<TNode>> childrenSelector)
     {
         return rootNode.Traverse(childrenSelector, _ => true, node => new[] { node });
     }
@@ -14,8 +13,7 @@ public static class TraverseExtensions
         this TNode rootNode,
         Func<TNode, IEnumerable<TNode>> childrenSelector,
         Predicate<TNode> predicate,
-        Func<TNode, IEnumerable<TValue>> valuesSelector
-    )
+        Func<TNode, IEnumerable<TValue>> valuesSelector)
     {
         if (rootNode == null)
             throw new ArgumentNullException(nameof(rootNode));
@@ -33,8 +31,7 @@ public static class TraverseExtensions
         TNode rootNode,
         Func<TNode, IEnumerable<TNode>> childrenSelector,
         Predicate<TNode> predicate,
-        Func<TNode, IEnumerable<TValue>> valuesSelector
-    )
+        Func<TNode, IEnumerable<TValue>> valuesSelector)
     {
         if (predicate(rootNode))
             foreach (var nodeValue in valuesSelector(rootNode))

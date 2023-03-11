@@ -22,8 +22,7 @@ public class SkillSystemIdentityDbContext : IdentityDbContext<ApplicationUser>
                 $"lower(\"{nameof(ApplicationUser.LastName)}\""
                 + $" || ' ' || \"{nameof(ApplicationUser.FirstName)}\""
                 + $" || ' ' || \"{nameof(ApplicationUser.Patronymic)}\")",
-                stored: true
-            );
+                stored: true);
 
         builder.Entity<ApplicationUser>()
             .HasIndex(user => user.FullName)

@@ -26,8 +26,7 @@ public class GradesController : BaseController
 
     [HttpGet]
     public async Task<ActionResult<PaginatedResponse<GradeShortInfo>>> FindGrades(
-        [FromQuery] SearchGradesRequest request
-    )
+        [FromQuery] SearchGradesRequest request)
     {
         var grades = await gradesService.FindGradesAsync(request);
         return Ok(grades);

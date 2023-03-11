@@ -139,8 +139,7 @@ public class GradesRepository : IGradesRepository
     {
         return await dbContext.PositionGrades
             .FirstOrDefaultAsync(
-                positionGrade => positionGrade.Grade.RoleId == roleId && positionGrade.PositionId == positionId
-            );
+                positionGrade => positionGrade.Grade.RoleId == roleId && positionGrade.PositionId == positionId);
     }
 
     private async Task<PositionGrade> GetGradePositionAsync(int gradeId, int positionId)
@@ -148,8 +147,7 @@ public class GradesRepository : IGradesRepository
         var positionGrade = await dbContext.PositionGrades
             .AsNoTracking()
             .FirstOrDefaultAsync(
-                positionGrade => positionGrade.GradeId == gradeId && positionGrade.PositionId == positionId
-            );
+                positionGrade => positionGrade.GradeId == gradeId && positionGrade.PositionId == positionId);
 
         if (positionGrade is null)
             throw new EntityNotFoundException(nameof(PositionGrade), new { positionId, gradeId });

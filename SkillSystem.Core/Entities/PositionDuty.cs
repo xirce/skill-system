@@ -9,11 +9,13 @@ public class PositionDuty
     /// Должность.
     /// </summary>
     public Position Position { get; set; }
+
     public int PositionId { get; set; }
 
     /// <summary>
     /// Обязанность.
     /// </summary>
     public Duty Duty { get; set; }
+
     public int DutyId { get; set; }
 }

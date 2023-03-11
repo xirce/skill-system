@@ -72,8 +72,7 @@ internal static class SeedDataExtensions
     private static void EnsureUserInRole(
         UserManager<ApplicationUser> userManager,
         ApplicationUser user2,
-        string roleName
-    )
+        string roleName)
     {
         if (!userManager.IsInRoleAsync(user2, roleName).GetAwaiter().GetResult())
         {

@@ -24,8 +24,7 @@ public class SwaggerGenSetup : IConfigureOptions<SwaggerGenOptions>
                         }
                     }
                 }
-            }
-        );
+            });
 
         options.AddSecurityRequirement(
             new OpenApiSecurityRequirement
@@ -44,7 +43,6 @@ public class SwaggerGenSetup : IConfigureOptions<SwaggerGenOptions>
                     },
                     new List<string>()
                 }
-            }
-        );
+            });
     }
 }

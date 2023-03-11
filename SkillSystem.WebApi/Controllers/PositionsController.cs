@@ -36,8 +36,7 @@ public class PositionsController : BaseController
 
     [HttpGet]
     public async Task<ActionResult<PaginatedResponse<PositionResponse>>> FindPositions(
-        [FromQuery] PaginationQuery<PositionFilter> query
-    )
+        [FromQuery] PaginationQuery<PositionFilter> query)
     {
         var positions = await positionsService.FindPositionsAsync(query);
         return Ok(positions);
