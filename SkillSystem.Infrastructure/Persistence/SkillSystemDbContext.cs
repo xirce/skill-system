@@ -14,6 +14,7 @@ public class SkillSystemDbContext : DbContext
     public DbSet<PositionGrade> PositionGrades { get; set; }
     public DbSet<PositionDuty> PositionDuties { get; set; }
     public DbSet<EmployeeSkill> EmployeeSkills { get; set; }
+    public DbSet<ManagerSubordinate> ManagersSubordinates { get; set; }
 
     public SkillSystemDbContext()
     {
@@ -117,5 +118,8 @@ public class SkillSystemDbContext : DbContext
             .HasOne(skill => skill.Skill)
             .WithMany()
             .HasForeignKey(skill => skill.SkillId);
+
+        modelBuilder.Entity<ManagerSubordinate>()
+            .HasKey(managerSubordinate => new { managerSubordinate.ManagerId, managerSubordinate.SubordinateId });
     }
 }
