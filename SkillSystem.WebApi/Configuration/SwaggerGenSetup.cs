@@ -1,3 +1,4 @@
+using System.Reflection;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -44,5 +45,9 @@ public class SwaggerGenSetup : IConfigureOptions<SwaggerGenOptions>
                     new List<string>()
                 }
             });
+
+        var xmlFileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFileName);
+        options.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
     }
 }
