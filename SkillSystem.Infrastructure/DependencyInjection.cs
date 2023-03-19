@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SkillSystem.Application.Repositories.Duties;
+using SkillSystem.Application.Repositories.Employees;
 using SkillSystem.Application.Repositories.Grades;
 using SkillSystem.Application.Repositories.Positions;
 using SkillSystem.Application.Repositories.Roles;
@@ -26,6 +27,8 @@ public static class DependencyInjection
         services.AddScoped<IDutiesRepository, DutiesRepository>();
 
         services.AddScoped<IEmployeeSkillsRepository, EmployeeSkillsRepository>();
+
+        services.AddScoped<IManagerRepository, ManagerRepository>();
 
         return services;
     }

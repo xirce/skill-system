@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SkillSystem.Application.Services.Duties;
+using SkillSystem.Application.Services.Employees;
+using SkillSystem.Application.Services.Employees.Manager;
 using SkillSystem.Application.Services.EmployeeSkills;
 using SkillSystem.Application.Services.Grades;
 using SkillSystem.Application.Services.Positions;
@@ -19,6 +21,9 @@ public static class DependencyInjection
         services.AddScoped<IDutiesService, DutiesService>();
 
         services.AddScoped<IEmployeeSkillsService, EmployeeSkillsService>();
+
+        services.AddScoped<IManagerService, ManagerService>();
+        services.AddScoped<IEmployeesService, EmployeesService>();
 
         return services;
     }
