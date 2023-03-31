@@ -23,8 +23,8 @@ public class Salary : BaseEntity
     public decimal Bonus { get; set; }
 
     /// <summary>
-    /// Месяц зарплаты.
+    /// Месяц назначения зарплаты.
     /// </summary>
-    public DateTime SalaryDate { get; set; }
+    public DateTime StartDate { get; set; }
 
 }
