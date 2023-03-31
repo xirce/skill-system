@@ -14,38 +14,56 @@ public class SalariesService : ISalariesService
         this.salariesRepository = salariesRepository;
     }
 
-    public async Task<int> CreateSalaryAsync(SalaryRequest request, DateTime salaryDate)
+    public async Task<int> SaveSalaryAsync(SalaryRequest request)
     {
-        var salary = request.Adapt<Salary>();
-        salary.SalaryDate = salaryDate;
-        return await salariesRepository.CreateSalaryAsync(salary);
+        var newSalary = request.Adapt<Salary>();
+        if (newSalary.StartDate < DateTime.Now || (newSalary.StartDate.Month == DateTime.Now.Month &&
+            newSalary.StartDate.Year == DateTime.Now.Year))
+            return -1;
+        var lastSalary = await salariesRepository.FindSalaryByMonthAsync(newSalary.EmployeeId,
+            newSalary.StartDate);
+        if (lastSalary != null && lastSalary.StartDate.Month == newSalary.StartDate.Month)
+        {
+            lastSalary.Wage = newSalary.Wage;
+            lastSalary.Rate = newSalary.Rate;
+            lastSalary.Bonus = newSalary.Bonus;
+            lastSalary.StartDate = newSalary.StartDate;
+            return await salariesRepository.UpdateSalaryAsync(lastSalary);
+        } else
+            return await salariesRepository.CreateSalaryAsync(newSalary);
     }
 
     public async Task<SalaryResponse> GetSalaryByIdAsync(int salaryId)
     {
-        var duty = await salariesRepository.GetSalaryByIdAsync(salaryId);
-        return duty.Adapt<SalaryResponse>();
+        var salary = await salariesRepository.GetSalaryByIdAsync(salaryId);
+        return salary.Adapt<SalaryResponse>();
     }
 
-    public async Task<ICollection<SalaryResponse>> GetSalariesAsync(Guid? employeeId, DateTime? from, DateTime? to)
+    public async Task<SalaryResponse> GetSalaryByMonthAsync(Guid employeeId, DateTime month)
+    {
+        var salary = await salariesRepository.GetSalaryByMonthAsync(employeeId, month);
+        return salary.Adapt<SalaryResponse>();
+    }
+
+    public async Task<SalaryResponse> GetCurrentSalaryAsync(Guid employeeId)
+    {
+        var salary = await salariesRepository.GetCurrentSalaryAsync(employeeId);
+        return salary.Adapt<SalaryResponse>();
+    }
+
+    public async Task<ICollection<SalaryResponse>> GetSalariesAsync(Guid employeeId, DateTime? from, DateTime? to)
     {
         var salaries = await salariesRepository.GetSalariesAsync(employeeId, from, to);
-        var sortedSalaries = salaries.OrderBy(salary => salary.SalaryDate);
+        var sortedSalaries = salaries.OrderBy(salary => salary.StartDate);
         return sortedSalaries.Adapt<ICollection<SalaryResponse>>();
     }
 
-    public async Task UpdateSalaryAsync(int salaryId, SalaryRequest request)
+    public async Task CancelSalaryAssigmentAsync(int salaryId)
     {
         var salary = await salariesRepository.GetSalaryByIdAsync(salaryId);
-
-        request.Adapt(salary);
-
-        await salariesRepository.UpdateSalaryAsync(salary);
-    }
-
-    public async Task DeleteSalaryAsync(int salaryId)
-    {
-        var salary = await salariesRepository.GetSalaryByIdAsync(salaryId);
+        if (salary.StartDate < DateTime.Now || (salary.StartDate.Month == DateTime.Now.Month &&
+            salary.StartDate.Year == DateTime.Now.Year))
+            return;
         await salariesRepository.DeleteSalaryAsync(salary);
     }
 }
