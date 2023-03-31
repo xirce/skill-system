@@ -1,22 +1,23 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SkillSystem.WebApi", "SkillSystem.WebApi\SkillSystem.WebApi.csproj", "{639AE6E4-2CDF-4B5C-93A7-2877FE186A56}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkillSystem.WebApi", "SkillSystem.WebApi\SkillSystem.WebApi.csproj", "{639AE6E4-2CDF-4B5C-93A7-2877FE186A56}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SkillSystem.IdentityServer4", "SkillSystem.IdentityServer4\SkillSystem.IdentityServer4.csproj", "{BA55759D-775A-43C1-BAF6-520439B3C0B9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkillSystem.IdentityServer4", "SkillSystem.IdentityServer4\SkillSystem.IdentityServer4.csproj", "{BA55759D-775A-43C1-BAF6-520439B3C0B9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SkillSystem.Core", "SkillSystem.Core\SkillSystem.Core.csproj", "{47C944FD-1AB6-46AF-BCBF-4039D6FAE68E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkillSystem.Core", "SkillSystem.Core\SkillSystem.Core.csproj", "{47C944FD-1AB6-46AF-BCBF-4039D6FAE68E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SkillSystem.Infrastructure", "SkillSystem.Infrastructure\SkillSystem.Infrastructure.csproj", "{791CC421-4A01-4065-9DE4-7E2ED9C7DF7D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkillSystem.Infrastructure", "SkillSystem.Infrastructure\SkillSystem.Infrastructure.csproj", "{791CC421-4A01-4065-9DE4-7E2ED9C7DF7D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SkillSystem.Application", "SkillSystem.Application\SkillSystem.Application.csproj", "{CBE89A7C-4010-4D03-8D04-C297535DD096}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkillSystem.Application", "SkillSystem.Application\SkillSystem.Application.csproj", "{CBE89A7C-4010-4D03-8D04-C297535DD096}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{639AE6E4-2CDF-4B5C-93A7-2877FE186A56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -39,11 +40,5 @@ Global
 		{CBE89A7C-4010-4D03-8D04-C297535DD096}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CBE89A7C-4010-4D03-8D04-C297535DD096}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CBE89A7C-4010-4D03-8D04-C297535DD096}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {4D252589-3818-4669-91A8-EDC702F3D94E}
 	EndGlobalSection
 EndGlobal
