@@ -7,5 +7,5 @@ public record SalaryResponse
     public decimal Wage { get; init; }
     public decimal Rate { get; init; }
     public decimal Bonus { get; init; }
-    public DateTime SalaryDate { get; init; }
+    public DateTime StartDate { get; init; }
 }
