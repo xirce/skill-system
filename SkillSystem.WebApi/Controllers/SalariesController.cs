@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using SkillSystem.Application.Services.Salaries;
 using SkillSystem.Application.Services.Salaries.Models;
 
@@ -20,32 +21,16 @@ public class SalariesController : BaseController
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPost]
-    public async Task<ActionResult<int>> CreateSalary(SalaryRequest request)
+    public async Task<ActionResult<int>> SaveSalary(SalaryRequest request)
     {
-        var salaryDate = DateTime.Now.Month == 12? new DateTime(DateTime.Now.Year + 1, 1, DateTime.Now.Day, 0, 0, 0, DateTimeKind.Utc) :
-            new DateTime(DateTime.Now.Year, DateTime.Now.Month + 1, DateTime.Now.Day, 0, 0, 0, DateTimeKind.Utc);
-        var salaryId = await salariesService.CreateSalaryAsync(request, salaryDate);
+        var salaryId = await salariesService.SaveSalaryAsync(request);
         return Ok(salaryId);
-    }
-
-    /// <summary>
-    /// Получить информацию о зарплатах сотрудника.
-    /// </summary>
-    /// <param name="employeeId">id сотрудника, информацию о зарплате которого требуется получить</param>
-    /// <param name="from">дата, начиная с которой требуется получить информацию о зарплате</param>
-    /// <param name="to">дата, заканчивая которой требуется получить информацию о зарплате</param>
-    /// <returns></returns>
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<SalaryResponse>>> GetSalaries(Guid? employeeId = null, DateTime? from = null, DateTime? to = null)
-    {
-        var salaries = await salariesService.GetSalariesAsync(employeeId, from, to);
-        return Ok(salaries);
     }
 
     /// <summary>
     /// Получить информацию о конкретной зарплате.
     /// </summary>
-    /// <param name="salaryId">id зарплаты</param>
+    /// <param name="salaryId">id операции назначения зарплаты</param>
     /// <returns></returns>
     [HttpGet("{salaryId}")]
     public async Task<ActionResult<SalaryResponse>> GetSalaryById(int salaryId)
@@ -54,33 +39,55 @@ public class SalariesController : BaseController
         return Ok(salary);
     }
 
+    /// <summary>
+    /// Получить информацию о зарплате сотрудника в определенном месяце.
+    /// </summary>
+    /// <param name="date"> дата месяца, информацию о зарплате в котором, требуется получить </param>
+    /// <param name="employeeId"> id сотрудника информацию о зарплате которого требуется получить </param>
+    /// <returns></returns>
+    [HttpGet("by-month/{date}")]
+    public async Task<ActionResult<SalaryResponse>> GetSalaryByMonth(DateTime date, [BindRequired] Guid employeeId)
+    {
+        var salary = await salariesService.GetSalaryByMonthAsync(employeeId, date);
+        return Ok(salary);
+    }
+
 
     /// <summary>
-    /// Изменить информацию о конкретной зарплате.
+    /// Получить информацию о текущей зарплате сотрудника.
     /// </summary>
-    /// <param name="salaryId">id зарплаты</param>
-    /// <param name="request"></param>
+    /// <param name="employeeId"> id сотрудника информацию о зарплате которого требуется получить </param>
     /// <returns></returns>
-    [HttpPut("{salaryId}")]
-    public async Task<IActionResult> UpdateSalary(int salaryId, SalaryRequest request)
+    [HttpGet("current")]
+    public async Task<ActionResult<SalaryResponse>> GetCurrentSalary(Guid employeeId)
     {
-        var salary = await salariesService.GetSalaryByIdAsync(salaryId);
-        if (salary.SalaryDate.Month > DateTime.Now.Month)
-            await salariesService.UpdateSalaryAsync(salaryId, request);
-        return NoContent();
+        var salary = await salariesService.GetCurrentSalaryAsync(employeeId);
+        return Ok(salary);
     }
 
     /// <summary>
-    /// Удалить информацию о конкретной зарплате.
+    /// Получить информацию о зарплатах сотрудника.
     /// </summary>
-    /// <param name="salaryId">id зарплаты</param>
+    /// <param name="employeeId">id сотрудника информацию о зарплате которого требуется получить</param>
+    /// <param name="from">дата месяца, начиная с которого  требуется получить информацию о зарплатах сотрудника</param>
+    /// <param name="to">дата месяца, до конца которого требуется получить информацию о зарплатах сотрудника</param>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<SalaryResponse>>> GetSalaries([BindRequired] Guid employeeId, DateTime? from, DateTime? to)
+    {
+        var salaries = await salariesService.GetSalariesAsync(employeeId, from, to);
+        return Ok(salaries);
+    }
+
+    /// <summary>
+    /// Оменить будущее назначение зарплаты.
+    /// </summary>
+    /// <param name="salaryId">id операции назначения зарплаты</param>
     /// <returns></returns>
     [HttpDelete("{salaryId}")]
-    public async Task<IActionResult> DeleteSalary(int salaryId)
+    public async Task<IActionResult> CancelSalaryAssigment(int salaryId)
     {
-        var salary = await salariesService.GetSalaryByIdAsync(salaryId);
-        if (salary.SalaryDate.Month > DateTime.Now.Month)
-            await salariesService.DeleteSalaryAsync(salaryId);
+        await salariesService.CancelSalaryAssigmentAsync(salaryId);
         return NoContent();
     }
 }
