@@ -23,7 +23,7 @@ public class SalariesRepository : ISalariesRepository
 
     public async Task<Salary?> FindSalaryByIdAsync(int salaryId)
     {
-        return await dbContext.Salaries.OrderBy(salary => salary.SalaryDate).LastOrDefaultAsync(salary => salary.Id == salaryId);
+        return await dbContext.Salaries.FirstOrDefaultAsync(salary => salary.Id == salaryId);
     }
 
     public async Task<Salary> GetSalaryByIdAsync(int salaryId)
@@ -31,23 +31,36 @@ public class SalariesRepository : ISalariesRepository
         return await FindSalaryByIdAsync(salaryId) ?? throw new EntityNotFoundException(nameof(Salary), salaryId);
     }
 
-    public async Task<IEnumerable<Salary>> GetSalariesAsync(Guid? employeeId, DateTime? from, DateTime? to)
+    public async Task<Salary?> FindSalaryByMonthAsync(Guid employeeId, DateTime date)
     {
-        var salaries = dbContext.Salaries.ToAsyncEnumerable();
-        if (employeeId != null)
-            salaries = salaries.Where(salary => salary.EmployeeId == employeeId);
-        if (from != null)
-            salaries = salaries.Where(salary => salary.SalaryDate >= from);
-        if (to != null)
-            salaries = salaries.Where(salary => salary.SalaryDate <= to);
+        return await dbContext.Salaries.OrderBy(salary => salary.StartDate)
+            .LastOrDefaultAsync(salary => salary.EmployeeId == employeeId && salary.StartDate <= date );
+    }
+
+    public async Task<Salary> GetSalaryByMonthAsync(Guid employeeId, DateTime date)
+    {
+        return await FindSalaryByMonthAsync(employeeId, date) ?? throw new EntityNotFoundException(nameof(Salary), employeeId);
+    }
+
+    public async Task<Salary> GetCurrentSalaryAsync(Guid employeeId)
+    {
+        return await FindSalaryByMonthAsync(employeeId, DateTime.Now.ToUniversalTime()) ?? throw new EntityNotFoundException(nameof(Salary), employeeId);
+    }
+
+    public async Task<IEnumerable<Salary>> GetSalariesAsync(Guid employeeId, DateTime? from, DateTime? to)
+    {
+        var salaries = dbContext.Salaries.Where(salary => salary.EmployeeId == employeeId)
+            .Where(salary => from == null || salary.StartDate >= from)
+            .Where(salary => to == null || salary.StartDate <= to);
 
         return await salaries.ToListAsync();
     }
 
-    public async Task UpdateSalaryAsync(Salary salary)
+    public async Task<int> UpdateSalaryAsync(Salary salary)
     {
         dbContext.Salaries.Update(salary);
         await dbContext.SaveChangesAsync();
+        return salary.Id;
     }
 
     public async Task DeleteSalaryAsync(Salary salary)
