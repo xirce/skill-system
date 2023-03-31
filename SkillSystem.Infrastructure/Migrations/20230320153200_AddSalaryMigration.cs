@@ -20,7 +20,7 @@ namespace SkillSystem.Infrastructure.Migrations
                     Wage = table.Column<decimal>(type: "numeric", nullable: false),
                     Rate = table.Column<decimal>(type: "numeric", nullable: false),
                     Bonus = table.Column<decimal>(type: "numeric", nullable: false),
-                    SalaryDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
