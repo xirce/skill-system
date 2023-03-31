@@ -4,10 +4,10 @@ namespace SkillSystem.Application.Services.Salaries;
 
 public interface ISalariesService
 {
-    Task<int> CreateSalaryAsync(SalaryRequest request, DateTime salaryDate);
+    Task<int> SaveSalaryAsync(SalaryRequest request);
     Task<SalaryResponse> GetSalaryByIdAsync(int salaryId);
-    Task<ICollection<SalaryResponse>> GetSalariesAsync(Guid? employeeId, DateTime? from, DateTime? to);
-    Task UpdateSalaryAsync(int salaryId, SalaryRequest request);
-    Task DeleteSalaryAsync(int salaryId);
+    Task<SalaryResponse> GetSalaryByMonthAsync(Guid employeeId, DateTime month);
+    Task<SalaryResponse> GetCurrentSalaryAsync(Guid employeeId);
+    Task<ICollection<SalaryResponse>> GetSalariesAsync(Guid employeeId, DateTime? from, DateTime? to);
+    Task CancelSalaryAssigmentAsync(int salaryId);
 }
-
