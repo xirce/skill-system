@@ -200,7 +200,7 @@ namespace SkillSystem.Infrastructure.Migrations
                     b.Property<decimal>("Rate")
                         .HasColumnType("numeric");
 
-                    b.Property<DateTime>("SalaryDate")
+                    b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<decimal>("Wage")
