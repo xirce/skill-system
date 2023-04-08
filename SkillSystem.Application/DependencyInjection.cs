@@ -23,7 +23,7 @@ public static class DependencyInjection
         services.AddScoped<IEmployeeSkillsService, EmployeeSkillsService>();
 
         services.AddScoped<IManagerService, ManagerService>();
-        services.AddScoped<IEmployeesService, EmployeesService>();
+        services.AddScoped<IEmployeesManager, EmployeesManager>();
 
         return services;
     }

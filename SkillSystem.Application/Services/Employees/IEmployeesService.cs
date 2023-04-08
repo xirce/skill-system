@@ -1,8 +1,11 @@
-﻿using SkillSystem.Application.Services.Employees.Models;
+﻿using SkillSystem.Application.Common.Models;
+using SkillSystem.Application.Services.Employees.Models;
 
 namespace SkillSystem.Application.Services.Employees;
 
 public interface IEmployeesService
 {
-    Task<EmployeeResponse> GetEmployeeInfoAsync(Guid employeeId);
+    Task<Employee> GetOrCreateEmployeeByUserId(Guid userId);
+    Task<PaginatedList<Employee>> SearchEmployees(SearchEmployeesRequest request);
+    Task<ICollection<Employee>> GetSubordinates(Guid managerId);
 }

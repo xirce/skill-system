@@ -1,47 +1,30 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SkillSystem.Application.Common.Models.Responses;
 using SkillSystem.Application.Services.Employees;
-using SkillSystem.Application.Services.Employees.Manager;
 using SkillSystem.Application.Services.Employees.Manager.Models;
 using SkillSystem.Application.Services.Employees.Models;
 
 namespace SkillSystem.WebApi.Controllers;
 
-[Route("api/employees/{employeeId}")]
+[Route("api/employees")]
 public class EmployeesController : BaseController
 {
-    private readonly IManagerService managerService;
-    private readonly IEmployeesService employeesService;
+    private readonly IEmployeesManager employeesManager;
 
-    public EmployeesController(IManagerService managerService, IEmployeesService employeesService)
+    public EmployeesController(IEmployeesManager employeesManager)
     {
-        this.managerService = managerService;
-        this.employeesService = employeesService;
+        this.employeesManager = employeesManager;
     }
 
     /// <summary>
-    /// Назначить сотруднику руководителя.
+    /// Поиск по сотрудникам.
     /// </summary>
-    /// <param name="employeeId">Идентификатор сотрудника, которому назначится руководитель</param>
     /// <param name="request"></param>
-    /// <returns></returns>
-    [HttpPost("manager")]
-    public async Task<IActionResult> SetManagerForEmployee(Guid employeeId, SetManagerForEmployeeRequest request)
+    /// <returns>Список найденных сотрудников</returns>
+    [HttpGet("search")]
+    public async Task<PaginatedResponse<Employee>> SearchEmployees([FromQuery] SearchEmployeesRequest request)
     {
-        request = request with { EmployeeId = employeeId };
-        await managerService.SetManagerForEmployeeAsync(request);
-        return NoContent();
-    }
-
-    /// <summary>
-    /// Отвязать от сотрудника руководителя.
-    /// </summary>
-    /// <param name="employeeId">Идентификатор сотрудника</param>
-    /// <returns></returns>
-    [HttpDelete("manager")]
-    public async Task<IActionResult> RemoveManagerFromEmployee(Guid employeeId)
-    {
-        await managerService.RemoveManagerFromEmployeeAsync(employeeId);
-        return NoContent();
+        return await employeesManager.SearchEmployees(request);
     }
 
     /// <summary>
@@ -49,10 +32,20 @@ public class EmployeesController : BaseController
     /// </summary>
     /// <param name="employeeId">Идентификатор сотрудника</param>
     /// <returns>Информация о сотруднике</returns>
-    [HttpGet]
-    public async Task<ActionResult<EmployeeResponse>> GetEmployeeInfo(Guid employeeId)
+    [HttpGet("{employeeId}")]
+    public async Task<GetEmployeeInfoResponse> GetEmployeeInfo(Guid employeeId)
     {
-        var employee = await employeesService.GetEmployeeInfoAsync(employeeId);
-        return Ok(employee);
+        return await employeesManager.GetEmployeeInfo(employeeId);
+    }
+
+    /// <summary>
+    /// Получить подчинённых руководителя.
+    /// </summary>
+    /// <param name="employeeId">Идентификатор руководителя</param>
+    /// <returns>Подчинённые руководителя</returns>
+    [HttpGet("{employeeId}/subordinates")]
+    public async Task<GetSubordinatesResponse> GetSubordinates(Guid employeeId)
+    {
+        return await employeesManager.GetSubordinates(employeeId);
     }
 }
