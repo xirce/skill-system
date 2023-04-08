@@ -9,7 +9,7 @@ using SkillSystem.IdentityServer4.Models.Users;
 namespace SkillSystem.IdentityServer4.Controllers;
 
 [ApiController]
-[Route("users")]
+[Route("api/users")]
 public class UsersController : ControllerBase
 {
     private readonly UserManager<ApplicationUser> userManager;
@@ -50,13 +50,16 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<IEnumerable<UserModel>>> FindUsersWithIds([FromBody] string[] userIds)
+    public async Task<ActionResult<BatchGetUsersResponse>> BatchGetUsers(BatchGetUsersRequest request)
     {
+        var userIds = request.UserIds
+            .Select(userId => userId.ToString())
+            .ToArray();
         var users = await userManager.Users
             .Where(user => userIds.Contains(user.Id))
             .Select(ProjectToUserModel())
             .ToListAsync();
-        return Ok(users);
+        return Ok(new BatchGetUsersResponse(users));
     }
 
     private IQueryable<UserModel> QueryUsers(string? query, int offset, int count)
