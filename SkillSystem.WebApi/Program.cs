@@ -1,8 +1,10 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Refit;
 using SkillSystem.Application;
 using SkillSystem.Application.Common.Services;
+using SkillSystem.IdentityServer4.Client;
 using SkillSystem.Infrastructure;
 using SkillSystem.Infrastructure.Persistence;
 using SkillSystem.WebApi.Configuration;
@@ -26,7 +28,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options =>
         {
             options.Audience = "SkillSystem.WebApi";
-            options.Authority = "https://localhost:5001";
+            options.Authority = builder.Configuration.GetSection(nameof(SkillSystemWebApiSettings))
+                .Get<SkillSystemWebApiSettings>().IdentityBaseUrl;
             options.RequireHttpsMetadata = false;
         });
 builder.Services.AddAuthorization();
@@ -34,6 +37,12 @@ builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.ConfigureOptions<SwaggerGenSetup>();
+
+builder.Services.AddRefitClient<IUsersClient>()
+    .ConfigureHttpClient(
+        httpClient => httpClient.BaseAddress = new Uri(
+            builder.Configuration.GetSection(nameof(SkillSystemWebApiSettings)).Get<SkillSystemWebApiSettings>()
+                .IdentityApiBaseUrl));
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -68,7 +77,8 @@ app.UseMiddleware<ExceptionHandlerMiddleware>();
 app.UseHttpsRedirection();
 
 app.UseCors(
-    options => options.WithOrigins("http://localhost:4200")
+    options => options.WithOrigins(
+            app.Configuration.GetSection(nameof(SkillSystemWebApiSettings)).Get<SkillSystemWebApiSettings>().WebAppUrl)
         .AllowAnyHeader()
         .AllowAnyMethod());
 

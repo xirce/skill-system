@@ -4,6 +4,6 @@ namespace SkillSystem.Application.Services.Employees.Manager;
 
 public interface IManagerService
 {
-    Task SetManagerForEmployeeAsync(SetManagerForEmployeeRequest request);
+    Task SetManagerAsync(SetManagerRequest request);
     Task RemoveManagerFromEmployeeAsync(Guid employeeId);
 }
