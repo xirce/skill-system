@@ -9,7 +9,6 @@ public interface ISalariesRepository
         Task<Salary> GetSalaryByIdAsync(int salaryId);
         Task<Salary?> FindSalaryByMonthAsync(Guid employeeId, DateTime date);
         Task<Salary> GetSalaryByMonthAsync(Guid employeeId, DateTime date);
-        Task<Salary> GetCurrentSalaryAsync(Guid employeeId);
         Task<IEnumerable<Salary>> GetSalariesAsync(Guid employeeId, DateTime? from, DateTime? to);
         Task<int> UpdateSalaryAsync(Salary salary);
         Task DeleteSalaryAsync(Salary salary);
