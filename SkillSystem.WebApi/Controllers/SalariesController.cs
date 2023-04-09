@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using SkillSystem.Application.Services.Salaries;
 using SkillSystem.Application.Services.Salaries.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace SkillSystem.WebApi.Controllers;
 
@@ -23,8 +24,14 @@ public class SalariesController : BaseController
     [HttpPost]
     public async Task<ActionResult<int>> SaveSalary(SalaryRequest request)
     {
-        var salaryId = await salariesService.SaveSalaryAsync(request);
-        return Ok(salaryId);
+        try
+        {
+            var salaryId = await salariesService.SaveSalaryAsync(request);
+            return Ok(salaryId);
+        } catch (ValidationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     /// <summary>
