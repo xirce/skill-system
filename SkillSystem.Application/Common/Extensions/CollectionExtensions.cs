@@ -4,7 +4,7 @@ namespace SkillSystem.Application.Common.Extensions;
 
 public static class CollectionExtensions
 {
-    public static ICollection<Grade> Order(this ICollection<Grade> grades)
+    public static ICollection<Grade> Sort(this ICollection<Grade> grades)
     {
         var nextGrades = grades.ToDictionary(grade => grade.Id, grade => grade.NextGrade);
         var sortedGrades = new List<Grade>();

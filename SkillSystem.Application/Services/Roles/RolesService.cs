@@ -28,7 +28,7 @@ public class RolesService : IRolesService
         var role = await rolesRepository.GetRoleByIdAsync(roleId);
 
         var roleResponse = role.Adapt<RoleResponse>();
-        var sortedGrades = role.Grades.Order();
+        var sortedGrades = role.Grades.Sort();
         roleResponse.Grades = sortedGrades.Adapt<ICollection<GradeShortInfo>>();
 
         return roleResponse;
@@ -49,14 +49,14 @@ public class RolesService : IRolesService
     public async Task<ICollection<GradeShortInfo>> GetRoleGradesAsync(int roleId)
     {
         var grades = await rolesRepository.GetRoleGradesAsync(roleId);
-        var sortedGrades = grades.Order();
+        var sortedGrades = grades.Sort();
         return sortedGrades.Adapt<ICollection<GradeShortInfo>>();
     }
 
     public async Task<ICollection<GradeWithSkills>> GetRoleGradesWithSkillsAsync(int roleId)
     {
         var grades = await rolesRepository.GetRoleGradesAsync(roleId, true);
-        var sortedGrades = grades.Order();
+        var sortedGrades = grades.Sort();
         return sortedGrades.Adapt<ICollection<GradeWithSkills>>();
     }
 
