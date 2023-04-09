@@ -18,7 +18,8 @@ public class SkillSystemDbInitializer
     {
         try
         {
-            await dbContext.Database.MigrateAsync();
+            if (dbContext.Database.IsRelational())
+                await dbContext.Database.MigrateAsync();
         }
         catch (Exception exception)
         {

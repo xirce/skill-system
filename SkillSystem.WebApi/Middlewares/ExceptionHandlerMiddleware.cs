@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using SkillSystem.Application.Common.Exceptions;
+using SkillSystem.Core.Models;
 
 namespace SkillSystem.WebApi.Middlewares;
 
@@ -35,6 +36,7 @@ public class ExceptionHandlerMiddleware
             _ => (int)HttpStatusCode.InternalServerError
         };
 
-        await response.WriteAsJsonAsync(exception.Message);
+        await response.WriteAsJsonAsync(
+            new ErrorResponse(response.StatusCode, new Error { Code = "Code", Message = exception.Message }));
     }
 }

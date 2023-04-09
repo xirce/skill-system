@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SkillSystem.Application\SkillSystem.Application.csproj" />
+    <ProjectReference Include="..\SkillSystem.Core.Models\SkillSystem.Core.Models.csproj" />
     <ProjectReference Include="..\SkillSystem.Core\SkillSystem.Core.csproj" />
     <ProjectReference Include="..\SkillSystem.Infrastructure\SkillSystem.Infrastructure.csproj" />
   </ItemGroup>
