@@ -42,11 +42,6 @@ public class SalariesRepository : ISalariesRepository
         return await FindSalaryByMonthAsync(employeeId, date) ?? throw new EntityNotFoundException(nameof(Salary), employeeId);
     }
 
-    public async Task<Salary> GetCurrentSalaryAsync(Guid employeeId)
-    {
-        return await FindSalaryByMonthAsync(employeeId, DateTime.Now.ToUniversalTime()) ?? throw new EntityNotFoundException(nameof(Salary), employeeId);
-    }
-
     public async Task<IEnumerable<Salary>> GetSalariesAsync(Guid employeeId, DateTime? from, DateTime? to)
     {
         var salaries = dbContext.Salaries.Where(salary => salary.EmployeeId == employeeId)
