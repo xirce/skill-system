@@ -14,7 +14,7 @@ public class SkillSystemDbContext : DbContext
     public DbSet<PositionGrade> PositionGrades { get; set; }
     public DbSet<PositionDuty> PositionDuties { get; set; }
     public DbSet<EmployeeSkill> EmployeeSkills { get; set; }
-    public DbSet<ManagerSubordinate> ManagersSubordinates { get; set; }
+    public DbSet<Employee> Employees { get; set; }
 
     public SkillSystemDbContext()
     {
@@ -119,7 +119,10 @@ public class SkillSystemDbContext : DbContext
             .WithMany()
             .HasForeignKey(skill => skill.SkillId);
 
-        modelBuilder.Entity<ManagerSubordinate>()
-            .HasKey(managerSubordinate => new { managerSubordinate.ManagerId, managerSubordinate.SubordinateId });
+        modelBuilder.Entity<Employee>()
+            .HasOne(employee => employee.Manager)
+            .WithMany()
+            .HasForeignKey(employee => employee.ManagerId)
+            .OnDelete(DeleteBehavior.ClientSetNull);
     }
 }

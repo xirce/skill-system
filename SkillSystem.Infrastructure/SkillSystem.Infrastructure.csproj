@@ -14,6 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SkillSystem.Application\SkillSystem.Application.csproj" />
     <ProjectReference Include="..\SkillSystem.Core\SkillSystem.Core.csproj" />
+    <ProjectReference Include="..\SkillSystem.IdentityServer4.Client\SkillSystem.IdentityServer4.Client.csproj" />
   </ItemGroup>
 
 </Project>

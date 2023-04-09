@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkillSystem.Infrastructure"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkillSystem.Application", "SkillSystem.Application\SkillSystem.Application.csproj", "{CBE89A7C-4010-4D03-8D04-C297535DD096}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkillSystem.IdentityServer4.Client", "SkillSystem.IdentityServer4.Client\SkillSystem.IdentityServer4.Client.csproj", "{3762AE46-F8F8-4409-BD6B-E1C49D38CC3C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{CBE89A7C-4010-4D03-8D04-C297535DD096}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CBE89A7C-4010-4D03-8D04-C297535DD096}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CBE89A7C-4010-4D03-8D04-C297535DD096}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3762AE46-F8F8-4409-BD6B-E1C49D38CC3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3762AE46-F8F8-4409-BD6B-E1C49D38CC3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3762AE46-F8F8-4409-BD6B-E1C49D38CC3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3762AE46-F8F8-4409-BD6B-E1C49D38CC3C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

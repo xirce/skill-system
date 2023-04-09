@@ -1,14 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SkillSystem.Application.Repositories;
 using SkillSystem.Application.Repositories.Duties;
 using SkillSystem.Application.Repositories.Employees;
 using SkillSystem.Application.Repositories.Grades;
 using SkillSystem.Application.Repositories.Positions;
 using SkillSystem.Application.Repositories.Roles;
 using SkillSystem.Application.Repositories.Skills;
+using SkillSystem.Application.Services.Employees;
 using SkillSystem.Infrastructure.Persistence;
 using SkillSystem.Infrastructure.Persistence.Repositories;
+using SkillSystem.Infrastructure.Services;
 
 namespace SkillSystem.Infrastructure;
 
@@ -20,6 +23,8 @@ public static class DependencyInjection
             options => options.UseNpgsql(configuration.GetConnectionString(nameof(SkillSystem))));
         services.AddScoped<SkillSystemDbInitializer>();
 
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+
         services.AddScoped<ISkillsRepository, SkillsRepository>();
         services.AddScoped<IRolesRepository, RolesRepository>();
         services.AddScoped<IGradesRepository, GradesRepository>();
@@ -28,7 +33,9 @@ public static class DependencyInjection
 
         services.AddScoped<IEmployeeSkillsRepository, EmployeeSkillsRepository>();
 
-        services.AddScoped<IManagerRepository, ManagerRepository>();
+        services.AddScoped<IEmployeesRepository, EmployeesRepository>();
+
+        services.AddScoped<IEmployeesService, EmployeesService>();
 
         return services;
     }
