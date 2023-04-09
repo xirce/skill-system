@@ -2,6 +2,7 @@ using Mapster;
 using SkillSystem.Application.Repositories.Salaries;
 using SkillSystem.Application.Services.Salaries.Models;
 using SkillSystem.Core.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace SkillSystem.Application.Services.Salaries;
 
@@ -19,7 +20,7 @@ public class SalariesService : ISalariesService
         var newSalary = request.Adapt<Salary>();
         if (newSalary.StartDate < DateTime.Now || (newSalary.StartDate.Month == DateTime.Now.Month &&
             newSalary.StartDate.Year == DateTime.Now.Year))
-            return -1;
+            throw new ValidationException($"Access is denied to save a salary with a date {newSalary.StartDate}");
         var lastSalary = await salariesRepository.FindSalaryByMonthAsync(newSalary.EmployeeId,
             newSalary.StartDate);
         if (lastSalary != null && lastSalary.StartDate.Month == newSalary.StartDate.Month)
@@ -47,7 +48,7 @@ public class SalariesService : ISalariesService
 
     public async Task<SalaryResponse> GetCurrentSalaryAsync(Guid employeeId)
     {
-        var salary = await salariesRepository.GetCurrentSalaryAsync(employeeId);
+        var salary = await salariesRepository.GetSalaryByMonthAsync(employeeId, DateTime.UtcNow);
         return salary.Adapt<SalaryResponse>();
     }
 
