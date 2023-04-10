@@ -18,8 +18,8 @@ public class SalariesService : ISalariesService
     public async Task<int> SaveSalaryAsync(SalaryRequest request)
     {
         var newSalary = request.Adapt<Salary>();
-        if (newSalary.StartDate < DateTime.Now || (newSalary.StartDate.Month == DateTime.Now.Month &&
-            newSalary.StartDate.Year == DateTime.Now.Year))
+        if (newSalary.StartDate < DateTime.UtcNow || (newSalary.StartDate.Month == DateTime.UtcNow.Month &&
+            newSalary.StartDate.Year == DateTime.UtcNow.Year))
             throw new ValidationException($"Access is denied to save a salary with a date {newSalary.StartDate}");
         var lastSalary = await salariesRepository.FindSalaryByMonthAsync(newSalary.EmployeeId,
             newSalary.StartDate);
@@ -62,8 +62,8 @@ public class SalariesService : ISalariesService
     public async Task CancelSalaryAssigmentAsync(int salaryId)
     {
         var salary = await salariesRepository.GetSalaryByIdAsync(salaryId);
-        if (salary.StartDate < DateTime.Now || (salary.StartDate.Month == DateTime.Now.Month &&
-            salary.StartDate.Year == DateTime.Now.Year))
+        if (salary.StartDate < DateTime.UtcNow || (salary.StartDate.Month == DateTime.UtcNow.Month &&
+            salary.StartDate.Year == DateTime.UtcNow.Year))
             return;
         await salariesRepository.DeleteSalaryAsync(salary);
     }
