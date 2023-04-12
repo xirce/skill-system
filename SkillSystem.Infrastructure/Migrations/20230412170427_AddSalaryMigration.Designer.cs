@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SkillSystem.Infrastructure.Persistence;
@@ -11,9 +12,10 @@ using SkillSystem.Infrastructure.Persistence;
 namespace SkillSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(SkillSystemDbContext))]
-    partial class SkillSystemDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230412170427_AddSalaryMigration")]
+    partial class AddSalaryMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

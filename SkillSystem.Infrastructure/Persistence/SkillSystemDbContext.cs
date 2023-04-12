@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SkillSystem.Core.Entities;
 
 namespace SkillSystem.Infrastructure.Persistence;
@@ -10,6 +10,7 @@ public class SkillSystemDbContext : DbContext
     public DbSet<Grade> Grades { get; set; }
     public DbSet<Position> Positions { get; set; }
     public DbSet<Duty> Duties { get; set; }
+    public DbSet<Salary> Salaries { get; set;}
     public DbSet<GradeSkill> GradeSkills { get; set; }
     public DbSet<PositionGrade> PositionGrades { get; set; }
     public DbSet<PositionDuty> PositionDuties { get; set; }
