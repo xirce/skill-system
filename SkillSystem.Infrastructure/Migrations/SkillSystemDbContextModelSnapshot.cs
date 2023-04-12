@@ -200,6 +200,7 @@ namespace SkillSystem.Infrastructure.Migrations
                     b.ToTable("Roles");
                 });
 
+                        .HasColumnType("timestamp without time zone");
             modelBuilder.Entity("SkillSystem.Core.Entities.Salary", b =>
                 {
                     b.Property<int>("Id")
