@@ -201,7 +201,7 @@ namespace SkillSystem.Infrastructure.Migrations
                         .HasColumnType("numeric");
 
                     b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<decimal>("Wage")
                         .HasColumnType("numeric");
