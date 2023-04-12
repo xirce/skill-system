@@ -200,7 +200,6 @@ namespace SkillSystem.Infrastructure.Migrations
                     b.ToTable("Roles");
                 });
 
-                        .HasColumnType("timestamp without time zone");
             modelBuilder.Entity("SkillSystem.Core.Entities.Salary", b =>
                 {
                     b.Property<int>("Id")
@@ -219,7 +218,7 @@ namespace SkillSystem.Infrastructure.Migrations
                         .HasColumnType("numeric");
 
                     b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<decimal>("Wage")
                         .HasColumnType("numeric");
