@@ -34,7 +34,9 @@ public class SalariesRepository : ISalariesRepository
     public async Task<Salary?> FindSalaryByMonthAsync(Guid employeeId, DateTime date)
     {
         return await dbContext.Salaries.OrderBy(salary => salary.StartDate)
-            .LastOrDefaultAsync(salary => salary.EmployeeId == employeeId && salary.StartDate <= date );
+            .LastOrDefaultAsync(salary => salary.EmployeeId == employeeId &&
+            ((salary.StartDate.Month == date.Month && salary.StartDate.Year == date.Year) ||
+            salary.StartDate <= date ));
     }
 
     public async Task<Salary> GetSalaryByMonthAsync(Guid employeeId, DateTime date)
