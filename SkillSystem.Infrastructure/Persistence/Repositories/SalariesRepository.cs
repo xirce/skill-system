@@ -47,8 +47,10 @@ public class SalariesRepository : ISalariesRepository
     public async Task<IEnumerable<Salary>> GetSalariesAsync(Guid employeeId, DateTime? from, DateTime? to)
     {
         var salaries = dbContext.Salaries.Where(salary => salary.EmployeeId == employeeId)
-            .Where(salary => from == null || salary.StartDate >= from)
-            .Where(salary => to == null || salary.StartDate <= to);
+            .Where(salary => from == null || salary.StartDate >= from ||
+            (salary.StartDate.Month == from.Value.Month && salary.StartDate.Year == from.Value.Year))
+            .Where(salary => to == null || salary.StartDate <= to ||
+            (salary.StartDate.Month == to.Value.Month && salary.StartDate.Year == to.Value.Year));
 
         return await salaries.ToListAsync();
     }
