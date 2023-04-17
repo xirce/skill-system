@@ -20,8 +20,8 @@ public class SalariesService : ISalariesService
         var newSalary = request.Adapt<Salary>();
         var lastSalary = await salariesRepository.FindSalaryByMonthAsync(newSalary.EmployeeId,
             newSalary.StartDate);
-        var salaries = await salariesRepository.GetSalariesAsync(newSalary.EmployeeId, null, null);
-        if (salaries.Count() == 0 && (newSalary.StartDate.Month == DateTime.UtcNow.Month &&
+        var currentSalary = await salariesRepository.FindSalaryByMonthAsync(newSalary.EmployeeId, DateTime.UtcNow);
+        if (currentSalary == null && (newSalary.StartDate.Month == DateTime.UtcNow.Month &&
             newSalary.StartDate.Year == DateTime.UtcNow.Year))
             return await salariesRepository.CreateSalaryAsync(newSalary);
         if (newSalary.StartDate < DateTime.UtcNow || (newSalary.StartDate.Month == DateTime.UtcNow.Month &&
