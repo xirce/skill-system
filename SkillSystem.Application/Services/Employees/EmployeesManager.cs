@@ -31,10 +31,6 @@ public class EmployeesManager : IEmployeesManager
     {
         var manager = await employeesService.GetOrCreateEmployeeByUserId(managerId);
         var subordinates = await employeesService.GetSubordinates(manager.Id);
-        return new GetSubordinatesResponse
-        {
-            Manager = manager,
-            Subordinates = subordinates.Adapt<IReadOnlyCollection<Employee>>()
-        };
+        return new GetSubordinatesResponse(manager, subordinates);
     }
 }
