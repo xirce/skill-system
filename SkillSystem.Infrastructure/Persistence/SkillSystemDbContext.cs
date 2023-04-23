@@ -16,6 +16,8 @@ public class SkillSystemDbContext : DbContext
     public DbSet<PositionDuty> PositionDuties { get; set; }
     public DbSet<EmployeeSkill> EmployeeSkills { get; set; }
     public DbSet<Employee> Employees { get; set; }
+    public DbSet<Project> Projects { get; set; }
+    public DbSet<ProjectRole> ProjectRoles { get; set; }
 
     public SkillSystemDbContext()
     {
@@ -124,6 +126,22 @@ public class SkillSystemDbContext : DbContext
             .HasOne(employee => employee.Manager)
             .WithMany()
             .HasForeignKey(employee => employee.ManagerId)
+            .OnDelete(DeleteBehavior.ClientSetNull);
+
+        modelBuilder.Entity<Project>()
+            .HasMany(project => project.Roles)
+            .WithOne(role => role.Project)
+            .HasForeignKey(role => role.ProjectId);
+
+        modelBuilder.Entity<ProjectRole>()
+            .HasOne(projectRole => projectRole.Role)
+            .WithMany()
+            .HasForeignKey(projectRole => projectRole.RoleId);
+
+        modelBuilder.Entity<ProjectRole>()
+            .HasOne(projectRole => projectRole.Employee)
+            .WithMany()
+            .HasForeignKey(projectRole => projectRole.EmployeeId)
             .OnDelete(DeleteBehavior.ClientSetNull);
     }
 }

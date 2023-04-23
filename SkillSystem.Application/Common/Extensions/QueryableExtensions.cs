@@ -18,6 +18,6 @@ public static class QueryableExtensions
             .Take(count)
             .ToList();
 
-        return new PaginatedList<T>(paginatedItems, offset, totalCount);
+        return PaginatedList.Create(paginatedItems, offset, totalCount);
     }
 }

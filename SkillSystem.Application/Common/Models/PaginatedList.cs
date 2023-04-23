@@ -14,3 +14,11 @@ public class PaginatedList<T> : List<T>
         TotalCount = totalCount;
     }
 }
+
+public static class PaginatedList
+{
+    public static PaginatedList<T> Create<T>(IReadOnlyCollection<T> items, int offset, int totalCount)
+    {
+        return new PaginatedList<T>(items, offset, totalCount);
+    }
+}
