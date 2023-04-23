@@ -1,6 +1,5 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Refit;
 using SkillSystem.Application;
 using SkillSystem.Application.Common.Services;
@@ -37,6 +36,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.ConfigureOptions<SwaggerGenSetup>();
+builder.Services.ConfigureOptions<SwaggerUiSetup>();
 
 builder.Services.AddRefitClient<IUsersClient>()
     .ConfigureHttpClient(
@@ -53,17 +53,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
-    app.UseSwaggerUI(
-        options =>
-        {
-            options.OAuthClientId("skill-system-swagger");
-            options.OAuthScopes(
-                OpenIdConnectScope.OpenId,
-                OpenIdConnectScope.OpenIdProfile,
-                "SkillSystem.WebApi",
-                "roles");
-            options.OAuthUsePkce();
-        });
+    app.UseSwaggerUI();
 }
 
 using (var scope = app.Services.CreateScope())
