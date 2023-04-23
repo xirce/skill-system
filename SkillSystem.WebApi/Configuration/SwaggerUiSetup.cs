@@ -8,6 +8,7 @@ public class SwaggerUiSetup : IConfigureOptions<SwaggerUIOptions>
 {
     public void Configure(SwaggerUIOptions options)
     {
+        options.DisplayRequestDuration();
         options.OAuthClientId("skill-system-swagger");
         options.OAuthScopes(
             OpenIdConnectScope.OpenId,
