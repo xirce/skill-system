@@ -5,6 +5,7 @@ using SkillSystem.Application.Services.Employees.Manager;
 using SkillSystem.Application.Services.EmployeeSkills;
 using SkillSystem.Application.Services.Grades;
 using SkillSystem.Application.Services.Positions;
+using SkillSystem.Application.Services.Projects;
 using SkillSystem.Application.Services.Roles;
 using SkillSystem.Application.Services.Salaries;
 using SkillSystem.Application.Services.Skills;
@@ -21,6 +22,9 @@ public static class DependencyInjection
         services.AddScoped<IPositionsService, PositionsService>();
         services.AddScoped<IDutiesService, DutiesService>();
         services.AddScoped<ISalariesService, SalariesService>();
+
+        services.AddScoped<IProjectsService, ProjectsService>();
+        services.AddScoped<IProjectRolesService, ProjectRolesService>();
 
         services.AddScoped<IEmployeeSkillsService, EmployeeSkillsService>();
 
