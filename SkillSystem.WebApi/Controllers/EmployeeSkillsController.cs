@@ -41,21 +41,11 @@ public class EmployeeSkillsController : BaseController
         return Ok(employeeSkills);
     }
 
-    [HttpGet]
-    [Route("~/api/employees/{employeeId}/skills-statuses")]
-    public async Task<ActionResult<IEnumerable<EmployeeSkillStatus>>> FindEmployeeSkillsStatuses(
-        string employeeId,
-        [FromQuery] int? roleId = null)
-    {
-        var employeeSkills = await employeeSkillsService.FindEmployeeSkillsStatusesAsync(employeeId, roleId);
-        return Ok(employeeSkills);
-    }
-
-    [HttpPut("{skillId}")]
+    [HttpPost("{skillId}/approve")]
     [Authorize(Roles = AuthRoleNames.Admin)]
-    public async Task<IActionResult> SetSkillApproved(string employeeId, int skillId, bool isApproved)
+    public async Task<IActionResult> ApproveEmployeeSkill(string employeeId, int skillId)
     {
-        await employeeSkillsService.SetApprovedToSkillsAsync(employeeId, isApproved, new[] { skillId });
+        await employeeSkillsService.ApproveSkillsAsync(employeeId, new[] { skillId });
         return NoContent();
     }
 

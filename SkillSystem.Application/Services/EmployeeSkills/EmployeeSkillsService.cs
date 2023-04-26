@@ -7,6 +7,7 @@ using SkillSystem.Application.Repositories.Roles;
 using SkillSystem.Application.Repositories.Skills;
 using SkillSystem.Application.Services.EmployeeSkills.Models;
 using SkillSystem.Core.Entities;
+using SkillSystem.Core.Enums;
 
 namespace SkillSystem.Application.Services.EmployeeSkills;
 
@@ -60,26 +61,18 @@ public class EmployeeSkillsService : IEmployeeSkillsService
         return skills.Adapt<ICollection<EmployeeSkillShortInfo>>();
     }
 
-    public async Task<ICollection<EmployeeSkillStatus>> FindEmployeeSkillsStatusesAsync(
-        string employeeId,
-        int? roleId = null)
-    {
-        var skills = await FindEmployeeSkillsInternalAsync(employeeId, roleId);
-        return skills.Adapt<ICollection<EmployeeSkillStatus>>();
-    }
-
-    public async Task SetApprovedToSkillsAsync(string employeeId, bool isApproved, IEnumerable<int> skillsIds)
+    public async Task ApproveSkillsAsync(string employeeId, IEnumerable<int> skillsIds)
     {
         ThrowIfCurrentUserHasNotAccessTo(employeeId);
 
-        var skillsToUpdate = new List<EmployeeSkill>();
+        var skillsToApprove = new List<EmployeeSkill>();
         foreach (var skillId in skillsIds)
-            skillsToUpdate.AddRange(await GetSkillsToSetApprovedAsync(employeeId, skillId, isApproved));
+            skillsToApprove.AddRange(await GetSkillsToApproveAsync(employeeId, skillId));
 
-        foreach (var skill in skillsToUpdate)
-            skill.IsApproved = isApproved;
+        foreach (var skill in skillsToApprove)
+            skill.Status = EmployeeSkillStatus.Approved;
 
-        await employeeSkillsRepository.UpdateSkillsAsync(skillsToUpdate.ToArray());
+        await employeeSkillsRepository.UpdateSkillsAsync(skillsToApprove.ToArray());
     }
 
     public async Task DeleteEmployeeSkillsAsync(string employeeId, IEnumerable<int> skillsIds)
@@ -120,25 +113,20 @@ public class EmployeeSkillsService : IEmployeeSkillsService
         return skillsToAdd;
     }
 
-    private async Task<ICollection<EmployeeSkill>> GetSkillsToSetApprovedAsync(
-        string employeeId,
-        int skillId,
-        bool isApproved)
+    private async Task<ICollection<EmployeeSkill>> GetSkillsToApproveAsync(string employeeId, int skillId)
     {
         var employeeSkill = await employeeSkillsRepository.GetEmployeeSkillAsync(employeeId, skillId);
 
-        var subSkills = await GetSubSkillsToSetApprovedAsync(employeeSkill);
+        var subSkills = await GetSubSkillsToApproveAsync(employeeSkill);
 
-        var groups = employeeSkill.IsApproved && employeeSkill.IsApproved == isApproved
-            ? await GetGroupsToSetApprovedAsync(employeeSkill, isApproved)
-            : Array.Empty<EmployeeSkill>();
+        var groups = await GetGroupsToApproveAsync(employeeSkill);
 
-        var skillsToSetApproved = new List<EmployeeSkill>();
-        skillsToSetApproved.AddRange(subSkills);
-        skillsToSetApproved.Add(employeeSkill);
-        skillsToSetApproved.AddRange(groups);
+        var skillsToApprove = new List<EmployeeSkill>();
+        skillsToApprove.AddRange(subSkills);
+        skillsToApprove.Add(employeeSkill);
+        skillsToApprove.AddRange(groups);
 
-        return skillsToSetApproved;
+        return skillsToApprove;
     }
 
     private async Task<List<EmployeeSkill>> GetSkillsToDeleteAsync(string employeeId, int skillId)
@@ -171,14 +159,10 @@ public class EmployeeSkillsService : IEmployeeSkillsService
         return groupSkillsIds.Length - foundEmployeeGroupSkills.Count;
     }
 
-    private async Task<ICollection<EmployeeSkill>> GetGroupsToSetApprovedAsync(
-        EmployeeSkill employeeSkill,
-        bool toApprove)
+    private async Task<ICollection<EmployeeSkill>> GetGroupsToApproveAsync(EmployeeSkill employeeSkill)
     {
-        var groups = skillsRepository.GetGroups(employeeSkill.SkillId);
-
-        if (toApprove)
-            groups = groups.TakeWhile(
+        var groups = skillsRepository.GetGroups(employeeSkill.SkillId)
+            .TakeWhile(
                 group => CountSkillsToApproveGroupAsync(employeeSkill.EmployeeId, group.Id).GetAwaiter().GetResult()
                          < 2);
 
@@ -189,7 +173,7 @@ public class EmployeeSkillsService : IEmployeeSkillsService
         return await employeeSkillsRepository.FindEmployeeSkillsAsync(employeeSkill.EmployeeId, groupsIds);
     }
 
-    private async Task<ICollection<EmployeeSkill>> GetSubSkillsToSetApprovedAsync(EmployeeSkill employeeSkill)
+    private async Task<ICollection<EmployeeSkill>> GetSubSkillsToApproveAsync(EmployeeSkill employeeSkill)
     {
         var subSkillsIds = (await skillsRepository.TraverseSkillAsync(employeeSkill.SkillId))
             .Skip(1)
@@ -203,7 +187,7 @@ public class EmployeeSkillsService : IEmployeeSkillsService
         var groupSkillsIds = await GetGroupSkillsIdsAsync(groupId);
         var approvedEmployeeSkillsCount =
             (await employeeSkillsRepository.FindEmployeeSkillsAsync(employeeId, groupSkillsIds))
-            .Count(skill => skill.IsApproved);
+            .Count(skill => skill.Status == EmployeeSkillStatus.Approved);
         return groupSkillsIds.Length - approvedEmployeeSkillsCount;
     }
 
