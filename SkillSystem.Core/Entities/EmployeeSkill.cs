@@ -1,4 +1,6 @@
-﻿namespace SkillSystem.Core.Entities;
+﻿using SkillSystem.Core.Enums;
+
+namespace SkillSystem.Core.Entities;
 
 /// <summary>
 /// Знание/навык сотрудника.
@@ -15,7 +17,7 @@ public class EmployeeSkill
     public int SkillId { get; set; }
 
     /// <summary>
-    /// Значение, указывающее, подтверждён ли скилл сотрудника.
+    /// Статус скилла сотрудника.
     /// </summary>
-    public bool IsApproved { get; set; }
+    public EmployeeSkillStatus Status { get; set; }
 }

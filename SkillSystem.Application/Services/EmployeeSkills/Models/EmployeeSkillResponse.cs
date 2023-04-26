@@ -1,4 +1,5 @@
 ﻿using SkillSystem.Application.Services.Skills.Models;
+using SkillSystem.Core.Enums;
 
 namespace SkillSystem.Application.Services.EmployeeSkills.Models;
 
@@ -6,5 +7,5 @@ public record EmployeeSkillResponse
 {
     public SkillShortInfo Skill { get; init; }
     public ICollection<EmployeeSkillShortInfo> SubSkills { get; init; }
-    public bool IsApproved { get; init; }
+    public EmployeeSkillStatus Status { get; init; }
 }
