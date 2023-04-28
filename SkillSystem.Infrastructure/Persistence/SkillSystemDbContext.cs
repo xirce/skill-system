@@ -18,6 +18,8 @@ public class SkillSystemDbContext : DbContext
     public DbSet<Employee> Employees { get; set; }
     public DbSet<Project> Projects { get; set; }
     public DbSet<ProjectRole> ProjectRoles { get; set; }
+    public DbSet<Department> Departments { get; set; }
+    public DbSet<EmployeeInDepartment> EmployeesInDepartments { get; set; }
 
     public SkillSystemDbContext()
     {
@@ -143,5 +145,21 @@ public class SkillSystemDbContext : DbContext
             .WithMany()
             .HasForeignKey(projectRole => projectRole.EmployeeId)
             .OnDelete(DeleteBehavior.ClientSetNull);
+
+        modelBuilder.Entity<Department>()
+            .HasIndex(department => department.Name)
+            .IsUnique();
+
+        modelBuilder.Entity<Department>()
+            .HasOne(department => department.HeadEmployee)
+            .WithOne()
+            .HasForeignKey<Department>(department => department.HeadEmployeeId)
+            .OnDelete(DeleteBehavior.ClientSetNull);
+
+        modelBuilder.Entity<Department>()
+            .HasMany(department => department.Employees)
+            .WithMany(employee => employee.Departments)
+            .UsingEntity<EmployeeInDepartment>()
+            .HasKey(employeeInDepartment => new { employeeInDepartment.DepartmentId, employeeInDepartment.EmployeeId });
     }
 }
