@@ -102,7 +102,7 @@ public class EmployeeSkillsService : IEmployeeSkillsService
 
         var addedSkillId = skillWithSubSkills.First().SkillId;
         var groupsToAdd = await skillsRepository.GetGroups(addedSkillId)
-            .TakeWhile(group => CountSkillsToAddGroupAsync(employeeId, group.Id).GetAwaiter().GetResult() < 2)
+            .TakeWhileAwait(async group => await CountSkillsToAddGroupAsync(employeeId, group.Id) < 2)
             .Select(skill => new EmployeeSkill { EmployeeId = employeeId, SkillId = skill.Id })
             .ToListAsync();
 
@@ -162,9 +162,8 @@ public class EmployeeSkillsService : IEmployeeSkillsService
     private async Task<ICollection<EmployeeSkill>> GetGroupsToApproveAsync(EmployeeSkill employeeSkill)
     {
         var groups = skillsRepository.GetGroups(employeeSkill.SkillId)
-            .TakeWhile(
-                group => CountSkillsToApproveGroupAsync(employeeSkill.EmployeeId, group.Id).GetAwaiter().GetResult()
-                         < 2);
+            .TakeWhileAwait(
+                async group => await CountSkillsToApproveGroupAsync(employeeSkill.EmployeeId, group.Id) < 2);
 
         var groupsIds = await groups
             .Select(group => group.Id)
@@ -203,7 +202,7 @@ public class EmployeeSkillsService : IEmployeeSkillsService
     private async Task<ICollection<EmployeeSkill>> GetGroupsToDeleteAsync(EmployeeSkill employeeSkill)
     {
         var groupsIds = await skillsRepository.GetGroups(employeeSkill.SkillId)
-            .TakeWhile(group => CountGroupSkillsAsync(employeeSkill.EmployeeId, group.Id).GetAwaiter().GetResult() < 2)
+            .TakeWhileAwait(async group => await CountGroupSkillsAsync(employeeSkill.EmployeeId, group.Id) < 2)
             .Select(group => group.Id)
             .ToArrayAsync();
         return await employeeSkillsRepository.FindEmployeeSkillsAsync(employeeSkill.EmployeeId, groupsIds);
