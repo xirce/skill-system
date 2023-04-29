@@ -3,6 +3,7 @@ using SkillSystem.Application.Authorization;
 using SkillSystem.Application.Common.Exceptions;
 using SkillSystem.Application.Common.Extensions;
 using SkillSystem.Application.Common.Services;
+using SkillSystem.Application.Repositories;
 using SkillSystem.Application.Repositories.Roles;
 using SkillSystem.Application.Repositories.Skills;
 using SkillSystem.Application.Services.EmployeeSkills.Models;
@@ -16,17 +17,20 @@ public class EmployeeSkillsService : IEmployeeSkillsService
     private readonly IEmployeeSkillsRepository employeeSkillsRepository;
     private readonly ISkillsRepository skillsRepository;
     private readonly IRolesRepository rolesRepository;
+    private readonly IUnitOfWork unitOfWork;
     private readonly ICurrentUserProvider currentUserProvider;
 
     public EmployeeSkillsService(
         IEmployeeSkillsRepository employeeSkillsRepository,
         ISkillsRepository skillsRepository,
         IRolesRepository rolesRepository,
+        IUnitOfWork unitOfWork,
         ICurrentUserProvider currentUserProvider)
     {
         this.employeeSkillsRepository = employeeSkillsRepository;
         this.skillsRepository = skillsRepository;
         this.rolesRepository = rolesRepository;
+        this.unitOfWork = unitOfWork;
         this.currentUserProvider = currentUserProvider;
     }
 
@@ -38,7 +42,8 @@ public class EmployeeSkillsService : IEmployeeSkillsService
         foreach (var skillId in skillsIds)
             skillsToAdd.AddRange(await GetSkillsToAddAsync(employeeId, skillId));
 
-        await employeeSkillsRepository.AddEmployeeSkillsAsync(skillsToAdd.ToArray());
+        await employeeSkillsRepository.AddEmployeeSkillsAsync(skillsToAdd);
+        await unitOfWork.SaveChangesAsync();
     }
 
     public async Task<EmployeeSkillResponse> GetEmployeeSkillAsync(string employeeId, int skillId)
@@ -72,7 +77,8 @@ public class EmployeeSkillsService : IEmployeeSkillsService
         foreach (var skill in skillsToApprove)
             skill.Status = EmployeeSkillStatus.Approved;
 
-        await employeeSkillsRepository.UpdateSkillsAsync(skillsToApprove.ToArray());
+        employeeSkillsRepository.UpdateSkills(skillsToApprove);
+        await unitOfWork.SaveChangesAsync();
     }
 
     public async Task DeleteEmployeeSkillsAsync(string employeeId, IEnumerable<int> skillsIds)
@@ -83,7 +89,8 @@ public class EmployeeSkillsService : IEmployeeSkillsService
         foreach (var skillId in skillsIds)
             skillsToDelete.AddRange(await GetSkillsToDeleteAsync(employeeId, skillId));
 
-        await employeeSkillsRepository.DeleteEmployeeSkillsAsync(skillsToDelete.ToArray());
+        employeeSkillsRepository.DeleteEmployeeSkills(skillsToDelete);
+        await unitOfWork.SaveChangesAsync();
     }
 
     private async Task<ICollection<EmployeeSkill>> FindEmployeeSkillsInternalAsync(string employeeId, int? roleId)

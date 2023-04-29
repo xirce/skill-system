@@ -2,6 +2,7 @@
 using SkillSystem.Application.Common.Extensions;
 using SkillSystem.Application.Common.Models.Requests;
 using SkillSystem.Application.Common.Models.Responses;
+using SkillSystem.Application.Repositories;
 using SkillSystem.Application.Repositories.Duties;
 using SkillSystem.Application.Repositories.Positions;
 using SkillSystem.Application.Repositories.Positions.Filters;
@@ -15,17 +16,24 @@ public class PositionsService : IPositionsService
 {
     private readonly IPositionsRepository positionsRepository;
     private readonly IDutiesRepository dutiesRepository;
+    private readonly IUnitOfWork unitOfWork;
 
-    public PositionsService(IPositionsRepository positionsRepository, IDutiesRepository dutiesRepository)
+    public PositionsService(
+        IPositionsRepository positionsRepository,
+        IDutiesRepository dutiesRepository,
+        IUnitOfWork unitOfWork)
     {
         this.positionsRepository = positionsRepository;
         this.dutiesRepository = dutiesRepository;
+        this.unitOfWork = unitOfWork;
     }
 
     public async Task<int> CreatePositionAsync(PositionRequest request)
     {
         var position = request.Adapt<Position>();
-        return await positionsRepository.CreatePositionAsync(position);
+        await positionsRepository.CreatePositionAsync(position);
+        await unitOfWork.SaveChangesAsync();
+        return position.Id;
     }
 
     public async Task<PositionResponse> GetPositionByIdAsync(int positionId)
@@ -58,23 +66,27 @@ public class PositionsService : IPositionsService
 
         request.Adapt(position);
 
-        await positionsRepository.UpdatePositionAsync(position);
+        positionsRepository.UpdatePosition(position);
+        await unitOfWork.SaveChangesAsync();
     }
 
     public async Task AddPositionDutyAsync(int positionId, int dutyId)
     {
         var duty = await dutiesRepository.GetDutyByIdAsync(dutyId);
         await positionsRepository.AddPositionDutyAsync(positionId, duty);
+        await unitOfWork.SaveChangesAsync();
     }
 
     public async Task DeletePositionDutyAsync(int positionId, int dutyId)
     {
         await positionsRepository.DeletePositionDutyAsync(positionId, dutyId);
+        await unitOfWork.SaveChangesAsync();
     }
 
     public async Task DeletePositionAsync(int positionId)
     {
         var position = await positionsRepository.GetPositionByIdAsync(positionId);
-        await positionsRepository.DeletePositionAsync(position);
+        positionsRepository.DeletePosition(position);
+        await unitOfWork.SaveChangesAsync();
     }
 }

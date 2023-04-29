@@ -15,15 +15,9 @@ public class SkillsRepository : ISkillsRepository
         this.dbContext = dbContext;
     }
 
-    public async Task<int> CreateSkillAsync(Skill skill)
+    public async Task CreateSkillAsync(Skill skill)
     {
-        if (skill.GroupId.HasValue)
-            await EnsureSkillExistsAsync(skill.GroupId.Value);
-
         await dbContext.Skills.AddAsync(skill);
-        await dbContext.SaveChangesAsync();
-
-        return skill.Id;
     }
 
     public async Task<Skill?> FindSkillByIdAsync(int skillId, bool includeSubSkills = false)
@@ -84,25 +78,13 @@ public class SkillsRepository : ISkillsRepository
         return query.OrderBy(skill => skill.Id);
     }
 
-    public async Task UpdateSkillAsync(Skill skill)
+    public void UpdateSkill(Skill skill)
     {
-        if (skill.GroupId.HasValue)
-            await EnsureSkillExistsAsync(skill.GroupId.Value);
-
         dbContext.Skills.Update(skill);
-        await dbContext.SaveChangesAsync();
     }
 
-    public async Task DeleteSkillAsync(Skill skill)
+    public void DeleteSkill(Skill skill)
     {
         dbContext.Skills.Remove(skill);
-        await dbContext.SaveChangesAsync();
-    }
-
-    private async Task EnsureSkillExistsAsync(int skillId)
-    {
-        var skillsExists = await dbContext.Skills.AnyAsync(skill => skill.Id == skillId);
-        if (!skillsExists)
-            throw new EntityNotFoundException(nameof(Skill), skillId);
     }
 }

@@ -15,11 +15,9 @@ public class DutiesRepository : IDutiesRepository
         this.dbContext = dbContext;
     }
 
-    public async Task<int> CreateDutyAsync(Duty duty)
+    public async Task CreateDutyAsync(Duty duty)
     {
         await dbContext.Duties.AddAsync(duty);
-        await dbContext.SaveChangesAsync();
-        return duty.Id;
     }
 
     public async Task<Duty?> FindDutyByIdAsync(int dutyId)
@@ -42,15 +40,13 @@ public class DutiesRepository : IDutiesRepository
         return duties.OrderBy(duty => duty.Id);
     }
 
-    public async Task UpdateDutyAsync(Duty duty)
+    public void UpdateDuty(Duty duty)
     {
         dbContext.Duties.Update(duty);
-        await dbContext.SaveChangesAsync();
     }
 
-    public async Task DeleteDutyAsync(Duty duty)
+    public void DeleteDuty(Duty duty)
     {
         dbContext.Duties.Remove(duty);
-        await dbContext.SaveChangesAsync();
     }
 }

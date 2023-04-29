@@ -9,7 +9,7 @@ public interface IGradesRepository
     IQueryable<Grade> FindGrades(string? title = default);
     Task<IEnumerable<Skill>> GetGradeSkillsAsync(int gradeId);
     Task<ICollection<Position>> GetGradePositionsAsync(int gradeId);
-    Task UpdateGradeAsync(Grade grade);
+    void UpdateGrade(Grade grade);
     Task AddGradeSkillAsync(int gradeId, Skill skill);
     Task DeleteGradeSkillAsync(int gradeId, int skillId);
     Task AddGradePositionAsync(int gradeId, Position position);
