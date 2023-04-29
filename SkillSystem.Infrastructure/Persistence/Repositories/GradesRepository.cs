@@ -70,10 +70,9 @@ public class GradesRepository : IGradesRepository
         return gradePositions;
     }
 
-    public async Task UpdateGradeAsync(Grade grade)
+    public void UpdateGrade(Grade grade)
     {
         dbContext.Grades.Update(grade);
-        await dbContext.SaveChangesAsync();
     }
 
     public async Task AddGradeSkillAsync(int gradeId, Skill skill)
@@ -87,14 +86,12 @@ public class GradesRepository : IGradesRepository
         };
 
         await dbContext.GradeSkills.AddAsync(gradeSkill);
-        await dbContext.SaveChangesAsync();
     }
 
     public async Task DeleteGradeSkillAsync(int gradeId, int skillId)
     {
         var gradeSkill = await GetGradeSkillAsync(gradeId, skillId);
         dbContext.GradeSkills.Remove(gradeSkill);
-        await dbContext.SaveChangesAsync();
     }
 
     public async Task AddGradePositionAsync(int gradeId, Position position)
@@ -113,14 +110,12 @@ public class GradesRepository : IGradesRepository
             PositionId = position.Id
         };
         await dbContext.PositionGrades.AddAsync(newPositionGrade);
-        await dbContext.SaveChangesAsync();
     }
 
     public async Task DeleteGradePositionAsync(int gradeId, int positionId)
     {
         var positionGrade = await GetGradePositionAsync(gradeId, positionId);
         dbContext.PositionGrades.Remove(positionGrade);
-        await dbContext.SaveChangesAsync();
     }
 
     private async Task<GradeSkill> GetGradeSkillAsync(int gradeId, int skillId)

@@ -15,11 +15,9 @@ public class PositionsRepository : IPositionsRepository
         this.dbContext = dbContext;
     }
 
-    public async Task<int> CreatePositionAsync(Position position)
+    public async Task CreatePositionAsync(Position position)
     {
         await dbContext.Positions.AddAsync(position);
-        await dbContext.SaveChangesAsync();
-        return position.Id;
     }
 
     public async Task<Position?> FindPositionByIdAsync(int positionId)
@@ -58,37 +56,29 @@ public class PositionsRepository : IPositionsRepository
         return positionDuties;
     }
 
-    public async Task UpdatePositionAsync(Position position)
+    public void UpdatePosition(Position position)
     {
         dbContext.Positions.Update(position);
-        await dbContext.SaveChangesAsync();
     }
 
     public async Task AddPositionDutyAsync(int positionId, Duty duty)
     {
         var position = await GetPositionByIdAsync(positionId);
 
-        var positionDuty = new PositionDuty
-        {
-            PositionId = position.Id,
-            DutyId = duty.Id
-        };
+        var positionDuty = new PositionDuty(position.Id, duty.Id);
 
         await dbContext.PositionDuties.AddAsync(positionDuty);
-        await dbContext.SaveChangesAsync();
     }
 
     public async Task DeletePositionDutyAsync(int positionId, int dutyId)
     {
         var positionDuty = await GetPositionDutyAsync(positionId, dutyId);
         dbContext.PositionDuties.Remove(positionDuty);
-        await dbContext.SaveChangesAsync();
     }
 
-    public async Task DeletePositionAsync(Position position)
+    public void DeletePosition(Position position)
     {
         dbContext.Positions.Remove(position);
-        await dbContext.SaveChangesAsync();
     }
 
     private async Task<PositionDuty> GetPositionDutyAsync(int positionId, int dutyId)

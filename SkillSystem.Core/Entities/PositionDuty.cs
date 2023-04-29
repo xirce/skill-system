@@ -18,4 +18,10 @@ public class PositionDuty
     public Duty Duty { get; set; }
 
     public int DutyId { get; set; }
+
+    public PositionDuty(int positionId, int dutyId)
+    {
+        PositionId = positionId;
+        DutyId = dutyId;
+    }
 }

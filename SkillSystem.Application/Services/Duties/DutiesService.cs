@@ -2,6 +2,7 @@
 using SkillSystem.Application.Common.Extensions;
 using SkillSystem.Application.Common.Models.Requests;
 using SkillSystem.Application.Common.Models.Responses;
+using SkillSystem.Application.Repositories;
 using SkillSystem.Application.Repositories.Duties;
 using SkillSystem.Application.Repositories.Duties.Filters;
 using SkillSystem.Application.Services.Duties.Models;
@@ -12,16 +13,20 @@ namespace SkillSystem.Application.Services.Duties;
 public class DutiesService : IDutiesService
 {
     private readonly IDutiesRepository dutiesRepository;
+    private readonly IUnitOfWork unitOfWork;
 
-    public DutiesService(IDutiesRepository dutiesRepository)
+    public DutiesService(IDutiesRepository dutiesRepository, IUnitOfWork unitOfWork)
     {
         this.dutiesRepository = dutiesRepository;
+        this.unitOfWork = unitOfWork;
     }
 
     public async Task<int> CreateDutyAsync(DutyRequest request)
     {
         var duty = request.Adapt<Duty>();
-        return await dutiesRepository.CreateDutyAsync(duty);
+        await dutiesRepository.CreateDutyAsync(duty);
+        await unitOfWork.SaveChangesAsync();
+        return duty.Id;
     }
 
     public async Task<DutyResponse> GetDutyByIdAsync(int dutyId)
@@ -48,12 +53,14 @@ public class DutiesService : IDutiesService
 
         request.Adapt(duty);
 
-        await dutiesRepository.UpdateDutyAsync(duty);
+        dutiesRepository.UpdateDuty(duty);
+        await unitOfWork.SaveChangesAsync();
     }
 
     public async Task DeleteDutyAsync(int dutyId)
     {
         var duty = await dutiesRepository.GetDutyByIdAsync(dutyId);
-        await dutiesRepository.DeleteDutyAsync(duty);
+        dutiesRepository.DeleteDuty(duty);
+        await unitOfWork.SaveChangesAsync();
     }
 }

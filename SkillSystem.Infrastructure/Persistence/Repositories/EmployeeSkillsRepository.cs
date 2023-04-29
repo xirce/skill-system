@@ -14,7 +14,7 @@ public class EmployeeSkillsRepository : IEmployeeSkillsRepository
         this.dbContext = dbContext;
     }
 
-    public async Task AddEmployeeSkillsAsync(params EmployeeSkill[] employeeSkills)
+    public async Task AddEmployeeSkillsAsync(IEnumerable<EmployeeSkill> employeeSkills)
     {
         foreach (var employeeSkill in employeeSkills)
         {
@@ -22,8 +22,6 @@ public class EmployeeSkillsRepository : IEmployeeSkillsRepository
             if (presentSkill is null)
                 await dbContext.EmployeeSkills.AddAsync(employeeSkill);
         }
-
-        await dbContext.SaveChangesAsync();
     }
 
     public async Task<EmployeeSkill?> FindEmployeeSkillAsync(string employeeId, int skillId)
@@ -54,16 +52,14 @@ public class EmployeeSkillsRepository : IEmployeeSkillsRepository
             .ToListAsync();
     }
 
-    public async Task UpdateSkillsAsync(params EmployeeSkill[] employeeSkills)
+    public void UpdateSkills(IEnumerable<EmployeeSkill> employeeSkills)
     {
         dbContext.EmployeeSkills.UpdateRange(employeeSkills);
-        await dbContext.SaveChangesAsync();
     }
 
-    public async Task DeleteEmployeeSkillsAsync(params EmployeeSkill[] skills)
+    public void DeleteEmployeeSkills(IEnumerable<EmployeeSkill> skills)
     {
         dbContext.EmployeeSkills.RemoveRange(skills);
-        await dbContext.SaveChangesAsync();
     }
 
     private IQueryable<EmployeeSkill> QueryEmployeeSkills(string employeeId)

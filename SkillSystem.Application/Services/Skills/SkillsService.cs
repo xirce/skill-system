@@ -1,6 +1,7 @@
 ﻿using Mapster;
 using SkillSystem.Application.Common.Extensions;
 using SkillSystem.Application.Common.Models.Responses;
+using SkillSystem.Application.Repositories;
 using SkillSystem.Application.Repositories.Skills;
 using SkillSystem.Application.Services.Skills.Models;
 using SkillSystem.Core.Entities;
@@ -10,17 +11,24 @@ namespace SkillSystem.Application.Services.Skills;
 public class SkillsService : ISkillsService
 {
     private readonly ISkillsRepository skillsRepository;
+    private readonly IUnitOfWork unitOfWork;
 
-    public SkillsService(ISkillsRepository skillsRepository)
+    public SkillsService(ISkillsRepository skillsRepository, IUnitOfWork unitOfWork)
     {
         this.skillsRepository = skillsRepository;
+        this.unitOfWork = unitOfWork;
     }
 
     public async Task<int> CreateSkillAsync(CreateSkillRequest request)
     {
+        if (request.GroupId.HasValue)
+            await GetSkillByIdAsync(request.GroupId.Value);
+
         var skill = request.Adapt<Skill>();
 
-        return await skillsRepository.CreateSkillAsync(skill);
+        await skillsRepository.CreateSkillAsync(skill);
+        await unitOfWork.SaveChangesAsync();
+        return skill.Id;
     }
 
     public async Task<SkillResponse?> GetSkillByIdAsync(int skillId)
@@ -53,7 +61,8 @@ public class SkillsService : ISkillsService
 
         request.Adapt(skill);
 
-        await skillsRepository.UpdateSkillAsync(skill);
+        skillsRepository.UpdateSkill(skill);
+        await unitOfWork.SaveChangesAsync();
     }
 
     public async Task AttachSkillToGroupAsync(int skillId, int skillGroupId)
@@ -62,12 +71,14 @@ public class SkillsService : ISkillsService
         var skillGroup = await skillsRepository.GetSkillByIdAsync(skillGroupId);
 
         skill.GroupId = skillGroup.Id;
-        await skillsRepository.UpdateSkillAsync(skill);
+        skillsRepository.UpdateSkill(skill);
+        await unitOfWork.SaveChangesAsync();
     }
 
     public async Task DeleteSkillAsync(int skillId)
     {
         var skill = await skillsRepository.GetSkillByIdAsync(skillId);
-        await skillsRepository.DeleteSkillAsync(skill);
+        skillsRepository.DeleteSkill(skill);
+        await unitOfWork.SaveChangesAsync();
     }
 }
