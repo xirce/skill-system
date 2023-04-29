@@ -97,13 +97,13 @@ public class EmployeeSkillsService : IEmployeeSkillsService
     private async Task<ICollection<EmployeeSkill>> GetSkillsToAddAsync(string employeeId, int skillId)
     {
         var skillWithSubSkills = (await skillsRepository.TraverseSkillAsync(skillId)).ToArray()
-            .Select(subSkill => new EmployeeSkill { EmployeeId = employeeId, SkillId = subSkill.Id })
+            .Select(subSkill => EmployeeSkills.Received(employeeId, subSkill.Id))
             .ToList();
 
         var addedSkillId = skillWithSubSkills.First().SkillId;
         var groupsToAdd = await skillsRepository.GetGroups(addedSkillId)
             .TakeWhileAwait(group => CanAddGroupAsync(employeeId, group.Id))
-            .Select(skill => new EmployeeSkill { EmployeeId = employeeId, SkillId = skill.Id })
+            .Select(skill => EmployeeSkills.Received(employeeId, skill.Id))
             .ToListAsync();
 
         return skillWithSubSkills
