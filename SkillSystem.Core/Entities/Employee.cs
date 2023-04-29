@@ -20,4 +20,9 @@ public class Employee
     public Employee? Manager { get; set; }
 
     public Guid? ManagerId { get; set; }
+
+    /// <summary>
+    /// Отделы, в которых находится сотрудник.
+    /// </summary>
+    public ICollection<Department> Departments { get; set; }
 }

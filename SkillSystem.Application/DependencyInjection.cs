@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using SkillSystem.Application.Services.Departments;
 using SkillSystem.Application.Services.Duties;
 using SkillSystem.Application.Services.Employees;
 using SkillSystem.Application.Services.Employees.Manager;
@@ -25,6 +26,7 @@ public static class DependencyInjection
 
         services.AddScoped<IProjectsService, ProjectsService>();
         services.AddScoped<IProjectRolesService, ProjectRolesService>();
+        services.AddScoped<IDepartmentsService, DepartmentsService>();
 
         services.AddScoped<IEmployeeSkillsService, EmployeeSkillsService>();
 

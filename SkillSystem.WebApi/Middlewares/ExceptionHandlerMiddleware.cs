@@ -31,6 +31,7 @@ public class ExceptionHandlerMiddleware
         response.StatusCode = exception switch
         {
             EntityNotFoundException => (int)HttpStatusCode.NotFound,
+            EntityAlreadyExistsException => (int)HttpStatusCode.Conflict,
             ForbiddenException => (int)HttpStatusCode.Forbidden,
             _ => (int)HttpStatusCode.InternalServerError
         };
