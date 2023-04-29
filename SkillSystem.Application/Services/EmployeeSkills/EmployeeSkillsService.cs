@@ -106,11 +106,9 @@ public class EmployeeSkillsService : IEmployeeSkillsService
             .Select(skill => new EmployeeSkill { EmployeeId = employeeId, SkillId = skill.Id })
             .ToListAsync();
 
-        var skillsToAdd = new List<EmployeeSkill>();
-        skillsToAdd.AddRange(skillWithSubSkills);
-        skillsToAdd.AddRange(groupsToAdd);
-
-        return skillsToAdd;
+        return skillWithSubSkills
+            .Concat(groupsToAdd)
+            .ToArray();
     }
 
     private async Task<ICollection<EmployeeSkill>> GetSkillsToApproveAsync(string employeeId, int skillId)
@@ -121,12 +119,10 @@ public class EmployeeSkillsService : IEmployeeSkillsService
 
         var groups = await GetGroupsToApproveAsync(employeeSkill);
 
-        var skillsToApprove = new List<EmployeeSkill>();
-        skillsToApprove.AddRange(subSkills);
-        skillsToApprove.Add(employeeSkill);
-        skillsToApprove.AddRange(groups);
-
-        return skillsToApprove;
+        return subSkills
+            .Append(employeeSkill)
+            .Concat(groups)
+            .ToArray();
     }
 
     private async Task<List<EmployeeSkill>> GetSkillsToDeleteAsync(string employeeId, int skillId)
@@ -136,11 +132,10 @@ public class EmployeeSkillsService : IEmployeeSkillsService
         var subSkills = await GetSubSkillsToDeleteAsync(employeeSkill);
         var groupsToDelete = await GetGroupsToDeleteAsync(employeeSkill);
 
-        var skillsToDelete = new List<EmployeeSkill>();
-        skillsToDelete.AddRange(subSkills);
-        skillsToDelete.Add(employeeSkill);
-        skillsToDelete.AddRange(groupsToDelete);
-        return skillsToDelete;
+        return subSkills
+            .Append(employeeSkill)
+            .Concat(groupsToDelete)
+            .ToList();
     }
 
     private void ThrowIfCurrentUserHasNotAccessTo(string employeeId)
