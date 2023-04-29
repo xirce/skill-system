@@ -31,14 +31,7 @@ public class EmployeesService : IEmployeesService
 
         await unitOfWork.SaveChangesAsync();
 
-        return new Employee
-        {
-            Id = employee.Id,
-            FirstName = userResponse.FirstName,
-            LastName = userResponse.LastName,
-            Patronymic = userResponse.Patronymic,
-            Type = employee.Type
-        };
+        return MergeEmployeeWithUser(employee, userResponse);
     }
 
     public async Task<PaginatedList<Employee>> SearchEmployees(SearchEmployeesRequest request)
@@ -93,19 +86,23 @@ public class EmployeesService : IEmployeesService
             .ToArray();
     }
 
+    private static Employee MergeEmployeeWithUser(Core.Entities.Employee employee, User user)
+    {
+        return new Employee
+        {
+            Id = employee.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Patronymic = user.Patronymic,
+            Type = employee.Type,
+            ManagerId = employee.ManagerId
+        };
+    }
+
     private static IEnumerable<Employee> JoinEmployeesWithUsers(
         IEnumerable<Core.Entities.Employee> employees,
         IEnumerable<User> users)
     {
-        return employees.Join(
-            users, employee => employee.Id, user => user.Id, (employee, user) => new Employee
-            {
-                Id = employee.Id,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Patronymic = user.Patronymic,
-                Type = employee.Type,
-                ManagerId = employee.ManagerId
-            });
+        return employees.Join(users, employee => employee.Id, user => user.Id, MergeEmployeeWithUser);
     }
 }
