@@ -102,7 +102,7 @@ public class EmployeeSkillsService : IEmployeeSkillsService
 
         var addedSkillId = skillWithSubSkills.First().SkillId;
         var groupsToAdd = await skillsRepository.GetGroups(addedSkillId)
-            .TakeWhileAwait(async group => await CountSkillsToAddGroupAsync(employeeId, group.Id) < 2)
+            .TakeWhileAwait(group => CanAddGroupAsync(employeeId, group.Id))
             .Select(skill => new EmployeeSkill { EmployeeId = employeeId, SkillId = skill.Id })
             .ToListAsync();
 
@@ -151,19 +151,18 @@ public class EmployeeSkillsService : IEmployeeSkillsService
             throw new ForbiddenException($"Access denied for user with id {currentUserId}");
     }
 
-    private async Task<int> CountSkillsToAddGroupAsync(string employeeId, int groupId)
+    private async ValueTask<bool> CanAddGroupAsync(string employeeId, int groupId)
     {
         var groupSkillsIds = await GetGroupSkillsIdsAsync(groupId);
         var foundEmployeeGroupSkills =
             await employeeSkillsRepository.FindEmployeeSkillsAsync(employeeId, groupSkillsIds);
-        return groupSkillsIds.Length - foundEmployeeGroupSkills.Count;
+        return groupSkillsIds.Length - foundEmployeeGroupSkills.Count == 1;
     }
 
     private async Task<ICollection<EmployeeSkill>> GetGroupsToApproveAsync(EmployeeSkill employeeSkill)
     {
         var groups = skillsRepository.GetGroups(employeeSkill.SkillId)
-            .TakeWhileAwait(
-                async group => await CountSkillsToApproveGroupAsync(employeeSkill.EmployeeId, group.Id) < 2);
+            .TakeWhileAwait(group => CanApproveGroupAsync(employeeSkill.EmployeeId, group.Id));
 
         var groupsIds = await groups
             .Select(group => group.Id)
@@ -181,13 +180,13 @@ public class EmployeeSkillsService : IEmployeeSkillsService
         return await employeeSkillsRepository.FindEmployeeSkillsAsync(employeeSkill.EmployeeId, subSkillsIds);
     }
 
-    private async Task<int> CountSkillsToApproveGroupAsync(string employeeId, int groupId)
+    private async ValueTask<bool> CanApproveGroupAsync(string employeeId, int groupId)
     {
         var groupSkillsIds = await GetGroupSkillsIdsAsync(groupId);
         var approvedEmployeeSkillsCount =
             (await employeeSkillsRepository.FindEmployeeSkillsAsync(employeeId, groupSkillsIds))
             .Count(skill => skill.Status == EmployeeSkillStatus.Approved);
-        return groupSkillsIds.Length - approvedEmployeeSkillsCount;
+        return groupSkillsIds.Length - approvedEmployeeSkillsCount == 1;
     }
 
     private async Task<ICollection<EmployeeSkill>> GetSubSkillsToDeleteAsync(EmployeeSkill employeeSkill)
@@ -202,16 +201,16 @@ public class EmployeeSkillsService : IEmployeeSkillsService
     private async Task<ICollection<EmployeeSkill>> GetGroupsToDeleteAsync(EmployeeSkill employeeSkill)
     {
         var groupsIds = await skillsRepository.GetGroups(employeeSkill.SkillId)
-            .TakeWhileAwait(async group => await CountGroupSkillsAsync(employeeSkill.EmployeeId, group.Id) < 2)
+            .TakeWhileAwait(group => CanDeleteGroupAsync(employeeSkill.EmployeeId, group.Id))
             .Select(group => group.Id)
             .ToArrayAsync();
         return await employeeSkillsRepository.FindEmployeeSkillsAsync(employeeSkill.EmployeeId, groupsIds);
     }
 
-    private async Task<int> CountGroupSkillsAsync(string employeeId, int groupId)
+    private async ValueTask<bool> CanDeleteGroupAsync(string employeeId, int groupId)
     {
         var groupSkillsIds = await GetGroupSkillsIdsAsync(groupId);
-        return (await employeeSkillsRepository.FindEmployeeSkillsAsync(employeeId, groupSkillsIds)).Count;
+        return (await employeeSkillsRepository.FindEmployeeSkillsAsync(employeeId, groupSkillsIds)).Count == 1;
     }
 
     private async Task<int[]> GetGroupSkillsIdsAsync(int groupId)
