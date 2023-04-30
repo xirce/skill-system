@@ -1,8 +1,10 @@
 using System.Text.Json.Serialization;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Refit;
-using SkillSystem.Application;
 using SkillSystem.Application.Common.Services;
+using SkillSystem.Application.DI;
 using SkillSystem.IdentityServer4.Client;
 using SkillSystem.Infrastructure;
 using SkillSystem.Infrastructure.Persistence;
@@ -11,6 +13,10 @@ using SkillSystem.WebApi.Middlewares;
 using SkillSystem.WebApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+
+builder.Host.ConfigureContainer<ContainerBuilder>(container => container.RegisterModule(new ApplicationModule()));
 
 builder.WebHost.ConfigureKestrel(options => options.AddServerHeader = false);
 
@@ -44,7 +50,6 @@ builder.Services.AddRefitClient<IUsersClient>()
             builder.Configuration.GetSection(nameof(SkillSystemWebApiSettings)).Get<SkillSystemWebApiSettings>()
                 .IdentityApiBaseUrl));
 
-builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
