@@ -7,7 +7,7 @@ namespace SkillSystem.Core.Entities;
 /// </summary>
 public class EmployeeSkill
 {
-    public string EmployeeId { get; set; }
+    public Guid EmployeeId { get; set; }
 
     /// <summary>
     /// Скилл, который получил сотрудник.

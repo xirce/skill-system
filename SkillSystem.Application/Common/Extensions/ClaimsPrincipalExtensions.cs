@@ -4,8 +4,9 @@ namespace SkillSystem.Application.Common.Extensions;
 
 public static class ClaimsPrincipalExtensions
 {
-    public static string? GetUserId(this ClaimsPrincipal principal)
+    public static Guid? GetUserId(this ClaimsPrincipal principal)
     {
-        return principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        return userId is not null ? Guid.Parse(userId) : null;
     }
 }

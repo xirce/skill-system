@@ -19,14 +19,14 @@ public class EmployeeSkillsController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddEmployeeSkill(string employeeId, EmployeeSkillRequest skillRequest)
+    public async Task<IActionResult> AddEmployeeSkill(Guid employeeId, EmployeeSkillRequest skillRequest)
     {
         await employeeSkillsService.AddEmployeeSkillsAsync(employeeId, new[] { skillRequest.SkillId });
         return Ok(skillRequest.SkillId);
     }
 
     [HttpGet("{skillId}")]
-    public async Task<ActionResult<EmployeeSkillResponse>> GetEmployeeSkill(string employeeId, int skillId)
+    public async Task<ActionResult<EmployeeSkillResponse>> GetEmployeeSkill(Guid employeeId, int skillId)
     {
         var employeeSkill = await employeeSkillsService.GetEmployeeSkillAsync(employeeId, skillId);
         return Ok(employeeSkill);
@@ -34,7 +34,7 @@ public class EmployeeSkillsController : BaseController
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<EmployeeSkillShortInfo>>> FindEmployeeSkills(
-        string employeeId,
+        Guid employeeId,
         [FromQuery] int? roleId = null)
     {
         var employeeSkills = await employeeSkillsService.FindEmployeeSkillsAsync(employeeId, roleId);
@@ -43,14 +43,14 @@ public class EmployeeSkillsController : BaseController
 
     [HttpPost("{skillId}/approve")]
     [Authorize(Roles = AuthRoleNames.Admin)]
-    public async Task<IActionResult> ApproveEmployeeSkill(string employeeId, int skillId)
+    public async Task<IActionResult> ApproveEmployeeSkill(Guid employeeId, int skillId)
     {
         await employeeSkillsService.ApproveSkillsAsync(employeeId, new[] { skillId });
         return NoContent();
     }
 
     [HttpDelete("{skillId}")]
-    public async Task<IActionResult> DeleteEmployeeSkill(string employeeId, int skillId)
+    public async Task<IActionResult> DeleteEmployeeSkill(Guid employeeId, int skillId)
     {
         await employeeSkillsService.DeleteEmployeeSkillsAsync(employeeId, new[] { skillId });
         return NoContent();

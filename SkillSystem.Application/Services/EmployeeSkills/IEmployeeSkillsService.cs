@@ -4,9 +4,9 @@ namespace SkillSystem.Application.Services.EmployeeSkills;
 
 public interface IEmployeeSkillsService
 {
-    Task AddEmployeeSkillsAsync(string employeeId, IEnumerable<int> skillsIds);
-    Task<EmployeeSkillResponse> GetEmployeeSkillAsync(string employeeId, int skillId);
-    Task<ICollection<EmployeeSkillShortInfo>> FindEmployeeSkillsAsync(string employeeId, int? roleId = null);
-    Task ApproveSkillsAsync(string employeeId, IEnumerable<int> skillsIds);
-    Task DeleteEmployeeSkillsAsync(string employeeId, IEnumerable<int> skillsIds);
+    Task AddEmployeeSkillsAsync(Guid employeeId, IEnumerable<int> skillsIds);
+    Task<EmployeeSkillResponse> GetEmployeeSkillAsync(Guid employeeId, int skillId);
+    Task<ICollection<EmployeeSkillShortInfo>> FindEmployeeSkillsAsync(Guid employeeId, int? roleId = null);
+    Task ApproveSkillsAsync(Guid employeeId, IEnumerable<int> skillsIds);
+    Task DeleteEmployeeSkillsAsync(Guid employeeId, IEnumerable<int> skillsIds);
 }
