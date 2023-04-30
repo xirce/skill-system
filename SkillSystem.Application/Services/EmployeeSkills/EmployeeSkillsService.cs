@@ -34,7 +34,7 @@ public class EmployeeSkillsService : IEmployeeSkillsService
         this.currentUserProvider = currentUserProvider;
     }
 
-    public async Task AddEmployeeSkillsAsync(string employeeId, IEnumerable<int> skillsIds)
+    public async Task AddEmployeeSkillsAsync(Guid employeeId, IEnumerable<int> skillsIds)
     {
         ThrowIfCurrentUserHasNotAccessTo(employeeId);
 
@@ -46,7 +46,7 @@ public class EmployeeSkillsService : IEmployeeSkillsService
         await unitOfWork.SaveChangesAsync();
     }
 
-    public async Task<EmployeeSkillResponse> GetEmployeeSkillAsync(string employeeId, int skillId)
+    public async Task<EmployeeSkillResponse> GetEmployeeSkillAsync(Guid employeeId, int skillId)
     {
         var skill = await employeeSkillsRepository.GetEmployeeSkillAsync(employeeId, skillId);
         var subSkillsIds = (await skillsRepository.GetSubSkillsAsync(skillId))
@@ -59,14 +59,14 @@ public class EmployeeSkillsService : IEmployeeSkillsService
     }
 
     public async Task<ICollection<EmployeeSkillShortInfo>> FindEmployeeSkillsAsync(
-        string employeeId,
+        Guid employeeId,
         int? roleId = null)
     {
         var skills = await FindEmployeeSkillsInternalAsync(employeeId, roleId);
         return skills.Adapt<ICollection<EmployeeSkillShortInfo>>();
     }
 
-    public async Task ApproveSkillsAsync(string employeeId, IEnumerable<int> skillsIds)
+    public async Task ApproveSkillsAsync(Guid employeeId, IEnumerable<int> skillsIds)
     {
         ThrowIfCurrentUserHasNotAccessTo(employeeId);
 
@@ -81,7 +81,7 @@ public class EmployeeSkillsService : IEmployeeSkillsService
         await unitOfWork.SaveChangesAsync();
     }
 
-    public async Task DeleteEmployeeSkillsAsync(string employeeId, IEnumerable<int> skillsIds)
+    public async Task DeleteEmployeeSkillsAsync(Guid employeeId, IEnumerable<int> skillsIds)
     {
         ThrowIfCurrentUserHasNotAccessTo(employeeId);
 
@@ -93,7 +93,7 @@ public class EmployeeSkillsService : IEmployeeSkillsService
         await unitOfWork.SaveChangesAsync();
     }
 
-    private async Task<ICollection<EmployeeSkill>> FindEmployeeSkillsInternalAsync(string employeeId, int? roleId)
+    private async Task<ICollection<EmployeeSkill>> FindEmployeeSkillsInternalAsync(Guid employeeId, int? roleId)
     {
         var skills = roleId.HasValue
             ? await FindEmployeeRoleSkillsAsync(employeeId, roleId.Value)
@@ -101,7 +101,7 @@ public class EmployeeSkillsService : IEmployeeSkillsService
         return skills;
     }
 
-    private async Task<ICollection<EmployeeSkill>> GetSkillsToAddAsync(string employeeId, int skillId)
+    private async Task<ICollection<EmployeeSkill>> GetSkillsToAddAsync(Guid employeeId, int skillId)
     {
         var skillWithSubSkills = (await skillsRepository.TraverseSkillAsync(skillId)).ToArray()
             .Select(subSkill => EmployeeSkills.Received(employeeId, subSkill.Id))
@@ -118,7 +118,7 @@ public class EmployeeSkillsService : IEmployeeSkillsService
             .ToArray();
     }
 
-    private async Task<ICollection<EmployeeSkill>> GetSkillsToApproveAsync(string employeeId, int skillId)
+    private async Task<ICollection<EmployeeSkill>> GetSkillsToApproveAsync(Guid employeeId, int skillId)
     {
         var employeeSkill = await employeeSkillsRepository.GetEmployeeSkillAsync(employeeId, skillId);
 
@@ -132,7 +132,7 @@ public class EmployeeSkillsService : IEmployeeSkillsService
             .ToArray();
     }
 
-    private async Task<List<EmployeeSkill>> GetSkillsToDeleteAsync(string employeeId, int skillId)
+    private async Task<List<EmployeeSkill>> GetSkillsToDeleteAsync(Guid employeeId, int skillId)
     {
         var employeeSkill = await employeeSkillsRepository.GetEmployeeSkillAsync(employeeId, skillId);
 
@@ -145,7 +145,7 @@ public class EmployeeSkillsService : IEmployeeSkillsService
             .ToList();
     }
 
-    private void ThrowIfCurrentUserHasNotAccessTo(string employeeId)
+    private void ThrowIfCurrentUserHasNotAccessTo(Guid employeeId)
     {
         var currentUser = currentUserProvider.User;
         var currentUserId = currentUser?.GetUserId();
@@ -153,7 +153,7 @@ public class EmployeeSkillsService : IEmployeeSkillsService
             throw new ForbiddenException($"Access denied for user with id {currentUserId}");
     }
 
-    private async ValueTask<bool> CanAddGroupAsync(string employeeId, int groupId)
+    private async ValueTask<bool> CanAddGroupAsync(Guid employeeId, int groupId)
     {
         var groupSkillsIds = await GetGroupSkillsIdsAsync(groupId);
         var foundEmployeeGroupSkills =
@@ -182,7 +182,7 @@ public class EmployeeSkillsService : IEmployeeSkillsService
         return await employeeSkillsRepository.FindEmployeeSkillsAsync(employeeSkill.EmployeeId, subSkillsIds);
     }
 
-    private async ValueTask<bool> CanApproveGroupAsync(string employeeId, int groupId)
+    private async ValueTask<bool> CanApproveGroupAsync(Guid employeeId, int groupId)
     {
         var groupSkillsIds = await GetGroupSkillsIdsAsync(groupId);
         var approvedEmployeeSkillsCount =
@@ -209,7 +209,7 @@ public class EmployeeSkillsService : IEmployeeSkillsService
         return await employeeSkillsRepository.FindEmployeeSkillsAsync(employeeSkill.EmployeeId, groupsIds);
     }
 
-    private async ValueTask<bool> CanDeleteGroupAsync(string employeeId, int groupId)
+    private async ValueTask<bool> CanDeleteGroupAsync(Guid employeeId, int groupId)
     {
         var groupSkillsIds = await GetGroupSkillsIdsAsync(groupId);
         return (await employeeSkillsRepository.FindEmployeeSkillsAsync(employeeId, groupSkillsIds)).Count == 1;
@@ -222,7 +222,7 @@ public class EmployeeSkillsService : IEmployeeSkillsService
             .ToArray();
     }
 
-    private async Task<ICollection<EmployeeSkill>> FindEmployeeRoleSkillsAsync(string employeeId, int roleId)
+    private async Task<ICollection<EmployeeSkill>> FindEmployeeRoleSkillsAsync(Guid employeeId, int roleId)
     {
         var roleGrades = await rolesRepository.GetRoleGradesAsync(roleId, true);
 

@@ -120,6 +120,11 @@ public class SkillSystemDbContext : DbContext
             .HasKey(skill => new { skill.EmployeeId, skill.SkillId });
 
         modelBuilder.Entity<EmployeeSkill>()
+            .HasOne(skill => skill.Employee)
+            .WithMany()
+            .HasForeignKey(skill => skill.EmployeeId);
+
+        modelBuilder.Entity<EmployeeSkill>()
             .HasOne(skill => skill.Skill)
             .WithMany()
             .HasForeignKey(skill => skill.SkillId);

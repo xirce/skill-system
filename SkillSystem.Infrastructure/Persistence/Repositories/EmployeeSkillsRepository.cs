@@ -24,7 +24,7 @@ public class EmployeeSkillsRepository : IEmployeeSkillsRepository
         }
     }
 
-    public async Task<EmployeeSkill?> FindEmployeeSkillAsync(string employeeId, int skillId)
+    public async Task<EmployeeSkill?> FindEmployeeSkillAsync(Guid employeeId, int skillId)
     {
         return await dbContext.EmployeeSkills
             .Include(employeeSkill => employeeSkill.Skill)
@@ -32,19 +32,19 @@ public class EmployeeSkillsRepository : IEmployeeSkillsRepository
                 employeeSkill => employeeSkill.EmployeeId == employeeId && employeeSkill.SkillId == skillId);
     }
 
-    public async Task<EmployeeSkill> GetEmployeeSkillAsync(string employeeId, int skillId)
+    public async Task<EmployeeSkill> GetEmployeeSkillAsync(Guid employeeId, int skillId)
     {
         return await FindEmployeeSkillAsync(employeeId, skillId)
                ?? throw new EntityNotFoundException(nameof(EmployeeSkill), new { employeeId, skillId });
     }
 
-    public async Task<ICollection<EmployeeSkill>> FindEmployeeSkillsAsync(string employeeId)
+    public async Task<ICollection<EmployeeSkill>> FindEmployeeSkillsAsync(Guid employeeId)
     {
         return await QueryEmployeeSkills(employeeId).ToListAsync();
     }
 
     public async Task<ICollection<EmployeeSkill>> FindEmployeeSkillsAsync(
-        string employeeId,
+        Guid employeeId,
         IEnumerable<int> skillsIds)
     {
         return await QueryEmployeeSkills(employeeId)
@@ -62,7 +62,7 @@ public class EmployeeSkillsRepository : IEmployeeSkillsRepository
         dbContext.EmployeeSkills.RemoveRange(skills);
     }
 
-    private IQueryable<EmployeeSkill> QueryEmployeeSkills(string employeeId)
+    private IQueryable<EmployeeSkill> QueryEmployeeSkills(Guid employeeId)
     {
         return dbContext.EmployeeSkills
             .AsNoTracking()

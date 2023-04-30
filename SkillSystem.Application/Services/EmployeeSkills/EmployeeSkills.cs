@@ -5,17 +5,17 @@ namespace SkillSystem.Application.Services.EmployeeSkills;
 
 public static class EmployeeSkills
 {
-    public static EmployeeSkill Received(string employeeId, int skillId)
+    public static EmployeeSkill Received(Guid employeeId, int skillId)
     {
         return Create(employeeId, skillId, EmployeeSkillStatus.Received);
     }
 
-    public static EmployeeSkill Approved(string employeeId, int skillId)
+    public static EmployeeSkill Approved(Guid employeeId, int skillId)
     {
         return Create(employeeId, skillId, EmployeeSkillStatus.Approved);
     }
 
-    private static EmployeeSkill Create(string employeeId, int skillId, EmployeeSkillStatus status)
+    private static EmployeeSkill Create(Guid employeeId, int skillId, EmployeeSkillStatus status)
     {
         return new EmployeeSkill
         {
