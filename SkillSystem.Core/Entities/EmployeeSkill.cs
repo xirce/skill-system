@@ -7,6 +7,11 @@ namespace SkillSystem.Core.Entities;
 /// </summary>
 public class EmployeeSkill
 {
+    /// <summary>
+    /// Сотрудник.
+    /// </summary>
+    public Employee Employee { get; set; }
+
     public Guid EmployeeId { get; set; }
 
     /// <summary>
