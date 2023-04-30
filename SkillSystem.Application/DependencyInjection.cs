@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using SkillSystem.Application.Grading.AddSkillToEmployee;
 using SkillSystem.Application.Services.Departments;
 using SkillSystem.Application.Services.Duties;
 using SkillSystem.Application.Services.Employees;
@@ -32,6 +33,8 @@ public static class DependencyInjection
 
         services.AddScoped<IManagerService, ManagerService>();
         services.AddScoped<IEmployeesManager, EmployeesManager>();
+
+        services.AddMediatR(config => config.RegisterServicesFromAssemblyContaining<AddSkillsToEmployeeCommand>());
 
         return services;
     }
