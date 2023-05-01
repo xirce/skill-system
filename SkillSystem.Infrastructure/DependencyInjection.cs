@@ -28,6 +28,7 @@ public static class DependencyInjection
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+        services.AddScoped<ISkillsReadOnlyRepository, SkillsRepository>();
         services.AddScoped<ISkillsRepository, SkillsRepository>();
         services.AddScoped<IRolesRepository, RolesRepository>();
         services.AddScoped<IGradesRepository, GradesRepository>();
@@ -39,6 +40,7 @@ public static class DependencyInjection
         services.AddScoped<IProjectRolesRepository, ProjectRolesRepository>();
         services.AddScoped<IDepartmentsRepository, DepartmentsRepository>();
 
+        services.AddScoped<IEmployeeSkillsReadOnlyRepository, EmployeeSkillsRepository>();
         services.AddScoped<IEmployeeSkillsRepository, EmployeeSkillsRepository>();
 
         services.AddScoped<IEmployeesRepository, EmployeesRepository>();
