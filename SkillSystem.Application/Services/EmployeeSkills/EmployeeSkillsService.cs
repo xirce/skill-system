@@ -4,6 +4,7 @@ using SkillSystem.Application.Common.Exceptions;
 using SkillSystem.Application.Common.Extensions;
 using SkillSystem.Application.Common.Services;
 using SkillSystem.Application.Repositories;
+using SkillSystem.Application.Repositories.Extensions;
 using SkillSystem.Application.Repositories.Roles;
 using SkillSystem.Application.Repositories.Skills;
 using SkillSystem.Application.Services.EmployeeSkills.Models;
@@ -155,7 +156,7 @@ public class EmployeeSkillsService : IEmployeeSkillsService
 
     private async ValueTask<bool> CanAddGroupAsync(Guid employeeId, int groupId)
     {
-        var groupSkillsIds = await GetGroupSkillsIdsAsync(groupId);
+        var groupSkillsIds = await skillsRepository.GetGroupSkillsIdsAsync(groupId);
         var foundEmployeeGroupSkills =
             await employeeSkillsRepository.FindEmployeeSkillsAsync(employeeId, groupSkillsIds);
         return groupSkillsIds.Length - foundEmployeeGroupSkills.Count == 1;
@@ -184,7 +185,7 @@ public class EmployeeSkillsService : IEmployeeSkillsService
 
     private async ValueTask<bool> CanApproveGroupAsync(Guid employeeId, int groupId)
     {
-        var groupSkillsIds = await GetGroupSkillsIdsAsync(groupId);
+        var groupSkillsIds = await skillsRepository.GetGroupSkillsIdsAsync(groupId);
         var approvedEmployeeSkillsCount =
             (await employeeSkillsRepository.FindEmployeeSkillsAsync(employeeId, groupSkillsIds))
             .Count(skill => skill.Status == EmployeeSkillStatus.Approved);
@@ -211,15 +212,8 @@ public class EmployeeSkillsService : IEmployeeSkillsService
 
     private async ValueTask<bool> CanDeleteGroupAsync(Guid employeeId, int groupId)
     {
-        var groupSkillsIds = await GetGroupSkillsIdsAsync(groupId);
+        var groupSkillsIds = await skillsRepository.GetGroupSkillsIdsAsync(groupId);
         return (await employeeSkillsRepository.FindEmployeeSkillsAsync(employeeId, groupSkillsIds)).Count == 1;
-    }
-
-    private async Task<int[]> GetGroupSkillsIdsAsync(int groupId)
-    {
-        return (await skillsRepository.GetSubSkillsAsync(groupId))
-            .Select(skill => skill.Id)
-            .ToArray();
     }
 
     private async Task<ICollection<EmployeeSkill>> FindEmployeeRoleSkillsAsync(Guid employeeId, int roleId)
