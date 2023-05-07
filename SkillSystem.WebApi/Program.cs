@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Refit;
+using Serilog;
 using SkillSystem.Application;
 using SkillSystem.Application.Common.Services;
 using SkillSystem.IdentityServer4.Client;
@@ -11,6 +12,11 @@ using SkillSystem.WebApi.Middlewares;
 using SkillSystem.WebApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog(
+    (_, loggerConfig) =>
+        loggerConfig
+            .ReadFrom.Configuration(builder.Configuration));
 
 builder.WebHost.ConfigureKestrel(options => options.AddServerHeader = false);
 
@@ -62,6 +68,7 @@ using (var scope = app.Services.CreateScope())
     await dbInitializer.InitializeAsync();
 }
 
+app.UseMiddleware<HttpLoggingMiddleware>();
 app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 app.UseHttpsRedirection();
