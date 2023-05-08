@@ -27,6 +27,7 @@ public class EmployeeSkillsRepository : IEmployeeSkillsRepository
     public async Task<EmployeeSkill?> FindEmployeeSkillAsync(Guid employeeId, int skillId)
     {
         return await dbContext.EmployeeSkills
+            .AsNoTracking()
             .Include(employeeSkill => employeeSkill.Skill)
             .FirstOrDefaultAsync(
                 employeeSkill => employeeSkill.EmployeeId == employeeId && employeeSkill.SkillId == skillId);

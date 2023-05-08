@@ -42,6 +42,9 @@ public static class DependencyInjection
         services.AddScoped<IProjectRolesRepository, ProjectRolesRepository>();
         services.AddScoped<IDepartmentsRepository, DepartmentsRepository>();
 
+        services.AddScoped<IEmployeeGradesReadOnlyRepository, EmployeeGradesRepository>();
+        services.AddScoped<IEmployeeGradesRepository, EmployeeGradesRepository>();
+
         services.AddScoped<IEmployeeSkillsReadOnlyRepository, EmployeeSkillsRepository>();
         services.AddScoped<IEmployeeSkillsRepository, EmployeeSkillsRepository>();
 
