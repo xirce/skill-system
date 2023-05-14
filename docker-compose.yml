@@ -1,0 +1,29 @@
+version: '3'
+services:
+  api:
+    container_name: api
+    image: skill-system-api
+    build:
+      context: .
+      dockerfile: Api.Dockerfile
+    environment:
+      "ConnectionStrings:SkillSystem": "Host=${DB_HOST};Port=${DB_PORT};Database=${DB_DATABASE};Username=${DB_USER};Password=${DB_PASSWORD}"
+    ports:
+      - 80:80
+    depends_on:
+      - db
+  db:
+    container_name: db
+    image: postgres
+    environment:
+      - POSTGRES_USER=${DB_SUPERUSER}
+      - POSTGRES_PASSWORD=${DB_SUPERUSER_PASSWORD} 
+      - POSTGRES_DB=${DB_DATABASE}
+    ports:
+      - 5432:5432
+    volumes:
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+      - db:/var/lib/postgresql/data
+
+volumes:
+  db:
