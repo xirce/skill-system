@@ -18,12 +18,17 @@ public class SalariesService : ISalariesService
     public async Task<int> SaveSalaryAsync(SalaryRequest request)
     {
         var newSalary = request.Adapt<Salary>();
+        var lastSalary = await salariesRepository.FindSalaryByMonthAsync(newSalary.EmployeeId,
+            newSalary.StartDate);
+        var currentSalary = await salariesRepository.FindSalaryByMonthAsync(newSalary.EmployeeId, DateTime.UtcNow);
+        if (currentSalary == null && (newSalary.StartDate.Month == DateTime.UtcNow.Month &&
+            newSalary.StartDate.Year == DateTime.UtcNow.Year))
+            return await salariesRepository.CreateSalaryAsync(newSalary);
         if (newSalary.StartDate < DateTime.UtcNow || (newSalary.StartDate.Month == DateTime.UtcNow.Month &&
             newSalary.StartDate.Year == DateTime.UtcNow.Year))
             throw new ValidationException($"Access is denied to save a salary with a date {newSalary.StartDate}");
-        var lastSalary = await salariesRepository.FindSalaryByMonthAsync(newSalary.EmployeeId,
-            newSalary.StartDate);
-        if (lastSalary != null && lastSalary.StartDate.Month == newSalary.StartDate.Month)
+        if (lastSalary != null && lastSalary.StartDate.Month == newSalary.StartDate.Month
+            && lastSalary.StartDate.Year == newSalary.StartDate.Year)
         {
             lastSalary.Wage = newSalary.Wage;
             lastSalary.Rate = newSalary.Rate;
