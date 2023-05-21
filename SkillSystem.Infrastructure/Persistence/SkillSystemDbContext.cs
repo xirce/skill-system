@@ -20,6 +20,7 @@ public class SkillSystemDbContext : DbContext
     public DbSet<ProjectRole> ProjectRoles { get; set; }
     public DbSet<Department> Departments { get; set; }
     public DbSet<EmployeeInDepartment> EmployeesInDepartments { get; set; }
+    public DbSet<Transaction> Transactions { get; set; }
 
     public SkillSystemDbContext()
     {
@@ -42,6 +43,11 @@ public class SkillSystemDbContext : DbContext
             .HasMany(role => role.Grades)
             .WithOne(grade => grade.Role)
             .HasForeignKey(grade => grade.RoleId);
+
+        modelBuilder.Entity<Transaction>()
+            .HasOne(transaction => transaction.Salary)
+            .WithOne(salary => salary.Transaction)
+            .HasForeignKey<Transaction>(transaction => transaction.SalaryId);
 
         modelBuilder.Entity<Grade>(
             entity =>
