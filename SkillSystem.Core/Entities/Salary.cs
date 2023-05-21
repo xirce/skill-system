@@ -27,4 +27,5 @@ public class Salary : BaseEntity
     /// </summary>
     public DateTime StartDate { get; set; }
 
+    public Transaction Transaction { get; set; }
 }

@@ -15,7 +15,7 @@ public class SalariesService : ISalariesService
         this.salariesRepository = salariesRepository;
     }
 
-    public async Task<int> SaveSalaryAsync(SalaryRequest request)
+    public async Task<Salary> SaveSalaryAsync(SalaryRequest request)
     {
         var newSalary = request.Adapt<Salary>();
         var lastSalary = await salariesRepository.FindSalaryByMonthAsync(newSalary.EmployeeId,

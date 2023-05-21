@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using SkillSystem.Application.Services.Salaries;
+using SkillSystem.Application.Services.Transactions;
 using SkillSystem.Application.Services.Salaries.Models;
 using System.ComponentModel.DataAnnotations;
 
@@ -22,11 +23,12 @@ public class SalariesController : BaseController
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPost]
-    public async Task<ActionResult<int>> SaveSalary(SalaryRequest request)
+    public async Task<ActionResult<int>> SaveSalary([FromServices] ITransactionsService transactionsService, SalaryRequest request, Guid managerId)
     {
         try
         {
-            var salaryId = await salariesService.SaveSalaryAsync(request);
+            var salary = await salariesService.SaveSalaryAsync(request);
+            var salaryId = await transactionsService.SaveTransactionAsync(salary, managerId);
             return Ok(salaryId);
         } catch (ValidationException ex)
         {
