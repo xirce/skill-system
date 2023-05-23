@@ -20,7 +20,7 @@ namespace SkillSystem.Infrastructure.Migrations
                     Rate = table.Column<decimal>(type: "numeric", nullable: false),
                     Bonus = table.Column<decimal>(type: "numeric", nullable: false),
                     StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ManagerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ChangedBy = table.Column<Guid>(type: "uuid", nullable: false),
                     SalaryChangeDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>

@@ -12,7 +12,7 @@ using SkillSystem.Infrastructure.Persistence;
 namespace SkillSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(SkillSystemDbContext))]
-    [Migration("20230523185824_AddSalaryTransactionMigration")]
+    [Migration("20230523222153_AddSalaryTransactionMigration")]
     partial class AddSalaryTransactionMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -307,6 +307,40 @@ namespace SkillSystem.Infrastructure.Migrations
                     b.ToTable("Salaries");
                 });
 
+            modelBuilder.Entity("SkillSystem.Core.Entities.SalaryTransaction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Bonus")
+                        .HasColumnType("numeric");
+
+                    b.Property<Guid>("ChangedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("EmployeeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Rate")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("SalaryChangeDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("Wage")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SalaryTransactions");
+                });
+
             modelBuilder.Entity("SkillSystem.Core.Entities.Skill", b =>
                 {
                     b.Property<int>("Id")
@@ -330,40 +364,6 @@ namespace SkillSystem.Infrastructure.Migrations
                     b.HasIndex("GroupId");
 
                     b.ToTable("Skills");
-                });
-
-            modelBuilder.Entity("SkillSystem.Core.Entities.Transaction", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Bonus")
-                        .HasColumnType("numeric");
-
-                    b.Property<Guid>("EmployeeId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("ManagerId")
-                        .HasColumnType("uuid");
-
-                    b.Property<decimal>("Rate")
-                        .HasColumnType("numeric");
-
-                    b.Property<DateTime>("SalaryChangeDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<decimal>("Wage")
-                        .HasColumnType("numeric");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SalaryTransactions");
                 });
 
             modelBuilder.Entity("SkillSystem.Core.Entities.Department", b =>
