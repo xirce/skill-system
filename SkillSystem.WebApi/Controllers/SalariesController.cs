@@ -5,8 +5,8 @@ using SkillSystem.Application.Services.Salaries.Models;
 using System.ComponentModel.DataAnnotations;
 using SkillSystem.Application.Common.Services;
 using SkillSystem.Application.Services.SalariesTransactions;
+using SkillSystem.Application.Common.Extensions;
 using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
 using SkillSystem.Application.Authorization;
 
 namespace SkillSystem.WebApi.Controllers;
@@ -38,9 +38,8 @@ public class SalariesController : BaseController
         try
         {
             var currentUser = currentUserProvider.User;
-            var currentUserId = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var managerId = new Guid(currentUserId);
-            var salaryId = await salariesTransactionsService.SaveSalaryAndTransaction(request, managerId);
+            var userId = currentUser.GetUserId();
+            var salaryId = await salariesTransactionsService.SaveSalary(request, userId);
             return Ok(salaryId);
         } catch (ValidationException ex)
         {

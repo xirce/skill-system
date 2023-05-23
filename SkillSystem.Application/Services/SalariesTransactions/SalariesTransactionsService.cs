@@ -23,10 +23,13 @@ public class SalariesTransactionsService : ISalariesTransactionsService
         this.unitOfWork = unitOfWork;
     }
 
-    public async Task<int> SaveSalaryAndTransaction(SalaryRequest request, Guid managerId)
+    public async Task<int> SaveSalary(SalaryRequest request, Guid? userId)
     {
+        if (userId == null)
+            throw new ArgumentNullException();
+        Guid changedBy = (Guid)userId;
         var salary = await SaveSalaryAsync(request);
-        await SaveTransactionAsync(salary, managerId);
+        await SaveTransactionAsync(salary, changedBy);
         await unitOfWork.SaveChangesAsync();
         return salary.Id;
     }
@@ -56,12 +59,12 @@ public class SalariesTransactionsService : ISalariesTransactionsService
             return await salariesRepository.CreateSalaryAsync(newSalary);
     }
 
-    private async Task SaveTransactionAsync(Salary salary, Guid managerId)
+    private async Task SaveTransactionAsync(Salary salary, Guid changedBy)
     {
         var transaction = new SalaryTransaction
         {
             EmployeeId = salary.EmployeeId,
-            ManagerId = managerId,
+            ChangedBy = changedBy,
             SalaryChangeDate = DateTime.UtcNow,
             Wage = salary.Wage,
             Bonus = salary.Bonus,

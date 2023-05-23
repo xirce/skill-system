@@ -40,7 +40,7 @@ public class SalaryTransactionsRepository : ISalaryTransactionsRepository
 
     public async Task<IEnumerable<SalaryTransaction>> GetTransactionsByManagerIdAsync(Guid managerId, DateTime? from, DateTime? to)
     {
-        return await dbContext.SalaryTransactions.Where(transaction => transaction.ManagerId == managerId)
+        return await dbContext.SalaryTransactions.Where(transaction => transaction.ChangedBy == managerId)
             .Where(transaction => from == null || transaction.SalaryChangeDate >= from ||
             (transaction.SalaryChangeDate.Month == from.Value.Month && transaction.SalaryChangeDate.Year == from.Value.Year))
             .Where(transaction => to == null || transaction.SalaryChangeDate <= to ||

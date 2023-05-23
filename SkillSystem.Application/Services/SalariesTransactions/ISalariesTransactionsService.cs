@@ -4,5 +4,5 @@ namespace SkillSystem.Application.Services.SalariesTransactions;
 
 public interface ISalariesTransactionsService
 {
-    public Task<int> SaveSalaryAndTransaction(SalaryRequest request, Guid managerId);
+    public Task<int> SaveSalary(SalaryRequest request, Guid? userId);
 }

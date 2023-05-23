@@ -8,6 +8,6 @@ public record SalaryTransactionResponse
     public decimal Rate { get; init; }
     public decimal Bonus { get; init; }
     public DateTime StartDate { get; init; }
-    public Guid ManagerId { get; init; }
+    public Guid ChangedBy { get; init; }
     public DateTime SalaryChangeDate { get; init; }
 }

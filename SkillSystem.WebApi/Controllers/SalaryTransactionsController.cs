@@ -23,14 +23,14 @@ public class SalaryTransactionsController : BaseController
     }
 
     [HttpGet("by-employee/{employeeId}")]
-    public async Task<ActionResult<IEnumerable<SalaryTransactionResponse>>> GetTransactionsByEmployeeId([BindRequired] Guid employeeId, DateTime? from, DateTime? to)
+    public async Task<ActionResult<IEnumerable<SalaryTransactionResponse>>> GetTransactionsByEmployeeId(Guid employeeId, DateTime? from, DateTime? to)
     {
         var transactions = await salaryTransactionsService.GetTransactionsByEmployeeIdAsync(employeeId, from, to);
         return Ok(transactions);
     }
 
     [HttpGet("by-manager/{managerId}")]
-    public async Task<ActionResult<IEnumerable<SalaryTransactionResponse>>> GetTransactionsByManagerId([BindRequired] Guid managerId, DateTime? from, DateTime? to)
+    public async Task<ActionResult<IEnumerable<SalaryTransactionResponse>>> GetTransactionsByManagerId(Guid managerId, DateTime? from, DateTime? to)
     {
         var transactions = await salaryTransactionsService.GetTransactionsByManagerIdAsync(managerId, from, to);
         return Ok(transactions);

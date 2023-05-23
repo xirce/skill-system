@@ -3,6 +3,9 @@ namespace SkillSystem.Core.Entities;
 
 public class SalaryTransaction : BaseEntity
 {
+    /// <summary>
+    /// Id сотрудника.
+    /// </summary>
     public Guid EmployeeId { get; set; }
 
     /// <summary>
@@ -24,6 +27,14 @@ public class SalaryTransaction : BaseEntity
     /// Месяц назначения зарплаты.
     /// </summary>
     public DateTime StartDate { get; set; }
-    public Guid ManagerId { get; set; }
+
+    /// <summary>
+    /// Id сотрудника изменившего зарплату.
+    /// </summary>
+    public Guid ChangedBy { get; set; }
+
+    /// <summary>
+    /// Дата изменения зарплаты.
+    /// </summary>
     public DateTime SalaryChangeDate { get; set; }
 }
