@@ -1,9 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using SkillSystem.Application.Services.Salaries;
-using SkillSystem.Application.Services.Transactions;
 using SkillSystem.Application.Services.Salaries.Models;
 using System.ComponentModel.DataAnnotations;
+using SkillSystem.Application.Common.Services;
+using SkillSystem.Application.Services.SalariesTransactions;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using SkillSystem.Application.Authorization;
 
 namespace SkillSystem.WebApi.Controllers;
 
@@ -11,10 +15,15 @@ namespace SkillSystem.WebApi.Controllers;
 public class SalariesController : BaseController
 {
     private readonly ISalariesService salariesService;
+    private readonly ICurrentUserProvider currentUserProvider;
+    private readonly ISalariesTransactionsService salariesTransactionsService;
 
-    public SalariesController(ISalariesService salariesService)
+    public SalariesController(ISalariesService salariesService,
+        ICurrentUserProvider currentUserProvider, ISalariesTransactionsService salariesTransactionsService)
     {
         this.salariesService = salariesService;
+        this.currentUserProvider = currentUserProvider;
+        this.salariesTransactionsService = salariesTransactionsService;
     }
 
     /// <summary>
@@ -23,12 +32,15 @@ public class SalariesController : BaseController
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPost]
-    public async Task<ActionResult<int>> SaveSalary([FromServices] ITransactionsService transactionsService, SalaryRequest request, Guid managerId)
+    [Authorize(Roles = AuthRoleNames.Admin)]
+    public async Task<ActionResult<int>> SaveSalary(SalaryRequest request)
     {
         try
         {
-            var salary = await salariesService.SaveSalaryAsync(request);
-            var salaryId = await transactionsService.SaveTransactionAsync(salary, managerId);
+            var currentUser = currentUserProvider.User;
+            var currentUserId = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var managerId = new Guid(currentUserId);
+            var salaryId = await salariesTransactionsService.SaveSalaryAndTransaction(request, managerId);
             return Ok(salaryId);
         } catch (ValidationException ex)
         {

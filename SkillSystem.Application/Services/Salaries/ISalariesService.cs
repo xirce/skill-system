@@ -5,7 +5,6 @@ namespace SkillSystem.Application.Services.Salaries;
 
 public interface ISalariesService
 {
-    Task<Salary> SaveSalaryAsync(SalaryRequest request);
     Task<SalaryResponse> GetSalaryByIdAsync(int salaryId);
     Task<SalaryResponse> GetSalaryByMonthAsync(Guid employeeId, DateTime month);
     Task<SalaryResponse> GetCurrentSalaryAsync(Guid employeeId);
