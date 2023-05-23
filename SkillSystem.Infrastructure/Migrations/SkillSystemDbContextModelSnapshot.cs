@@ -305,24 +305,6 @@ namespace SkillSystem.Infrastructure.Migrations
                     b.ToTable("Salaries");
                 });
 
-            modelBuilder.Entity("SkillSystem.Core.Entities.Transactions", b =>
-            {
-                b.Property<int>("SalaryId")
-                    .HasColumnType("integer");
-
-                NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SalaryId"));
-
-                b.Property<Guid>("ManagerId")
-                    .HasColumnType("uuid");
-
-                b.Property<DateTime>("SalaryChangeDate")
-                    .HasColumnType("timestamp with time zone");
-
-                b.HasKey("SalaryId");
-
-                b.ToTable("Transactions");
-            });
-
             modelBuilder.Entity("SkillSystem.Core.Entities.Skill", b =>
                 {
                     b.Property<int>("Id")
@@ -346,6 +328,40 @@ namespace SkillSystem.Infrastructure.Migrations
                     b.HasIndex("GroupId");
 
                     b.ToTable("Skills");
+                });
+
+            modelBuilder.Entity("SkillSystem.Core.Entities.SalaryTransaction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Bonus")
+                        .HasColumnType("numeric");
+
+                    b.Property<Guid>("EmployeeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ManagerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Rate")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("SalaryChangeDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("Wage")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SalaryTransactions");
                 });
 
             modelBuilder.Entity("SkillSystem.Core.Entities.Department", b =>
