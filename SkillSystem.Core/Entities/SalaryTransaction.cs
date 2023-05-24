@@ -1,6 +1,9 @@
 namespace SkillSystem.Core.Entities;
 
 
+/// <summary>
+/// Зарплатная транзакция.
+/// </summary>
 public class SalaryTransaction : BaseEntity
 {
     /// <summary>
