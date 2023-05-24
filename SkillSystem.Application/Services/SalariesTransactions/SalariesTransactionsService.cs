@@ -1,9 +1,10 @@
 using Mapster;
+using SkillSystem.Application.Common.Extensions;
+using SkillSystem.Application.Common.Services;
 using SkillSystem.Application.Repositories;
 using SkillSystem.Application.Repositories.Salaries;
 using SkillSystem.Application.Repositories.SalaryTransactions;
 using SkillSystem.Application.Services.Salaries.Models;
-using SkillSystem.Application.Services.SalariesTransactions;
 using SkillSystem.Core.Entities;
 using System.ComponentModel.DataAnnotations;
 
@@ -14,17 +15,22 @@ public class SalariesTransactionsService : ISalariesTransactionsService
     private readonly ISalariesRepository salariesRepository;
     private readonly ISalaryTransactionsRepository transactionsRepository;
     private readonly IUnitOfWork unitOfWork;
+    private readonly ICurrentUserProvider currentUserProvider;
 
     public SalariesTransactionsService(ISalariesRepository salariesRepository,
-        ISalaryTransactionsRepository transactionsRepository, IUnitOfWork unitOfWork)
+        ISalaryTransactionsRepository transactionsRepository,
+        IUnitOfWork unitOfWork, ICurrentUserProvider currentUserProvider)
     {
         this.salariesRepository = salariesRepository;
         this.transactionsRepository = transactionsRepository;
         this.unitOfWork = unitOfWork;
+        this.currentUserProvider = currentUserProvider;
     }
 
-    public async Task<int> SaveSalary(SalaryRequest request, Guid? userId)
+    public async Task<int> SaveSalary(SalaryRequest request)
     {
+        var currentUser = currentUserProvider.User;
+        var userId = currentUser.GetUserId();
         if (userId == null)
             throw new ArgumentNullException();
         Guid changedBy = (Guid)userId;

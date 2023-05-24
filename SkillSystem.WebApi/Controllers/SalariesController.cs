@@ -3,11 +3,8 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using SkillSystem.Application.Services.Salaries;
 using SkillSystem.Application.Services.Salaries.Models;
 using System.ComponentModel.DataAnnotations;
-using SkillSystem.Application.Common.Services;
 using SkillSystem.Application.Services.SalariesTransactions;
-using SkillSystem.Application.Common.Extensions;
 using Microsoft.AspNetCore.Authorization;
-using SkillSystem.Application.Authorization;
 
 namespace SkillSystem.WebApi.Controllers;
 
@@ -15,14 +12,12 @@ namespace SkillSystem.WebApi.Controllers;
 public class SalariesController : BaseController
 {
     private readonly ISalariesService salariesService;
-    private readonly ICurrentUserProvider currentUserProvider;
     private readonly ISalariesTransactionsService salariesTransactionsService;
 
     public SalariesController(ISalariesService salariesService,
-        ICurrentUserProvider currentUserProvider, ISalariesTransactionsService salariesTransactionsService)
+        ISalariesTransactionsService salariesTransactionsService)
     {
         this.salariesService = salariesService;
-        this.currentUserProvider = currentUserProvider;
         this.salariesTransactionsService = salariesTransactionsService;
     }
 
@@ -32,14 +27,12 @@ public class SalariesController : BaseController
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPost]
-    [Authorize(Roles = AuthRoleNames.Admin)]
+    [Authorize]
     public async Task<ActionResult<int>> SaveSalary(SalaryRequest request)
     {
         try
         {
-            var currentUser = currentUserProvider.User;
-            var userId = currentUser.GetUserId();
-            var salaryId = await salariesTransactionsService.SaveSalary(request, userId);
+            var salaryId = await salariesTransactionsService.SaveSalary(request);
             return Ok(salaryId);
         } catch (ValidationException ex)
         {
