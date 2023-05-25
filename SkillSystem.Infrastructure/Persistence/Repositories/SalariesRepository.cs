@@ -17,7 +17,6 @@ public class SalariesRepository : ISalariesRepository
     public async Task<Salary> CreateSalaryAsync(Salary salary)
     {
         await dbContext.AddAsync(salary);
-        await dbContext.SaveChangesAsync();
         return salary;
     }
 
@@ -55,10 +54,9 @@ public class SalariesRepository : ISalariesRepository
         return await salaries.ToListAsync();
     }
 
-    public async Task<Salary> UpdateSalaryAsync(Salary salary)
+    public Salary UpdateSalaryAsync(Salary salary)
     {
         dbContext.Salaries.Update(salary);
-        await dbContext.SaveChangesAsync();
         return salary;
     }
 

@@ -10,6 +10,6 @@ public interface ISalariesRepository
         Task<Salary?> FindSalaryByMonthAsync(Guid employeeId, DateTime date);
         Task<Salary> GetSalaryByMonthAsync(Guid employeeId, DateTime date);
         Task<IEnumerable<Salary>> GetSalariesAsync(Guid employeeId, DateTime? from, DateTime? to);
-        Task<Salary> UpdateSalaryAsync(Salary salary);
+        Salary UpdateSalaryAsync(Salary salary);
         Task DeleteSalaryAsync(Salary salary);
 }

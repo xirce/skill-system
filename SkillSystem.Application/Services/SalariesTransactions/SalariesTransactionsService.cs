@@ -32,7 +32,7 @@ public class SalariesTransactionsService : ISalariesTransactionsService
         var currentUser = currentUserProvider.User;
         var userId = currentUser.GetUserId();
         if (userId == null)
-            throw new ArgumentNullException();
+            throw new NullReferenceException();
         Guid changedBy = (Guid)userId;
         var salary = await SaveSalaryAsync(request);
         await SaveTransactionAsync(salary, changedBy);
@@ -59,7 +59,7 @@ public class SalariesTransactionsService : ISalariesTransactionsService
             lastSalary.Rate = newSalary.Rate;
             lastSalary.Bonus = newSalary.Bonus;
             lastSalary.StartDate = newSalary.StartDate;
-            return await salariesRepository.UpdateSalaryAsync(lastSalary);
+            return salariesRepository.UpdateSalaryAsync(lastSalary);
         }
         else
             return await salariesRepository.CreateSalaryAsync(newSalary);
