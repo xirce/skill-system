@@ -31,9 +31,9 @@ public class SalariesTransactionsService : ISalariesTransactionsService
     {
         var currentUser = currentUserProvider.User;
         var userId = currentUser.GetUserId();
-        if (userId == null)
+        if (!userId.HasValue)
             throw new NullReferenceException();
-        Guid changedBy = (Guid)userId;
+        Guid changedBy = userId.Value;
         var salary = await SaveSalaryAsync(request);
         await SaveTransactionAsync(salary, changedBy);
         await unitOfWork.SaveChangesAsync();
