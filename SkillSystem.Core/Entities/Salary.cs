@@ -26,5 +26,4 @@ public class Salary : BaseEntity
     /// Месяц назначения зарплаты.
     /// </summary>
     public DateTime StartDate { get; set; }
-
 }

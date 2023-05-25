@@ -10,6 +10,7 @@ using SkillSystem.Application.Repositories.Positions;
 using SkillSystem.Application.Repositories.Projects;
 using SkillSystem.Application.Repositories.Roles;
 using SkillSystem.Application.Repositories.Salaries;
+using SkillSystem.Application.Repositories.SalaryTransactions;
 using SkillSystem.Application.Repositories.Skills;
 using SkillSystem.Application.Services.Employees;
 using SkillSystem.Infrastructure.Persistence;
@@ -35,6 +36,7 @@ public static class DependencyInjection
         services.AddScoped<IPositionsRepository, PositionsRepository>();
         services.AddScoped<IDutiesRepository, DutiesRepository>();
         services.AddScoped<ISalariesRepository, SalariesRepository>();
+        services.AddScoped<ISalaryTransactionsRepository, SalaryTransactionsRepository>();
 
         services.AddScoped<IProjectsRepository, ProjectsRepository>();
         services.AddScoped<IProjectRolesRepository, ProjectRolesRepository>();

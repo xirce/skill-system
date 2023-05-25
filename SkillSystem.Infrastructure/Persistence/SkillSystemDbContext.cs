@@ -20,6 +20,7 @@ public class SkillSystemDbContext : DbContext
     public DbSet<ProjectRole> ProjectRoles { get; set; }
     public DbSet<Department> Departments { get; set; }
     public DbSet<EmployeeInDepartment> EmployeesInDepartments { get; set; }
+    public DbSet<SalaryTransaction> SalaryTransactions { get; set; }
 
     public SkillSystemDbContext()
     {

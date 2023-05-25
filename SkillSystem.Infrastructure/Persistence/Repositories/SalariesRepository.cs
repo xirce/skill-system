@@ -14,11 +14,10 @@ public class SalariesRepository : ISalariesRepository
         this.dbContext = dbContext;
     }
 
-    public async Task<int> CreateSalaryAsync(Salary salary)
+    public async Task<Salary> CreateSalaryAsync(Salary salary)
     {
         await dbContext.AddAsync(salary);
-        await dbContext.SaveChangesAsync();
-        return salary.Id;
+        return salary;
     }
 
     public async Task<Salary?> FindSalaryByIdAsync(int salaryId)
@@ -55,11 +54,10 @@ public class SalariesRepository : ISalariesRepository
         return await salaries.ToListAsync();
     }
 
-    public async Task<int> UpdateSalaryAsync(Salary salary)
+    public Salary UpdateSalaryAsync(Salary salary)
     {
         dbContext.Salaries.Update(salary);
-        await dbContext.SaveChangesAsync();
-        return salary.Id;
+        return salary;
     }
 
     public async Task DeleteSalaryAsync(Salary salary)

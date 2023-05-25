@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using SkillSystem.Application.Services.Salaries;
 using SkillSystem.Application.Services.Salaries.Models;
 using System.ComponentModel.DataAnnotations;
+using SkillSystem.Application.Services.SalariesTransactions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SkillSystem.WebApi.Controllers;
 
@@ -10,10 +12,13 @@ namespace SkillSystem.WebApi.Controllers;
 public class SalariesController : BaseController
 {
     private readonly ISalariesService salariesService;
+    private readonly ISalariesTransactionsService salariesTransactionsService;
 
-    public SalariesController(ISalariesService salariesService)
+    public SalariesController(ISalariesService salariesService,
+        ISalariesTransactionsService salariesTransactionsService)
     {
         this.salariesService = salariesService;
+        this.salariesTransactionsService = salariesTransactionsService;
     }
 
     /// <summary>
@@ -22,11 +27,12 @@ public class SalariesController : BaseController
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPost]
+    [Authorize]
     public async Task<ActionResult<int>> SaveSalary(SalaryRequest request)
     {
         try
         {
-            var salaryId = await salariesService.SaveSalaryAsync(request);
+            var salaryId = await salariesTransactionsService.SaveSalary(request);
             return Ok(salaryId);
         } catch (ValidationException ex)
         {
