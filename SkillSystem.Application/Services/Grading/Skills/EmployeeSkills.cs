@@ -1,7 +1,7 @@
 ﻿using SkillSystem.Core.Entities;
 using SkillSystem.Core.Enums;
 
-namespace SkillSystem.Application.Services.EmployeeSkills;
+namespace SkillSystem.Application.Services.Grading.Skills;
 
 public static class EmployeeSkills
 {

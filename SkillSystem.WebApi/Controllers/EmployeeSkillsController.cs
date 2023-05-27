@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SkillSystem.Application.Authorization;
-using SkillSystem.Application.Services.EmployeeSkills;
-using SkillSystem.Application.Services.EmployeeSkills.Models;
-using SkillSystem.WebApi.Models;
+using SkillSystem.Application.Services.Grading;
+using SkillSystem.Application.Services.Grading.Models;
+using SkillSystem.Application.Services.Grading.Skills;
+using SkillSystem.Application.Services.Grading.Skills.Models;
 
 namespace SkillSystem.WebApi.Controllers;
 
@@ -11,48 +11,77 @@ namespace SkillSystem.WebApi.Controllers;
 [Route("api/employees/{employeeId}/skills")]
 public class EmployeeSkillsController : BaseController
 {
-    private readonly IEmployeeSkillsService employeeSkillsService;
+    private readonly IEmployeeGradingManager employeeGradingManager;
+    private readonly IEmployeeSkillsProvider employeeSkillsProvider;
 
-    public EmployeeSkillsController(IEmployeeSkillsService employeeSkillsService)
+    public EmployeeSkillsController(
+        IEmployeeGradingManager employeeGradingManager,
+        IEmployeeSkillsProvider employeeSkillsProvider)
     {
-        this.employeeSkillsService = employeeSkillsService;
+        this.employeeGradingManager = employeeGradingManager;
+        this.employeeSkillsProvider = employeeSkillsProvider;
     }
 
+    /// <summary>
+    /// Отметить скилл изученным сотрудником.
+    /// </summary>
+    /// <param name="employeeId">Идентификатор сотрудника</param>
     [HttpPost]
-    public async Task<IActionResult> AddEmployeeSkill(Guid employeeId, EmployeeSkillRequest skillRequest)
+    public async Task AddEmployeeSkill(Guid employeeId, AddEmployeeSkillRequest request)
     {
-        await employeeSkillsService.AddEmployeeSkillsAsync(employeeId, new[] { skillRequest.SkillId });
-        return Ok(skillRequest.SkillId);
+        request = request with { EmployeeId = employeeId };
+        await employeeGradingManager.AddSkillToEmployee(request);
     }
 
+    /// <summary>
+    /// Получить детальную информацию о скилле сотрудника.
+    /// </summary>
+    /// <param name="employeeId">Идентификатор сотрудника</param>
+    /// <param name="skillId">Идентификатор скилла</param>
+    /// <returns>Скилл сотрудника вместе с его подскиллами</returns>
     [HttpGet("{skillId}")]
-    public async Task<ActionResult<EmployeeSkillResponse>> GetEmployeeSkill(Guid employeeId, int skillId)
+    public async Task<EmployeeSkillResponse> GetEmployeeSkill(Guid employeeId, int skillId)
     {
-        var employeeSkill = await employeeSkillsService.GetEmployeeSkillAsync(employeeId, skillId);
-        return Ok(employeeSkill);
+        return await employeeSkillsProvider.GetEmployeeSkillAsync(employeeId, skillId);
     }
 
+    /// <summary>
+    /// Получить скиллы сотрудника.
+    /// </summary>
+    /// <param name="employeeId">Идентификатор сотрудника</param>
+    /// <param name="roleId">Идентификатор роли</param>
+    /// <returns>Скиллы, которые есть у сотрудника</returns>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<EmployeeSkillShortInfo>>> FindEmployeeSkills(
         Guid employeeId,
         [FromQuery] int? roleId = null)
     {
-        var employeeSkills = await employeeSkillsService.FindEmployeeSkillsAsync(employeeId, roleId);
+        var employeeSkills = await employeeSkillsProvider.FindEmployeeSkillsAsync(employeeId, roleId);
         return Ok(employeeSkills);
     }
 
+    /// <summary>
+    /// Подтвердить скилл сотрудника.
+    /// </summary>
+    /// <param name="employeeId">Идентификатор сотрудника</param>
+    /// <param name="skillId">Идентификатор скилла</param>
+    /// <returns></returns>
     [HttpPost("{skillId}/approve")]
-    [Authorize(Roles = AuthRoleNames.Admin)]
-    public async Task<IActionResult> ApproveEmployeeSkill(Guid employeeId, int skillId)
+    public async Task ApproveEmployeeSkill(Guid employeeId, int skillId)
     {
-        await employeeSkillsService.ApproveSkillsAsync(employeeId, new[] { skillId });
-        return NoContent();
+        var request = new ApproveEmployeeSkillRequest(employeeId, skillId);
+        await employeeGradingManager.ApproveEmployeeSkill(request);
     }
 
+    /// <summary>
+    /// Отметить скилл неизученным сотрудником.
+    /// </summary>
+    /// <param name="employeeId">Идентификатор сотрудника</param>
+    /// <param name="skillId">Идентификатор скилла</param>
     [HttpDelete("{skillId}")]
-    public async Task<IActionResult> DeleteEmployeeSkill(Guid employeeId, int skillId)
+    public async Task DeleteEmployeeSkill(Guid employeeId, int skillId)
     {
-        await employeeSkillsService.DeleteEmployeeSkillsAsync(employeeId, new[] { skillId });
-        return NoContent();
+        var request = new DeleteEmployeeSkillRequest(employeeId, skillId);
+        await employeeGradingManager.DeleteEmployeeSkill(request);
     }
 }

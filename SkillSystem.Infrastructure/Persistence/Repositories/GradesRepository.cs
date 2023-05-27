@@ -17,6 +17,7 @@ public class GradesRepository : IGradesRepository
     public async Task<Grade?> FindGradeByIdAsync(int gradeId)
     {
         return await dbContext.Grades
+            .AsNoTracking()
             .Include(grade => grade.PrevGrade)
             .Include(grade => grade.NextGrade)
             .Include(grade => grade.Skills.OrderBy(skill => skill.Id))
@@ -37,6 +38,32 @@ public class GradesRepository : IGradesRepository
             query = query.Where(grade => grade.Title.Contains(title));
 
         return query.OrderBy(grade => grade.Id);
+    }
+
+    public async Task<IReadOnlyCollection<Grade>> BatchGetGrades(IEnumerable<int> gradeIds)
+    {
+        return await dbContext.Grades
+            .AsNoTracking()
+            .Include(grade => grade.Skills)
+            .Where(grade => gradeIds.Contains(grade.Id))
+            .ToListAsync();
+    }
+
+    public async Task<IReadOnlyCollection<Grade>> GetGradesUntilAsync(int gradeId)
+    {
+        var lastGrade = await GetGradeByIdAsync(gradeId);
+
+        var gradesUntil = await dbContext.Grades
+            .Where(grade => grade.RoleId == lastGrade.RoleId)
+            .Include(grade => grade.Skills)
+            .Include(grade => grade.PrevGrade)
+            .ToListAsync();
+
+        var grade = gradesUntil.FirstOrDefault(grade => grade.Id == gradeId);
+
+        grade = grade ?? throw new EntityNotFoundException(nameof(Grade), gradeId);
+
+        return EnumeratePrevGrades(grade);
     }
 
     public async Task<IEnumerable<Skill>> GetGradeSkillsAsync(int gradeId)
@@ -128,6 +155,19 @@ public class GradesRepository : IGradesRepository
             throw new EntityNotFoundException(nameof(GradeSkill), new { gradeId, skillId });
 
         return positionGrade;
+    }
+
+    private static IReadOnlyCollection<Grade> EnumeratePrevGrades(Grade grade)
+    {
+        var grades = new Stack<Grade>();
+        var currentGrade = grade;
+        while (currentGrade is not null)
+        {
+            grades.Push(currentGrade);
+            currentGrade = currentGrade.PrevGrade;
+        }
+
+        return grades;
     }
 
     private async Task<PositionGrade?> FindCurrentPositionGrade(int roleId, int positionId)
