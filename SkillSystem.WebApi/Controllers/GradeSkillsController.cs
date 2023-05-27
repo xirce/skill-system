@@ -17,6 +17,10 @@ public class GradeSkillsController : BaseController
         this.gradesService = gradesService;
     }
 
+    /// <summary>
+    /// Получить скиллы грейда.
+    /// </summary>
+    /// <param name="gradeId">Идентификатор грейда</param>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<SkillResponse>>> GetGradeSkills(int gradeId)
     {
@@ -24,6 +28,10 @@ public class GradeSkillsController : BaseController
         return Ok(skills);
     }
 
+    /// <summary>
+    /// Добавить скилл на грейд.
+    /// </summary>
+    /// <param name="gradeId">Идентификатор грейда</param>
     [HttpPost]
     [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> AddGradeSkill(int gradeId, GradeSkillRequest skillRequest)
@@ -32,6 +40,12 @@ public class GradeSkillsController : BaseController
         return Ok(skillRequest.SkillId);
     }
 
+    /// <summary>
+    /// Удалить скилл с грейда.
+    /// </summary>
+    /// <param name="gradeId">Идентификатор грейда</param>
+    /// <param name="skillId">Идентификатор скилла</param>
+    /// <returns></returns>
     [HttpDelete("{skillId}")]
     [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> DeleteGradeSkill(int gradeId, int skillId)

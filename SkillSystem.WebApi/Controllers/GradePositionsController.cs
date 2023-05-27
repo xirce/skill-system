@@ -17,6 +17,10 @@ public class GradePositionsController : BaseController
         this.gradesService = gradesService;
     }
 
+    /// <summary>
+    /// Получить должности, которые можно занимать на грейде.
+    /// </summary>
+    /// <param name="gradeId">Идентификатор грейда</param>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<PositionResponse>>> GetGradePositions(int gradeId)
     {
@@ -24,6 +28,10 @@ public class GradePositionsController : BaseController
         return Ok(positions);
     }
 
+    /// <summary>
+    /// Закрепить должность на грейде.
+    /// </summary>
+    /// <param name="gradeId">Идентификатор грейда</param>
     [HttpPost]
     [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> AddGradePosition(int gradeId, [FromBody] GradePositionRequest positionRequest)
@@ -32,6 +40,11 @@ public class GradePositionsController : BaseController
         return Ok(positionRequest.PositionId);
     }
 
+    /// <summary>
+    /// Открепить должность от грейда.
+    /// </summary>
+    /// <param name="gradeId">Идентификатор грейда</param>
+    /// <param name="positionId">Идентификатор должности</param>
     [HttpDelete("{positionId}")]
     [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> DeleteGradePosition(int gradeId, int positionId)

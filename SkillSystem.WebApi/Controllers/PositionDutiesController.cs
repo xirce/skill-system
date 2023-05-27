@@ -17,6 +17,10 @@ public class PositionDutiesController : BaseController
         this.positionsService = positionsService;
     }
 
+    /// <summary>
+    /// Получить обязанности должности.
+    /// </summary>
+    /// <param name="positionId">Идентификатор должности</param>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<DutyShortInfo>>> GetPositionDuties(int positionId)
     {
@@ -24,6 +28,10 @@ public class PositionDutiesController : BaseController
         return Ok(duties);
     }
 
+    /// <summary>
+    /// Добавить обязанность к должности.
+    /// </summary>
+    /// <param name="positionId">Идентификатор должности</param>
     [HttpPost]
     [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> AddPositionDuty(int positionId, PositionDutyRequest dutyRequest)
@@ -32,6 +40,11 @@ public class PositionDutiesController : BaseController
         return Ok(dutyRequest.DutyId);
     }
 
+    /// <summary>
+    /// Удалить обязанность из должности.
+    /// </summary>
+    /// <param name="positionId">Идентификатор должности</param>
+    /// <param name="dutyId">Идентификатор обязанности</param>
     [HttpDelete("{dutyId}")]
     [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> DeletePositionDuty(int positionId, int dutyId)

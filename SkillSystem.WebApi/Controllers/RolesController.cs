@@ -17,6 +17,10 @@ public class RolesController : BaseController
         this.rolesService = rolesService;
     }
 
+    /// <summary>
+    /// Создать роль.
+    /// </summary>
+    /// <returns>Идентификатор созданной роли</returns>
     [HttpPost]
     [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<int> CreateRole(RoleRequest request)
@@ -24,6 +28,10 @@ public class RolesController : BaseController
         return await rolesService.CreateRoleAsync(request);
     }
 
+    /// <summary>
+    /// Получить информацию о роли.
+    /// </summary>
+    /// <param name="roleId">Идентификатор роли</param>
     [HttpGet("{roleId}")]
     public async Task<ActionResult<RoleResponse>> GetRoleById(int roleId)
     {
@@ -31,6 +39,9 @@ public class RolesController : BaseController
         return Ok(role);
     }
 
+    /// <summary>
+    /// Поиск ролей по названию.
+    /// </summary>
     [HttpGet]
     public async Task<ActionResult<PaginatedResponse<RoleShortInfo>>> FindRoles([FromQuery] SearchRolesRequest request)
     {
@@ -38,6 +49,10 @@ public class RolesController : BaseController
         return Ok(roles);
     }
 
+    /// <summary>
+    /// Изменить информацию о роли.
+    /// </summary>
+    /// <param name="roleId">Идентификатор роли</param>
     [HttpPut("{roleId}")]
     [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> UpdateRole(int roleId, RoleRequest request)
@@ -46,6 +61,10 @@ public class RolesController : BaseController
         return NoContent();
     }
 
+    /// <summary>
+    /// Удалить роль.
+    /// </summary>
+    /// <param name="roleId">Идентификатор роли</param>
     [HttpDelete("{roleId}")]
     [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> DeleteRole(int roleId)
