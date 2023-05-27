@@ -17,6 +17,11 @@ public class GradesController : BaseController
         this.gradesService = gradesService;
     }
 
+    /// <summary>
+    /// Получить информацию о грейде.
+    /// </summary>
+    /// <param name="gradeId"></param>
+    /// <returns></returns>
     [HttpGet("{gradeId}")]
     public async Task<ActionResult<GradeResponse>> GetGradeById(int gradeId)
     {
@@ -24,6 +29,9 @@ public class GradesController : BaseController
         return Ok(grade);
     }
 
+    /// <summary>
+    /// Поиск грейдов по названию.
+    /// </summary>
     [HttpGet]
     public async Task<ActionResult<PaginatedResponse<GradeShortInfo>>> FindGrades(
         [FromQuery] SearchGradesRequest request)
@@ -32,6 +40,10 @@ public class GradesController : BaseController
         return Ok(grades);
     }
 
+    /// <summary>
+    /// Изменить информацию о грейде.
+    /// </summary>
+    /// <param name="gradeId">Идентификатор грейда</param>
     [HttpPut("{gradeId}")]
     [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> UpdateGrade(int gradeId, GradeRequest request)

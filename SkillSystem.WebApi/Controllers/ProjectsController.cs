@@ -16,24 +16,40 @@ public class ProjectsController : BaseController
         this.projectsService = projectsService;
     }
 
+    /// <summary>
+    /// Создать проект.
+    /// </summary>
+    /// <returns>Идентификатор созданного проекта</returns>
     [HttpPost]
     public async Task<int> CreateProject(BaseProjectRequest request)
     {
         return await projectsService.CreateProject(request);
     }
 
+    /// <summary>
+    /// Получить информацию о проекте.
+    /// </summary>
+    /// <param name="projectId">Идентификатор проекта</param>
+    /// <returns></returns>
     [HttpGet("{projectId}")]
     public async Task<ProjectShortInfo> GetProject(int projectId)
     {
         return await projectsService.GetProjectById(projectId);
     }
 
+    /// <summary>
+    /// Поиск проектов по названию.
+    /// </summary>
     [HttpGet]
     public async Task<PaginatedResponse<ProjectShortInfo>> FindProjects([FromQuery] ProjectFilter query)
     {
         return await projectsService.FindProjects(query);
     }
 
+    /// <summary>
+    /// Изменить информацию о проекте.
+    /// </summary>
+    /// <param name="projectId">Идентификатор проекта</param>
     [HttpPut("{projectId}")]
     public async Task UpdateProject(int projectId, UpdateProjectRequest request)
     {
@@ -41,6 +57,10 @@ public class ProjectsController : BaseController
         await projectsService.UpdateProject(request);
     }
 
+    /// <summary>
+    /// Удалить проект.
+    /// </summary>
+    /// <param name="projectId">Идентификатор проекта</param>
     [HttpDelete("{projectId}")]
     public async Task DeleteProject(int projectId)
     {

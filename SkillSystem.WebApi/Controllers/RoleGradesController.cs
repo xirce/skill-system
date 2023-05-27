@@ -17,6 +17,11 @@ public class RoleGradesController : BaseController
         this.rolesService = rolesService;
     }
 
+    /// <summary>
+    /// Добавить в роль новый грейд.
+    /// </summary>
+    /// <param name="roleId">Идентификатор роли</param>
+    /// <returns>Идентификатор нового грейда</returns>
     [HttpPost]
     [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<ActionResult<int>> AddGrade(int roleId, AddGradeRequest request)
@@ -25,6 +30,10 @@ public class RoleGradesController : BaseController
         return Ok(gradeId);
     }
 
+    /// <summary>
+    /// Получить грейды роли.
+    /// </summary>
+    /// <param name="roleId">Идентификатор роли</param>
     [HttpGet]
     public async Task<ActionResult<ICollection<GradeShortInfo>>> GetRoleGrades(int roleId)
     {
@@ -32,6 +41,10 @@ public class RoleGradesController : BaseController
         return Ok(grades);
     }
 
+    /// <summary>
+    /// Получить грейды роли вместе со скиллами.
+    /// </summary>
+    /// <param name="roleId">Идентификатор роли</param>
     [HttpGet]
     [Route("~/api/roles/{roleId}/grades-with-skills")]
     public async Task<ActionResult<ICollection<GradeWithSkills>>> GetRoleSkills(int roleId)
@@ -40,6 +53,12 @@ public class RoleGradesController : BaseController
         return Ok(gradesWithSkills);
     }
 
+    /// <summary>
+    /// Переместить грейд в роли.
+    /// </summary>
+    /// <param name="roleId">Идентификатор роли</param>
+    /// <param name="gradeId">Идентификатор грейда, который нужно переместить</param>
+    /// <param name="prevGradeId">Идентификатор грейда, после которого нужно поместить перемещаемый грейд</param>
     [HttpPut("{gradeId}/insert-after")]
     [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> InsertGradeAfter(int roleId, int gradeId, [FromQuery] int? prevGradeId = null)
@@ -48,6 +67,11 @@ public class RoleGradesController : BaseController
         return NoContent();
     }
 
+    /// <summary>
+    /// Удалить грейд.
+    /// </summary>
+    /// <param name="roleId">Идентификатор роли</param>
+    /// <param name="gradeId">Идентификатор грейда</param>
     [HttpDelete("{gradeId}")]
     [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> DeleteGrade(int roleId, int gradeId)

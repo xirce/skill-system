@@ -17,6 +17,10 @@ public class SkillsController : BaseController
         this.skillsService = skillsService;
     }
 
+    /// <summary>
+    /// Создать скилл.
+    /// </summary>
+    /// <returns>Идентификатор созданного скилла</returns>
     [HttpPost]
     [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<ActionResult<int>> CreateSkill(CreateSkillRequest request)
@@ -25,6 +29,10 @@ public class SkillsController : BaseController
         return Ok(skillId);
     }
 
+    /// <summary>
+    /// Получить информацию о скилле.
+    /// </summary>
+    /// <param name="skillId">Идентификатор скилла</param>
     [HttpGet("{skillId}")]
     public async Task<ActionResult<SkillResponse>> GetSkillById(int skillId)
     {
@@ -32,6 +40,9 @@ public class SkillsController : BaseController
         return Ok(skill);
     }
 
+    /// <summary>
+    /// Поиск скиллов по названию.
+    /// </summary>
     [HttpGet]
     public async Task<ActionResult<PaginatedResponse<SkillShortInfo>>> FindSkills(
         [FromQuery] SearchSkillsRequest request)
@@ -40,6 +51,11 @@ public class SkillsController : BaseController
         return Ok(skills);
     }
 
+    /// <summary>
+    /// Получить подскиллы скилла.
+    /// </summary>
+    /// <param name="skillId">Идентификатор родительского скилла</param>
+    /// <returns></returns>
     [HttpGet("{skillId}/sub-skills")]
     public async Task<ActionResult<IEnumerable<SkillShortInfo>>> GetSubSkills(int skillId)
     {
@@ -47,6 +63,10 @@ public class SkillsController : BaseController
         return Ok(subSkills);
     }
 
+    /// <summary>
+    /// Изменить информацию о скилле.
+    /// </summary>
+    /// <param name="skillId">Идентификатор скилла</param>
     [HttpPut("{skillId}")]
     [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> UpdateSkill(int skillId, UpdateSkillRequest request)
@@ -55,6 +75,11 @@ public class SkillsController : BaseController
         return NoContent();
     }
 
+    /// <summary>
+    /// Прикрепить скилл к родительскому скиллу.
+    /// </summary>
+    /// <param name="skillId">Идентификатор дочернего скилла</param>
+    /// <param name="skillGroupId">Идентификатор родительского скилла</param>
     [HttpPut("{skillId}/attach-to")]
     [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> AttachSkillToGroup(int skillId, [FromQuery] int skillGroupId)
@@ -63,6 +88,10 @@ public class SkillsController : BaseController
         return NoContent();
     }
 
+    /// <summary>
+    /// Удалить скилл.
+    /// </summary>
+    /// <param name="skillId">Идентификатор скилла</param>
     [HttpDelete("{skillId}")]
     [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> DeleteSkill(int skillId)

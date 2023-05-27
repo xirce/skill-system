@@ -14,6 +14,11 @@ public class EmployeeRolesController : BaseController
         this.projectRolesService = projectRolesService;
     }
 
+    /// <summary>
+    /// Получить по сотрудника его роли в проектах.
+    /// </summary>
+    /// <param name="employeeId">Идентификатор сотрудника</param>
+    /// <param name="projectId">Идентификатор проекта</param>
     [HttpGet]
     public async Task<ICollection<EmployeeProjectRole>> GetEmployeeProjectRoles(
         Guid employeeId,

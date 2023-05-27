@@ -19,6 +19,10 @@ public class DutiesController : BaseController
         this.dutiesService = dutiesService;
     }
 
+    /// <summary>
+    /// Создать обязанность.
+    /// </summary>
+    /// <returns>Идентификатор созданной обязанности</returns>
     [HttpPost]
     [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<ActionResult<int>> CreateDuty(DutyRequest request)
@@ -27,6 +31,11 @@ public class DutiesController : BaseController
         return Ok(dutyId);
     }
 
+    /// <summary>
+    /// Получить информацию об обязанности.
+    /// </summary>
+    /// <param name="dutyId">Идентификатор обязанности</param>
+    /// <returns>Обязанность</returns>
     [HttpGet("{dutyId}")]
     public async Task<ActionResult<DutyResponse>> GetDutyById(int dutyId)
     {
@@ -34,6 +43,10 @@ public class DutiesController : BaseController
         return Ok(duty);
     }
 
+    /// <summary>
+    /// Поиск обязанностей по названию.
+    /// </summary>
+    /// <param name="query">Название обязанности</param>
     [HttpGet]
     public async Task<ActionResult<PaginatedResponse<DutyShortInfo>>> FindDuties(
         [FromQuery] PaginationQuery<DutyFilter> query)
@@ -42,6 +55,10 @@ public class DutiesController : BaseController
         return Ok(duties);
     }
 
+    /// <summary>
+    /// Изменить информацию об обязанности.
+    /// </summary>
+    /// <param name="dutyId">Идентификатор обязанности</param>
     [HttpPut("{dutyId}")]
     [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> UpdateDuty(int dutyId, DutyRequest request)
@@ -50,6 +67,10 @@ public class DutiesController : BaseController
         return NoContent();
     }
 
+    /// <summary>
+    /// Удалить обязанность.
+    /// </summary>
+    /// <param name="dutyId">Идентификатор обязанности</param>
     [HttpDelete("{dutyId}")]
     [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> DeleteDuty(int dutyId)

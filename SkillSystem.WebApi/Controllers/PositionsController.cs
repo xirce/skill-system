@@ -19,6 +19,10 @@ public class PositionsController : BaseController
         this.positionsService = positionsService;
     }
 
+    /// <summary>
+    /// Создать должность.
+    /// </summary>
+    /// <returns>Идентификатор созданной должности</returns>
     [HttpPost]
     [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<ActionResult<int>> CreatePosition(PositionRequest request)
@@ -27,6 +31,10 @@ public class PositionsController : BaseController
         return Ok(positionId);
     }
 
+    /// <summary>
+    /// Получить информацию о должности.
+    /// </summary>
+    /// <param name="positionId">Идентификатор должности</param>
     [HttpGet("{positionId}")]
     public async Task<ActionResult<PositionResponse>> GetPosition(int positionId)
     {
@@ -34,6 +42,9 @@ public class PositionsController : BaseController
         return Ok(position);
     }
 
+    /// <summary>
+    /// Поиск должностей по названию.
+    /// </summary>
     [HttpGet]
     public async Task<ActionResult<PaginatedResponse<PositionResponse>>> FindPositions(
         [FromQuery] PaginationQuery<PositionFilter> query)
@@ -42,6 +53,10 @@ public class PositionsController : BaseController
         return Ok(positions);
     }
 
+    /// <summary>
+    /// Изменить информацию о должности.
+    /// </summary>
+    /// <param name="positionId">Идентификатор должности</param>
     [HttpPut("{positionId}")]
     [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> UpdatePosition(int positionId, PositionRequest request)
@@ -50,6 +65,10 @@ public class PositionsController : BaseController
         return NoContent();
     }
 
+    /// <summary>
+    /// Удалить должность.
+    /// </summary>
+    /// <param name="positionId">Идентификатор должности</param>
     [HttpDelete("{positionId}")]
     [Authorize(Roles = AuthRoleNames.Admin)]
     public async Task<IActionResult> DeletePosition(int positionId)
